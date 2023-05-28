@@ -1,0 +1,48 @@
+.form-center form {
+    position: absolute;
+    top: 50%;
+    left: 70%;
+    transform: translate(-50%,-50%);
+  }
+
+.blackbutton {
+    background-color: black;
+    color: white ;
+    height:40px;
+    width:250px;
+}
+
+.label {
+    margin-bottom: 500px;
+  }
+  
+
+.welcome {
+    padding-right: 10px;
+}
+
+.input-lg {
+    font-size: 16px;
+    height: 48px;
+    padding: 10px 16px;
+  }
+  
+
+.logo
+{
+    height:600px;
+    width:600px;
+    padding-left: 20px;
+}
+
+.forgotpassword {
+  
+    color:black;
+    padding-left: 65px;
+}
+
+a:hover {
+
+    color:black;
+}
+  

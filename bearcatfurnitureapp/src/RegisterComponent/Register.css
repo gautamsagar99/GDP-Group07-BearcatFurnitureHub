@@ -1,0 +1,31 @@
+.form-middle form {
+    position: absolute;
+    top: 42%;
+    left: 70%;
+    transform: translate(-50%,-50%);
+  }
+
+.black {
+    background-color: black;
+    color: white ;
+    height:40px;
+    width:250px;
+}
+
+.heading{
+    padding-left: 60px;
+}
+
+.imglogo
+{
+    height:600px;
+    width:600px;
+    padding-left: 20px;
+}
+
+
+a:hover {
+
+    color:black;
+}
+  
