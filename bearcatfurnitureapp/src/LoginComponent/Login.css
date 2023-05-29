@@ -1,8 +1,9 @@
 .form-center form {
     position: absolute;
-    top: 50%;
-    left: 70%;
+    top: 42%;
+    left: 68%;
     transform: translate(-50%,-50%);
+    margin: 0%;
   }
 
 .blackbutton {
@@ -13,9 +14,14 @@
 }
 
 .label {
-    margin-bottom: 500px;
+    margin-bottom: 10px;
+    display:block;
   }
-  
+
+.alert
+{
+    color:"red";
+}
 
 .welcome {
     padding-right: 10px;
