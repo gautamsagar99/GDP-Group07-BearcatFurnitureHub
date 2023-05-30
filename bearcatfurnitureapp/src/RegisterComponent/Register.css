@@ -3,7 +3,16 @@
     top: 42%;
     left: 68%;
     transform: translate(-50%,-50%);
+    white-space: nowrap;
+
   }
+
+  .error {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+  }
+  
 
 .black {
     background-color: black;

@@ -60,7 +60,7 @@ const Login = () => {
           />
           {emailAddress.length > 0 &&
             !emailAddress.includes("@nwmissouri.edu") && (
-              <span style={{ color: "red" }}> Only use nw email</span>
+              <span style={{ color: "red" }}> Only use new email</span>
             )}
         </Form.Group>
         <br></br>
