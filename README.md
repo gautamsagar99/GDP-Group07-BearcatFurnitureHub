@@ -8,7 +8,7 @@ To clone our project to local laptop.
 
 move to this folder
 
-### npm init
+### `npm init`
 
 To initialize the project inside bearcatfurnitureapp/ folder
 
