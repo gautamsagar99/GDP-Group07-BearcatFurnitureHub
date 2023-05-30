@@ -25,7 +25,10 @@ const Login = () => {
       .then((response) => response.text())
       .then((text) => {
         console.log(text); // Handle the response text
-        alert(text);
+        // alert(text);
+        if(text === "Login successful"){
+          navigate("/home");
+        }
       })
       .catch((error) => {
         console.error(error); // Handle any errors
