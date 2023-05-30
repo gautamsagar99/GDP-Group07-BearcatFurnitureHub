@@ -2,9 +2,10 @@
 
 # dependencies
 /codes/backend/node_modules
-/codes/bearcatfurnitureapp/node_modules
+/codes/frontend/node_modules
 /codes/backend/.*
 /codes/backend/package-lock.json
+/codes/frontend/package-lock.json
 /.pnp
 .pnp.js
 
