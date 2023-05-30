@@ -2,6 +2,7 @@
 
 To clone our project to local laptop.
 
+### Front End Project Setup
 
 ### cd bearcatfurnitureapp/
 
@@ -24,3 +25,20 @@ You may also see any lint errors in the console.
 Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
+### Backend Setup
+
+### `cd backend/`
+
+move to backend/ folder
+
+### `npm install`
+
+installs any dependencies which requires
+
+### create `bearcathub` database using mysql workbench
+
+### Add mysql database as "bearcathub" and give user name and password in server.js
+
+### `node server.js`
+
+starts the backend server
