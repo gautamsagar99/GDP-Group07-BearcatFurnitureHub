@@ -172,11 +172,34 @@ app.post("/forgot-password", (req, res) => {
   res.status(200).json({ message: "Password reset token generated and sent." });
 });
 
+app.post("/update-password", async (req, res) => {
+  const { email, newPassword } = req.body;
+
+  // Find the user based on the email
+  const user = User.findOne({ where: { email } });
+
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  // Save the updated user to the database or any other storage mechanism
+  const updatedUser = await User.update(
+    { password: newPassword },
+    { where: { email } }
+  );
+
+  if (updatedUser[0] === 0) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  return res.status(200).json({ message: "Password updated successfully" });
+});
+
 app.get("/test", async (req, res) => {
   res.send("testing server api");
 });
 
 // Starting the server
 app.listen(5000, () => {
-  console.log("Server started on port 3000");
+  console.log("Server started on port 5000");
 });
