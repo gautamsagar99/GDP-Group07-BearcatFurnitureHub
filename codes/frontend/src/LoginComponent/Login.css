@@ -4,6 +4,7 @@
     left: 68%;
     transform: translate(-50%,-50%);
     margin: 0%;
+    padding-left: 10px;
   }
 
 .blackbutton {
@@ -17,6 +18,12 @@
     margin-bottom: 10px;
     display:block;
   }
+
+  .error {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+}
 
 .alert
 {
