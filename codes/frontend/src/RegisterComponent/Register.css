@@ -4,6 +4,9 @@
     left: 68%;
     transform: translate(-50%,-50%);
     white-space: nowrap;
+    padding-left: 10px;
+    padding-top: 60px;
+
 
   }
 
@@ -22,12 +25,13 @@
 }
 
 .heading{
-    padding-left: 60px;
+    padding-left: 0px;
+    padding-bottom: 0px;
 }
 
 .imglogo
 {
-    height:600px;
+    height:555px;
     width:600px;
     padding-left: 20px;
 }
@@ -37,4 +41,15 @@ a:hover {
 
     color:black;
 }
-  
+
+.mb-3{
+    height: 60px;
+}
+.label{
+height:18px;
+padding-bottom: 0px;
+}
+
+.form-control{
+padding-bottom: 5px;
+}

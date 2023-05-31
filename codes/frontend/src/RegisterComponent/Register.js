@@ -26,6 +26,8 @@ function Register() {
   const navigate = useNavigate();
 
   const handleRegister = () => {
+
+
     const isValid = validateForm();
 
     if (isValid) {
@@ -78,6 +80,7 @@ function Register() {
 
 
     if (email.trim() === "") {
+
       newErrors.email = "Email address is required";
       isValid = false;
     } else if (!/\S+@\S+\.\S+/.test(email)) {
@@ -119,26 +122,29 @@ function Register() {
         <h1 className="heading">Register</h1>
         <br></br>
         <Form.Group className="mb-3" controlId="formBasicFirstName">
+        <Form.Label className="label">First Name<span style={{ color: 'red' }}>*</span></Form.Label>
           <Form.Control
             type="firstname"
             value={firstname}
             name="firstname"
             onChange={onchange}
             placeholder="First Name"
-            style={{ fontSize: "16px", height: "15px", padding: "10px 24px" }}
+            style={{ fontSize: "16px", height: "15px", padding: "5px 24px" }}
           />
           {errors.firstname && <div className="error">{errors.firstname}</div>}
 
         </Form.Group>
         <br></br>
         <Form.Group className="mb-3" controlId="formBasicLastName">
+        <Form.Label className="label">Last Name<span style={{ color: 'red' }}>*</span></Form.Label>
+
           <Form.Control
             type="lastname"
             value={lastname}
             name="lastname"
             onChange={onchange}
             placeholder="Last Name"
-            style={{ fontSize: "16px", height: "15px", padding: "10px 24px" }}
+            style={{ fontSize: "16px", height: "15px", padding: "5px 24px" }}
           />
           {/* {errors.lastname && <span className="error">{errors.lastname}</span>} */}
           {errors.lastname && <div className="error">{errors.lastname}</div>}
@@ -146,39 +152,44 @@ function Register() {
         </Form.Group>
         <br></br>
         <Form.Group className="mb-3" controlId="formBasicemail">
+        <Form.Label className="label">Email<span style={{ color: 'red' }}>*</span></Form.Label>
+
           <Form.Control
             type="email"
             value={email}
             name="email"
             onChange={onchange}
             placeholder="Email Address"
-            style={{ fontSize: "16px", height: "15px", padding: "10px 24px" }}
+            style={{ fontSize: "16px", height: "15px", padding: "5px 24px" }}
           />
           {errors.email && <div className="error">{errors.email}</div>}
 
         </Form.Group>
         <br></br>
         <Form.Group className="mb-3" controlId="formBasicpassword">
+        <Form.Label className="label">Password<span style={{ color: 'red' }}>*</span></Form.Label>
+
           <Form.Control
             type="password"
             value={password}
             name="password"
             onChange={onchange}
             placeholder="Password"
-            style={{ fontSize: "16px", height: "15px", padding: "10px 24px" }}
+            style={{ fontSize: "16px", height: "15px", padding: "5px 24px" }}
           />
           {errors.password && <div className="error">{errors.password}</div>}
 
         </Form.Group>
         <br></br>
         <Form.Group className="mb-3" controlId="formBasicconfirmpassword">
-          <Form.Control
+        <Form.Label className="label">Confirm Password<span style={{ color: 'red' }}>*</span></Form.Label>
+        <Form.Control
             type="password"
             value={confirmpassword}
             name="confirmpassword"
             onChange={onchange}
             placeholder="Confirm Password"
-            style={{ fontSize: "16px", height: "15px", padding: "10px 24px" }}
+            style={{ fontSize: "16px", height: "15px", padding: "5px 24px" }}
           />
           {errors.confirmpassword && <div className="error">{errors.confirmpassword}</div>}
 
