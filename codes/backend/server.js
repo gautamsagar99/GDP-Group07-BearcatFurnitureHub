@@ -2,8 +2,40 @@
 const express = require("express");
 const { Sequelize, DataTypes } = require("sequelize");
 const cors = require("cors");
+const { v4: uuidv4 } = require("uuid");
+const nodemailer = require("nodemailer");
+const environmentVariables = require("dotenv").config();
 
+// Create a transporter
+const transporter = nodemailer.createTransport({
+  host: "smtp-mail.outlook.com",
+  port: 587,
+  secure: false, // Set to true if using port 465 (SSL/TLS)
+  auth: {
+    user: "gautamsagar72@gmail.com", // Your Outlook email address
+    pass: process.env.EMAIL_PASSWORD, // Your Outlook email password or app password
+  },
+});
 
+function sendResetToken(email, resetToken) {
+  // Configure the email options
+  const mailOptions = {
+    from: "gautamsagar72@gmail.com", // Sender email address
+    // to: "s555619@nwmissouri.edu", // Recipient email address
+    to: email,
+    subject: "Password Reset", // Email subject
+    text: `Your password reset token: ${resetToken}`, // Email content
+  };
+
+  // Send the email
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.error("Error sending email:", error);
+    } else {
+      console.log("Email sent:", info.response);
+    }
+  });
+}
 
 // Creating an instance of Express
 const app = express();
@@ -64,8 +96,6 @@ sequelize
     console.error("Error synchronizing database:", err);
   });
 
-
-
 // Route handler for the '/login' route
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
@@ -123,6 +153,23 @@ app.post("/signup", async (req, res) => {
     console.error("Error creating user:", err);
     res.status(500).send("Internal Server Error");
   }
+});
+
+app.post("/forgot-password", (req, res) => {
+  // Generate a unique token or code
+  // const resetToken = uuidv4();
+
+  // TODO: Save the reset token and associate it with the user (e.g., in a database)
+
+  const uuid = uuidv4();
+  const numericPart = uuid.replace(/\D/g, ""); // Extract only the numeric characters from the UUID
+  const fourDigitNumber = numericPart.slice(0, 6); // Take the first four digits
+
+  // Send the reset token to the user's email
+  sendResetToken(req.body.email, fourDigitNumber);
+  console.log("The reset token after generating " + fourDigitNumber);
+  // Return a response to the client
+  res.status(200).json({ message: "Password reset token generated and sent." });
 });
 
 app.get("/test", async (req, res) => {
