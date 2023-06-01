@@ -6,6 +6,7 @@ const { v4: uuidv4 } = require("uuid");
 const nodemailer = require("nodemailer");
 const environmentVariables = require("dotenv").config();
 
+var currentCode = 0;
 // Create a transporter
 const transporter = nodemailer.createTransport({
   host: "smtp-mail.outlook.com",
@@ -116,7 +117,7 @@ app.post("/login", async (req, res) => {
     } else {
       // If no matching user is found, send login failed message
       console.log("Login failed ");
-      res.send("Login failed");
+      res.send("Invalid Email ID/Password ");
     }
   } catch (err) {
     console.error("Error finding user:");
@@ -164,17 +165,33 @@ app.post("/forgot-password", (req, res) => {
   const uuid = uuidv4();
   const numericPart = uuid.replace(/\D/g, ""); // Extract only the numeric characters from the UUID
   const fourDigitNumber = numericPart.slice(0, 6); // Take the first four digits
-
+  console.log(req.body.email);
   // Send the reset token to the user's email
   sendResetToken(req.body.email, fourDigitNumber);
   console.log("The reset token after generating " + fourDigitNumber);
+  currentCode = fourDigitNumber;
   // Return a response to the client
   res.status(200).json({ message: "Password reset token generated and sent." });
+});
+
+app.post("/check-code", (req, res) => {
+  // console.log(currentCode + "server code");
+  // console.log(req.body.code + "from frontend to backend code");
+  // console.log(typeof currentCode + "server code");
+  // console.log(typeof req.body.code + "from frontend to backend code");
+  if (Number.parseInt(req.body.code) == currentCode) {
+    console.log("both codes are equal");
+    res.status(200).json({ message: "Success" });
+  } else {
+    return res.status(404).json({ message: "Failed" });
+  }
+  // Return a response to the client
 });
 
 app.post("/update-password", async (req, res) => {
   const { email, newPassword } = req.body;
 
+  console.log("password is changing with " + email + " " + newPassword);
   // Find the user based on the email
   const user = User.findOne({ where: { email } });
 
@@ -192,7 +209,7 @@ app.post("/update-password", async (req, res) => {
     return res.status(404).json({ message: "User not found" });
   }
 
-  return res.status(200).json({ message: "Password updated successfully" });
+  return res.status(200).json({ message: "Success" });
 });
 
 app.get("/test", async (req, res) => {

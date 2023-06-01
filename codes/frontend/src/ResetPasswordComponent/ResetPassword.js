@@ -18,14 +18,14 @@ function ResetPassword() {
     confirmPassword: "",
   });
 
-  const {  email, newPassword, confirmPassword } = data;
+  const { email, newPassword, confirmPassword } = data;
   const navigate = useNavigate();
 
   const handleResetPassword = () => {
     const isValid = validateForm();
 
     if (isValid) {
-      fetch("http://localhost:5000/signup", {
+      fetch("http://localhost:5000/update-password", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -35,12 +35,12 @@ function ResetPassword() {
           newPassword: newPassword,
         }),
       })
-        .then((response) => response.text())
+        .then((response) => response.json())
         .then((text) => {
-          console.log(text); // Handle the response text
-        //   alert(text);
-        navigate("/");
-          if(text === "success"){
+          console.log(text.message); // Handle the response text
+          // alert(text.message);
+          if (text.message === "Success") {
+            alert("password updated successfully");
             navigate("/");
           }
         })
@@ -60,7 +60,7 @@ function ResetPassword() {
     console.log(confirmPassword);
     console.log(newPassword);
 
-    if(confirmPassword !== newPassword) {
+    if (confirmPassword !== newPassword) {
       newErrors.confirmPassword = "Passwords doesn't match.";
       isValid = false;
     }
@@ -75,21 +75,20 @@ function ResetPassword() {
 
       <Form>
         <h1 className="heading">Reset Password</h1>
-        <br></br>
+        <br />
         <Form.Group className="mb-7" controlId="formBasicemail">
           <Form.Control
             type="email"
             value={email}
             name="email"
             onChange={onchange}
-            // placeholder="Email Address"
-            disabled="true"
+            placeholder="Email Address"
+            // disabled="true"
             style={{ fontSize: "16px", height: "15px", padding: "10px 24px" }}
           />
           {errors.email && <div className="error">{errors.email}</div>}
-
         </Form.Group>
-        <br></br>
+        <br />
         <Form.Group className="mb-3" controlId="formBasicpassword">
           <Form.Control
             type="password"
@@ -99,9 +98,8 @@ function ResetPassword() {
             placeholder="New Password"
             style={{ fontSize: "16px", height: "15px", padding: "10px 24px" }}
           />
-
         </Form.Group>
-        <br></br>
+        <br />
         <Form.Group className="mb-3" controlId="formBasicconfirmpassword">
           <Form.Control
             type="password"
@@ -111,11 +109,12 @@ function ResetPassword() {
             placeholder="Confirm Password"
             style={{ fontSize: "16px", height: "15px", padding: "10px 24px" }}
           />
-          {errors.confirmPassword && <div className="error">{errors.confirmPassword}</div>}
-
+          {errors.confirmPassword && (
+            <div className="error">{errors.confirmPassword}</div>
+          )}
         </Form.Group>
-        <br></br>
-        <br></br>
+        <br />
+        <br />
         <Button className="black" onClick={handleResetPassword}>
           Submit
         </Button>

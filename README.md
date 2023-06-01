@@ -1,6 +1,8 @@
 git clone <<GIT_URL>>
 To clone our project to local laptop.
 
+`Move to Master Branch for complete Code`
+
 Front End Project Setup
 cd codes/frontend/
 move to this folder

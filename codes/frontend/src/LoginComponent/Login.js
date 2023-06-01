@@ -21,9 +21,6 @@ const Login = () => {
     navigate("/signup");
   };
 
-
-
-
   const handleLogin = async () => {
     if (emailAddress.length === 0) {
       alert("Email Address is required");
@@ -44,11 +41,13 @@ const Login = () => {
         .then((response) => response.text())
 
         .then((text) => {
-          console.log(text); // Handle the response text
+          // Handle the response text
 
           //alert(text);
           if (text === "Login successful") {
             navigate("/home");
+          } else {
+            alert(text);
           }
         })
 
@@ -93,13 +92,17 @@ const Login = () => {
 
           {emailAddress.length > 0 &&
             !emailAddress.includes("nwmissouri.edu") && (
-              <span className="error" style={{ color: "red", display: "block" }}>
+              <span
+                className="error"
+                style={{ color: "red", display: "block" }}
+              >
                 Please enter @nwmissouri.edu email
               </span>
             )}
         </Form.Group>
 
-        <br></br>
+        <br />
+        <br />
 
         <Form.Group className="mb-3" controlId="formBasicPassword">
           <Form.Label className="label">
@@ -116,23 +119,22 @@ const Login = () => {
           />
         </Form.Group>
 
-        <br></br>
+        <br />
+        <br />
 
         <Button className="blackbutton" onClick={handleLogin}>
           Login
         </Button>
 
-        <br></br>
-
-        <br></br>
+        <br />
+        <br />
 
         <Button className="blackbutton" onClick={handleRegister}>
           SignUp
         </Button>
 
-        <br></br>
-
-        <br></br>
+        <br />
+        <br />
 
         <a href="/enter-email" className="forgotpassword">
           <u>Forgot Password?</u>
