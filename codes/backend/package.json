@@ -2,7 +2,7 @@
   "name": "bearcatfurniturehubbackend",
   "version": "1.0.0",
   "description": "This is used as backend for bearcat furniture app using node and express",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
+    "crypto-js": "^4.1.1",
     "dotenv": "^16.1.2",
     "express": "^4.18.2",
     "mysql": "^2.18.1",

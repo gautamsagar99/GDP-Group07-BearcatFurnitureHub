@@ -1,105 +1,25 @@
-// Importing required modules
-const express = require("express");
-const { Sequelize, DataTypes } = require("sequelize");
-const cors = require("cors");
+// src/controllers/authController.js
 const { v4: uuidv4 } = require("uuid");
-const nodemailer = require("nodemailer");
-const environmentVariables = require("dotenv").config();
+const path = require("path");
+const { User } = require("../models/user");
+const sendResetToken = require("../utils/mailer");
+// const CryptoJS = require("crypto-js");
+
+// const key = CryptoJS.enc.Utf8.parse("1234");
+// const iv = CryptoJS.enc.Utf8.parse("1234");
 
 var currentCode = 0;
-// Create a transporter
-const transporter = nodemailer.createTransport({
-  host: "smtp-mail.outlook.com",
-  port: 587,
-  secure: false, // Set to true if using port 465 (SSL/TLS)
-  auth: {
-    user: "gautamsagar72@gmail.com", // Your Outlook email address
-    pass: process.env.EMAIL_PASSWORD, // Your Outlook email password or app password
-  },
-});
 
-function sendResetToken(email, resetToken) {
-  // Configure the email options
-  const mailOptions = {
-    from: "gautamsagar72@gmail.com", // Sender email address
-    // to: "s555619@nwmissouri.edu", // Recipient email address
-    to: email,
-    subject: "Password Reset", // Email subject
-    text: `Your password reset token: ${resetToken}`, // Email content
-  };
-
-  // Send the email
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.error("Error sending email:", error);
-    } else {
-      console.log("Email sent:", info.response);
-    }
-  });
-}
-
-// Creating an instance of Express
-const app = express();
-
-// Middleware to parse JSON request bodies
-app.use(express.json());
-
-// Middleware to parse URL-encoded request bodies
-app.use(express.urlencoded({ extended: true }));
-app.use(cors());
-
-// Creating a Sequelize instance and establishing a connection
-const sequelize = new Sequelize("bearcathub", "root", "root", {
-  host: "localhost",
-  dialect: "mysql",
-  logging: false,
-});
-
-// Defining a User model
-const User = sequelize.define(
-  "users",
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    password: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    first_name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    last_name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-  },
-  {
-    timestamps: false, // Disable timestamps
-  }
-);
-
-// Syncing the model with the database
-// Updating the above schema into database
-sequelize
-  .sync()
-  .then(() => {
-    console.log("Database synchronized");
-  })
-  .catch((err) => {
-    console.error("Error synchronizing database:", err);
-  });
-
-// Route handler for the '/login' route
-app.post("/login", async (req, res) => {
+async function login(req, res) {
   const { email, password } = req.body;
+
+  // Decrypt the data
+  // const email = CryptoJS.AES.decrypt(encryptedEmail, key, { iv }).toString(
+  //   CryptoJS.enc.Utf8
+  // );
+  // const password = CryptoJS.AES.decrypt(encryptedPassword, key, {
+  //   iv,
+  // }).toString(CryptoJS.enc.Utf8);
 
   try {
     // Finding a user with the provided credentials
@@ -123,10 +43,9 @@ app.post("/login", async (req, res) => {
     console.error("Error finding user:");
     res.status(500).send("Internal Server Error");
   }
-});
+}
 
-// Route handler for the '/signup' route
-app.post("/signup", async (req, res) => {
+async function signup(req, res) {
   const { email, password, first_name, last_name } = req.body;
 
   try {
@@ -154,9 +73,9 @@ app.post("/signup", async (req, res) => {
     console.error("Error creating user:", err);
     res.status(500).send("Internal Server Error");
   }
-});
+}
 
-app.post("/forgot-password", (req, res) => {
+async function forgotPassword(req, res) {
   // Generate a unique token or code
   // const resetToken = uuidv4();
 
@@ -172,9 +91,9 @@ app.post("/forgot-password", (req, res) => {
   currentCode = fourDigitNumber;
   // Return a response to the client
   res.status(200).json({ message: "Password reset token generated and sent." });
-});
+}
 
-app.post("/check-code", (req, res) => {
+async function checkCode(req, res) {
   // console.log(currentCode + "server code");
   // console.log(req.body.code + "from frontend to backend code");
   // console.log(typeof currentCode + "server code");
@@ -186,9 +105,9 @@ app.post("/check-code", (req, res) => {
     return res.status(404).json({ message: "Failed" });
   }
   // Return a response to the client
-});
+}
 
-app.post("/update-password", async (req, res) => {
+async function updatePassword(req, res) {
   const { email, newPassword } = req.body;
 
   console.log("password is changing with " + email + " " + newPassword);
@@ -210,13 +129,17 @@ app.post("/update-password", async (req, res) => {
   }
 
   return res.status(200).json({ message: "Success" });
-});
+}
 
-app.get("/test", async (req, res) => {
+async function test(req, res) {
   res.send("testing server api");
-});
+}
 
-// Starting the server
-app.listen(5000, () => {
-  console.log("Server started on port 5000");
-});
+module.exports = {
+  login,
+  signup,
+  forgotPassword,
+  checkCode,
+  updatePassword,
+  test,
+};
