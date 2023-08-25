@@ -1,0 +1,55 @@
+stages:
+  - build_frontend
+  - build_backend
+  - deploy
+
+frontend:
+  stage: build_frontend
+  image: node:16.18.0
+  script:
+    - cd codes/frontend/
+    - npm install
+    - npm run build
+  artifacts:
+    paths:
+      - codes/frontend/build/
+
+backend:
+  stage: build_backend
+  image: node:16.18.0
+  services:
+    - name: mysql:latest
+      alias: mysql
+  variables:
+    MYSQL_ROOT_PASSWORD: root
+    MYSQL_DATABASE: bearcathub
+    MYSQL_USER: root
+    MYSQL_PASSWORD: root
+  before_script:
+    - cd codes/backend/
+    - npm install
+    - npm run build
+  script:
+    - node src/server.js
+  artifacts:
+    paths:
+      - backend/build/
+
+deploy:
+  stage: deploy
+  image: alpine:latest
+  script:
+    - echo "Deploying frontend and backend..."
+    # Your deployment commands here
+    - cd codes/frontend/
+    - npm start
+    - cd ..
+    - cd backend/
+    - node src/server.js
+
+  environment:
+    name: production
+  only:
+    - main # Deploy only when changes are pushed to the master branch
+
+# You can add more stages or steps as needed, such as testing, database setup, etc.
