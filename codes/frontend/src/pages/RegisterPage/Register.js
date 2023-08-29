@@ -3,7 +3,7 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useNavigate } from "react-router-dom";
 import "./Register.css";
-import image from "./image.jpg";
+import image from "../../assets/images/mainImage.jpg";
 
 function Register() {
   const [data, setData] = useState({
@@ -120,7 +120,7 @@ function Register() {
 
       <Form>
         <h1 className="heading">Register</h1>
-        <br></br>
+        <br/>
         <Form.Group className="mb-3" controlId="formBasicFirstName">
         <Form.Label className="label">First Name<span style={{ color: 'red' }}>*</span></Form.Label>
           <Form.Control
@@ -134,7 +134,7 @@ function Register() {
           {errors.firstname && <div className="error">{errors.firstname}</div>}
 
         </Form.Group>
-        <br></br>
+        <br/>
         <Form.Group className="mb-3" controlId="formBasicLastName">
         <Form.Label className="label">Last Name<span style={{ color: 'red' }}>*</span></Form.Label>
 
@@ -150,7 +150,7 @@ function Register() {
           {errors.lastname && <div className="error">{errors.lastname}</div>}
 
         </Form.Group>
-        <br></br>
+        <br/>
         <Form.Group className="mb-3" controlId="formBasicemail">
         <Form.Label className="label">Email<span style={{ color: 'red' }}>*</span></Form.Label>
 
@@ -165,7 +165,7 @@ function Register() {
           {errors.email && <div className="error">{errors.email}</div>}
 
         </Form.Group>
-        <br></br>
+        <br/>
         <Form.Group className="mb-3" controlId="formBasicpassword">
         <Form.Label className="label">Password<span style={{ color: 'red' }}>*</span></Form.Label>
 
@@ -180,7 +180,7 @@ function Register() {
           {errors.password && <div className="error">{errors.password}</div>}
 
         </Form.Group>
-        <br></br>
+        <br/>
         <Form.Group className="mb-3" controlId="formBasicconfirmpassword">
         <Form.Label className="label">Confirm Password<span style={{ color: 'red' }}>*</span></Form.Label>
         <Form.Control
@@ -194,8 +194,8 @@ function Register() {
           {errors.confirmpassword && <div className="error">{errors.confirmpassword}</div>}
 
         </Form.Group>
-        <br></br>
-        <br></br>
+        <br/>
+        <br/>
         <Button className="black" onClick={handleRegister}>
           Register
         </Button>

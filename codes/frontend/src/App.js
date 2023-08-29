@@ -1,11 +1,11 @@
 import React from 'react'
-import Login from './LoginComponent/Login'
-import Register from './RegisterComponent/Register'
-import Home from './HomeComponent/Home'
+import Login from './pages/LoginPage/Login'
+import Register from './pages/RegisterPage/Register'
+import Home from './pages/HomePage/Home'
 import { BrowserRouter as Router,Routes,Route } from 'react-router-dom'
-import EmailAdress from './ResetPasswordComponent/EmailAdress'
-import SendCode from './ResetPasswordComponent/SendCode'
-import ResetPassword from './ResetPasswordComponent/ResetPassword'
+import EmailAdress from './pages/ResetPasswordPage/EmailAdress'
+import SendCode from './pages/ResetPasswordPage/SendCode'
+import ResetPassword from './pages/ResetPasswordPage/ResetPassword'
 
 
 const App = () => {

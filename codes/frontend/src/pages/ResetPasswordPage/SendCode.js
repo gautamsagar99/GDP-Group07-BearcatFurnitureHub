@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import imges from "./image.jpg";
+import imges from "../../assets/images/mainImage.jpg";
 import { useNavigate } from "react-router-dom";
 
 const SendCode = () => {

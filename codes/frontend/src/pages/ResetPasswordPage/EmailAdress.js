@@ -3,7 +3,7 @@ import Button from "react-bootstrap/Button";
 
 import Form from "react-bootstrap/Form";
 import { useNavigate } from "react-router-dom";
-import img from "./image.jpg";
+import img from "../../assets/images/mainImage.jpg";
 import "./ResetPassword.css";
 
 const EmailAdress = () => {

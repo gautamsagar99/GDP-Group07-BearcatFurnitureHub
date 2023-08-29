@@ -3,7 +3,7 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useNavigate } from "react-router-dom";
 import "./ResetPassword.css";
-import image from "./image.jpg";
+import image from "../../assets/images/mainImage.jpg";
 
 function ResetPassword() {
   const [data, setData] = useState({

@@ -6,12 +6,13 @@ import Form from "react-bootstrap/Form";
 
 import "./Login.css";
 
-import furniture from "./image.jpg";
+import furniture from "../../assets/images/mainImage.jpg";
 
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [data, setData] = useState({ emailAddress: "", password: "" });
+  // const [showValidationMessage, setShowValidationMessage] = useState(false);
 
   const { emailAddress, password } = data;
 
@@ -21,13 +22,16 @@ const Login = () => {
     navigate("/signup");
   };
 
+
+
+
   const handleLogin = async () => {
     if (emailAddress.length === 0) {
       alert("Email Address is required");
     } else if (!emailAddress.includes("nwmissouri.edu")) {
       alert("Invalid Email");
     } else if (password.length === 0) {
-      alert("Password is required");
+      // setShowValidationMessage(true);
     } else {
       fetch("http://localhost:5000/login", {
         method: "POST",
@@ -41,13 +45,11 @@ const Login = () => {
         .then((response) => response.text())
 
         .then((text) => {
-          // Handle the response text
+          console.log(text); // Handle the response text
 
           //alert(text);
           if (text === "Login successful") {
             navigate("/home");
-          } else {
-            alert(text);
           }
         })
 
@@ -73,7 +75,7 @@ const Login = () => {
 
       <Form>
         <h1>
-          Welcome to <br></br>Bearcat<br></br> Furniture Hub
+          Welcome to <br/>Bearcat<br/> Furniture Hub
         </h1>
 
         <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -92,17 +94,13 @@ const Login = () => {
 
           {emailAddress.length > 0 &&
             !emailAddress.includes("nwmissouri.edu") && (
-              <span
-                className="error"
-                style={{ color: "red", display: "block" }}
-              >
+              <span className="error" style={{ color: "red", display: "block" }}>
                 Please enter @nwmissouri.edu email
               </span>
             )}
         </Form.Group>
-
-        <br />
-        <br />
+        <br/>
+        <br/>
 
         <Form.Group className="mb-3" controlId="formBasicPassword">
           <Form.Label className="label">
@@ -119,22 +117,23 @@ const Login = () => {
           />
         </Form.Group>
 
-        <br />
-        <br />
-
+        <br/>
+      
         <Button className="blackbutton" onClick={handleLogin}>
           Login
         </Button>
 
-        <br />
-        <br />
+        <br/>
+
+        <br/>
 
         <Button className="blackbutton" onClick={handleRegister}>
           SignUp
         </Button>
 
-        <br />
-        <br />
+        <br/>
+
+        <br/>
 
         <a href="/enter-email" className="forgotpassword">
           <u>Forgot Password?</u>
