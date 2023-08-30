@@ -1,0 +1,13 @@
+.button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .primary {
+    background-color: #007bff;
+    color: white;
+  }
+
+  

@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 
-import Button from "react-bootstrap/Button";
+import Button from "../../components/Button/Button";
+
+import TextField from "../../components/TextField/Textfield";
 
 import Form from "react-bootstrap/Form";
 
@@ -79,17 +81,16 @@ const Login = () => {
         </h1>
 
         <Form.Group className="mb-3" controlId="formBasicEmail">
-          <Form.Label className="label">
-            Email address <span style={{ color: "red" }}>*</span>
-          </Form.Label>
 
-          <Form.Control
+
+          <TextField
             type="email"
             value={emailAddress}
+            label="Email Address"
             name="emailAddress"
             placeholder="Email Address"
             onChange={onchange}
-            style={{ fontSize: "16px", height: "15px", padding: "10px 24px" }}
+            required={true}
           />
 
           {emailAddress.length > 0 &&
@@ -103,33 +104,27 @@ const Login = () => {
         <br/>
 
         <Form.Group className="mb-3" controlId="formBasicPassword">
-          <Form.Label className="label">
-            Password <span style={{ color: "red" }}>*</span>
-          </Form.Label>
 
-          <Form.Control
+          <TextField
             type="password"
             value={password}
+            label="Password"
             name="password"
             placeholder="Password"
             onChange={onchange}
-            style={{ fontSize: "16px", height: "15px", padding: "10px 24px" }}
+            required={true}
           />
         </Form.Group>
-
+         <br/>
         <br/>
       
-        <Button className="blackbutton" onClick={handleLogin}>
-          Login
-        </Button>
+        <Button label="Login" onClick={handleLogin} color="primary"/>
 
         <br/>
 
         <br/>
 
-        <Button className="blackbutton" onClick={handleRegister}>
-          SignUp
-        </Button>
+        <Button label="SignUp" onClick={handleRegister} color="primary"/>
 
         <br/>
 

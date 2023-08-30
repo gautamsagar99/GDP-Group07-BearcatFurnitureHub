@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import Button from "react-bootstrap/Button";
+import Button from "../../components/Button/Button"
+import TextField from "../../components/TextField/Textfield";
 import Form from "react-bootstrap/Form";
 import { useNavigate } from "react-router-dom";
 import "./Register.css";
@@ -122,29 +123,31 @@ function Register() {
         <h1 className="heading">Register</h1>
         <br/>
         <Form.Group className="mb-3" controlId="formBasicFirstName">
-        <Form.Label className="label">First Name<span style={{ color: 'red' }}>*</span></Form.Label>
-          <Form.Control
+       
+          <TextField
             type="firstname"
             value={firstname}
             name="firstname"
+            label="First Name"
+            required={true}
             onChange={onchange}
             placeholder="First Name"
-            style={{ fontSize: "16px", height: "15px", padding: "5px 24px" }}
           />
           {errors.firstname && <div className="error">{errors.firstname}</div>}
 
         </Form.Group>
         <br/>
         <Form.Group className="mb-3" controlId="formBasicLastName">
-        <Form.Label className="label">Last Name<span style={{ color: 'red' }}>*</span></Form.Label>
+   
 
-          <Form.Control
+          <TextField
             type="lastname"
             value={lastname}
             name="lastname"
             onChange={onchange}
             placeholder="Last Name"
-            style={{ fontSize: "16px", height: "15px", padding: "5px 24px" }}
+            label="Last Name"
+            required={true}
           />
           {/* {errors.lastname && <span className="error">{errors.lastname}</span>} */}
           {errors.lastname && <div className="error">{errors.lastname}</div>}
@@ -152,53 +155,57 @@ function Register() {
         </Form.Group>
         <br/>
         <Form.Group className="mb-3" controlId="formBasicemail">
-        <Form.Label className="label">Email<span style={{ color: 'red' }}>*</span></Form.Label>
+        
 
-          <Form.Control
+          <TextField
             type="email"
             value={email}
             name="email"
             onChange={onchange}
             placeholder="Email Address"
-            style={{ fontSize: "16px", height: "15px", padding: "5px 24px" }}
+            label="Email"
+            required={true}
+            
           />
           {errors.email && <div className="error">{errors.email}</div>}
 
         </Form.Group>
         <br/>
         <Form.Group className="mb-3" controlId="formBasicpassword">
-        <Form.Label className="label">Password<span style={{ color: 'red' }}>*</span></Form.Label>
+        
 
-          <Form.Control
+          <TextField
             type="password"
             value={password}
             name="password"
             onChange={onchange}
             placeholder="Password"
-            style={{ fontSize: "16px", height: "15px", padding: "5px 24px" }}
+            label="Password"
+            required={true}
+            
           />
           {errors.password && <div className="error">{errors.password}</div>}
 
         </Form.Group>
         <br/>
         <Form.Group className="mb-3" controlId="formBasicconfirmpassword">
-        <Form.Label className="label">Confirm Password<span style={{ color: 'red' }}>*</span></Form.Label>
-        <Form.Control
+        
+        <TextField
             type="password"
             value={confirmpassword}
             name="confirmpassword"
             onChange={onchange}
             placeholder="Confirm Password"
-            style={{ fontSize: "16px", height: "15px", padding: "5px 24px" }}
+            label="Confirm Password"
+            required={true}
           />
           {errors.confirmpassword && <div className="error">{errors.confirmpassword}</div>}
 
         </Form.Group>
         <br/>
         <br/>
-        <Button className="black" onClick={handleRegister}>
-          Register
-        </Button>
+        <Button label="Register" onClick={handleRegister} color="primary"/>
+
       </Form>
     </div>
   );
