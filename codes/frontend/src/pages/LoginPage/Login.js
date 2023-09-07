@@ -11,12 +11,17 @@ import "./Login.css";
 import furniture from "../../assets/images/mainImage.jpg";
 
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
+import CryptoJS from 'crypto-js';
+
 
 const Login = () => {
   const [data, setData] = useState({ emailAddress: "", password: "" });
   // const [showValidationMessage, setShowValidationMessage] = useState(false);
 
   const { emailAddress, password } = data;
+
+  const encryptionKey = 'bearcathubkey'; 
 
   const navigate = useNavigate();
 
@@ -28,6 +33,7 @@ const Login = () => {
 
 
   const handleLogin = async () => {
+    
     if (emailAddress.length === 0) {
       alert("Email Address is required");
     } else if (!emailAddress.includes("nwmissouri.edu")) {
@@ -35,29 +41,34 @@ const Login = () => {
     } else if (password.length === 0) {
       // setShowValidationMessage(true);
     } else {
-      fetch("http://localhost:5000/login", {
-        method: "POST",
+      const encryptedEmail = CryptoJS.AES.encrypt(emailAddress,encryptionKey).toString();
+      const encryptedPassword = CryptoJS.AES.encrypt(password,encryptionKey).toString();
 
-        headers: {
-          "Content-Type": "application/json",
-        },
+    axios.post('http://localhost:5000/login', {
+      email: encryptedEmail,
+      password: encryptedPassword,
+    }, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then((response) => {
 
-        body: JSON.stringify({ email: emailAddress, password: password }),
-      })
-        .then((response) => response.text())
-
-        .then((text) => {
-          console.log(text); // Handle the response text
-
-          //alert(text);
-          if (text === "Login successful") {
-            navigate("/home");
-          }
-        })
-
-        .catch((error) => {
-          console.error(error); // Handle any errors
-        });
+      console.log(response.data); // Handle the response data
+      
+      if(response.data&&response.data.token)
+      {
+        const jwtToken=response.data.token;
+        localStorage.setItem("jwtToken",jwtToken)
+      }
+      if (response.data === 'Login successful') {
+        // Assuming you have the 'navigate' function available
+        navigate('/home');
+      }
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
 
       // const output = await fetch("http://localhost:3000/test");
 
@@ -118,13 +129,11 @@ const Login = () => {
          <br/>
         <br/>
       
-        <Button label="Login" onClick={handleLogin} color="primary"/>
+        <Button type="button" label="Login" onClick={handleLogin} color="primary"/>
 
-        <br/>
+        
 
-        <br/>
-
-        <Button label="SignUp" onClick={handleRegister} color="primary"/>
+        <Button type="button" label="SignUp" onClick={handleRegister} color="primary"/>
 
         <br/>
 
