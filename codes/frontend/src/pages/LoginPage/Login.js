@@ -11,9 +11,8 @@ import "./Login.css";
 import furniture from "../../assets/images/mainImage.jpg";
 
 import { useNavigate } from "react-router-dom";
-import axios from 'axios';
-import CryptoJS from 'crypto-js';
-
+import axios from "axios";
+import CryptoJS from "crypto-js";
 
 const Login = () => {
   const [data, setData] = useState({ emailAddress: "", password: "" });
@@ -21,7 +20,7 @@ const Login = () => {
 
   const { emailAddress, password } = data;
 
-  const encryptionKey = 'bearcathubkey'; 
+  const encryptionKey = "1234";
 
   const navigate = useNavigate();
 
@@ -29,11 +28,10 @@ const Login = () => {
     navigate("/signup");
   };
 
-
-
-
   const handleLogin = async () => {
-    
+    const iv = "1234";
+    const ivBytes = CryptoJS.enc.Utf8.parse(iv);
+
     if (emailAddress.length === 0) {
       alert("Email Address is required");
     } else if (!emailAddress.includes("nwmissouri.edu")) {
@@ -41,34 +39,41 @@ const Login = () => {
     } else if (password.length === 0) {
       // setShowValidationMessage(true);
     } else {
-      const encryptedEmail = CryptoJS.AES.encrypt(emailAddress,encryptionKey).toString();
-      const encryptedPassword = CryptoJS.AES.encrypt(password,encryptionKey).toString();
+      const encryptedEmail = CryptoJS.AES.encrypt(emailAddress, encryptionKey, {
+        iv: ivBytes,
+      }).toString();
+      const encryptedPassword = CryptoJS.AES.encrypt(password, encryptionKey, {
+        iv: ivBytes,
+      }).toString();
 
-    axios.post('http://localhost:5000/login', {
-      email: encryptedEmail,
-      password: encryptedPassword,
-    }, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-    .then((response) => {
+      axios
+        .post(
+          "http://localhost:5000/login",
+          {
+            encryptedEmail: encryptedEmail,
+            encryptedPassword: encryptedPassword,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((response) => {
+          console.log(response.data); // Handle the response data
 
-      console.log(response.data); // Handle the response data
-      
-      if(response.data&&response.data.token)
-      {
-        const jwtToken=response.data.token;
-        localStorage.setItem("jwtToken",jwtToken)
-      }
-      if (response.data === 'Login successful') {
-        // Assuming you have the 'navigate' function available
-        navigate('/home');
-      }
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-    });
+          if (response.data && response.data.token) {
+            const jwtToken = response.data.token;
+            localStorage.setItem("jwtToken", jwtToken);
+          }
+          if (response.data === "Login successful") {
+            // Assuming you have the 'navigate' function available
+            navigate("/home");
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
 
       // const output = await fetch("http://localhost:3000/test");
 
@@ -88,12 +93,12 @@ const Login = () => {
 
       <Form>
         <h1>
-          Welcome to <br/>Bearcat<br/> Furniture Hub
+          Welcome to <br />
+          Bearcat
+          <br /> Furniture Hub
         </h1>
 
         <Form.Group className="mb-3" controlId="formBasicEmail">
-
-
           <TextField
             type="email"
             value={emailAddress}
@@ -106,16 +111,18 @@ const Login = () => {
 
           {emailAddress.length > 0 &&
             !emailAddress.includes("nwmissouri.edu") && (
-              <span className="error" style={{ color: "red", display: "block" }}>
+              <span
+                className="error"
+                style={{ color: "red", display: "block" }}
+              >
                 Please enter @nwmissouri.edu email
               </span>
             )}
         </Form.Group>
-        <br/>
-        <br/>
+        <br />
+        <br />
 
         <Form.Group className="mb-3" controlId="formBasicPassword">
-
           <TextField
             type="password"
             value={password}
@@ -126,18 +133,26 @@ const Login = () => {
             required={true}
           />
         </Form.Group>
-         <br/>
-        <br/>
-      
-        <Button type="button" label="Login" onClick={handleLogin} color="primary"/>
+        <br />
+        <br />
 
-        
+        <Button
+          type="button"
+          label="Login"
+          onClick={handleLogin}
+          color="primary"
+        />
 
-        <Button type="button" label="SignUp" onClick={handleRegister} color="primary"/>
+        <Button
+          type="button"
+          label="SignUp"
+          onClick={handleRegister}
+          color="primary"
+        />
 
-        <br/>
+        <br />
 
-        <br/>
+        <br />
 
         <a href="/enter-email" className="forgotpassword">
           <u>Forgot Password?</u>
