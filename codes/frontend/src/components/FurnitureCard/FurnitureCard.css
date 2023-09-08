@@ -1,0 +1,47 @@
+.card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px;
+    max-width: 250px;
+    max-height: 350px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .card-image {
+    width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+  
+  .card-label {
+    font-size: 1.2rem;
+    margin-top: 1px;
+  }
+  
+  .card-description {
+    margin-top: 8px;
+  }
+  
+  .card-button {
+    margin-top: 1px;
+    padding: 8px 16px;
+    background-color: #006747;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .card-button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: auto; /* Push the button to the bottom of the card */
+  }
+  
