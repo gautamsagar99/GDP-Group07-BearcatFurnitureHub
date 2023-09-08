@@ -6,7 +6,9 @@ import { BrowserRouter as Router,Routes,Route } from 'react-router-dom'
 import EmailAdress from './pages/ResetPasswordPage/EmailAdress'
 import SendCode from './pages/ResetPasswordPage/SendCode'
 import ResetPassword from './pages/ResetPasswordPage/ResetPassword'
-
+import DonateFurniture from './pages/DonatePage/DonateFurniture'
+import ProductDetails from './pages/ProductDetailsPage/ProductDetails'
+import ProfileDetails from './pages/ProfilePage/ProfileDetails'
 
 const App = () => {
   return (
@@ -19,6 +21,9 @@ const App = () => {
           <Route path="/enter-email" element={<EmailAdress/>} />
           <Route path="/forgot-password" element={<SendCode/>} />
           <Route path="/ResetPassword" element={<ResetPassword/>} />
+          <Route path="/DonateFurniture" element={<DonateFurniture/>} />
+          <Route path="/ProductDetails" element={<ProductDetails/>} />
+          <Route path="/ProfileDetails" element={<ProfileDetails/>} />
         </Routes>
       </div>
     </Router>
