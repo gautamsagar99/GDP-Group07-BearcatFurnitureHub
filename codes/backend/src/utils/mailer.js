@@ -18,7 +18,7 @@ function sendResetToken(email, resetToken) {
     // to: "s555619@nwmissouri.edu", // Recipient email address
     to: email,
     subject: "Password Reset", // Email subject
-    text: `Your password reset token: ${resetToken}`, // Email content
+    text: `Your password reset token: ${resetToken} and This code expires by today 12 PM`, // Email content
   };
 
   // Send the email
