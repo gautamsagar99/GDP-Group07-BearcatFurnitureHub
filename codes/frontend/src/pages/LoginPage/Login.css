@@ -2,60 +2,115 @@
     position: absolute;
     top: 42%;
     left: 68%;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%, -50%);
     margin: 0%;
-    padding-left: 10px;
-  }
+}
 
 .blackbutton {
     background-color: black;
-    color: white ;
-    height:40px;
-    width:250px;
+    color: white;
+    height: 40px;
+    width: 250px;
 }
 
 .label {
     margin-bottom: 10px;
-    display:block;
-  }
+    display: block;
+    padding-left: 33px;
+}
 
-  .error {
+.error {
     color: red;
     font-size: 12px;
     margin-top: 5px;
 }
 
-.alert
-{
-    color:"red";
+.alert {
+    color: "red";
 }
 
-.welcome {
-    padding-right: 10px;
-}
+
 
 .input-lg {
     font-size: 16px;
     height: 48px;
     padding: 10px 16px;
-  }
-  
+}
 
-.logo
-{
-    height:600px;
-    width:600px;
+
+.logo {
+    height: 600px;
+    width: 600px;
     padding-left: 20px;
 }
 
 .forgotpassword {
-  
-    color:black;
-    padding-left: 65px;
+
+    color: black;
+    padding: 0px;
 }
 
 a:hover {
 
-    color:black;
+    color: black;
 }
-  
+
+/* form {
+    background-color: #fff;
+    position: absolute;
+    width: 320px;
+    height: 270px;
+    padding: 10px 5px 20px 5px;
+    margin: -10vh 850px;
+    border-radius: 5px;
+    box-shadow: 5px 5px 6px -7px;
+} */
+
+
+.text-field input {
+    width: 283px;
+    padding: 10px 5px 10px 15px;
+    margin:0 41.50px 0 41.50px;
+    border-radius: 6px;
+}
+
+.mb-3{
+    height: 30px;
+}
+
+/* .text-field{
+    margin-top: 20px;
+    width: 300px;
+} */
+
+
+.rightFormContainer {
+
+    align-items: center;
+    background-color: #fff;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .1), 0 8px 16px rgba(0, 0, 0, .1);
+    box-sizing: border-box;
+    /* margin: 40px 0 0; */
+    /* padding: 0px 30px 0px 30px; */
+    width: 396px;
+    height: 348px;
+   
+}
+
+.forgotpassword{
+    margin-left: 48px;
+    margin-bottom: 5px;
+}
+
+input[type='email']{
+
+    padding: 10px 10px;
+    margin-top: 15px;
+}
+
+input[type='password']{
+margin-top: -5px;
+}
+

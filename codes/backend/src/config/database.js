@@ -1,7 +1,7 @@
 // src/config/database.js
 const { Sequelize } = require("sequelize");
 
-const sequelize = new Sequelize("bearcathub", "root", "root", {
+const sequelize = new Sequelize("bearcathub", "root", "$A1andreas", {
   host: "localhost",
   dialect: "mysql",
   logging: false,
