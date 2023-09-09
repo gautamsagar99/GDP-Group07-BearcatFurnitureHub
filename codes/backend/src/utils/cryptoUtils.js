@@ -1,10 +1,12 @@
 const CryptoJS = require("crypto-js");
 
-const encryptionKey = "1234"; // Same key used for encryption in the frontend
-const iv = "1234"; // Same IV used for encryption in the frontend
+// Same IV used for encryption in the frontend
 
 // Function to decrypt the email and password
 function decryptData(encryptedData) {
+  const encryptionKey = process.env.ENCRYPTION_KEY; // Same key used for encryption in the frontend
+  const iv = process.env.ENCRYPTION_IV;
+
   const ivBytes = CryptoJS.enc.Utf8.parse(iv);
 
   const bytes = CryptoJS.AES.decrypt(encryptedData, encryptionKey, {
@@ -15,5 +17,5 @@ function decryptData(encryptedData) {
 }
 
 module.exports = {
-    decryptData,
-  };
+  decryptData,
+};

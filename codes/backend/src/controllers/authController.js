@@ -7,21 +7,20 @@ const sendResetToken = require("../utils/mailer");
 const ResetCode = require("../models/resetCode");
 const { decryptData } = require("../utils/cryptoUtils");
 
-
 var currentEmail = "";
 
 async function login(req, res) {
   const { encryptedEmail, encryptedPassword } = req.body;
 
-  console.log(encryptedEmail);
-  console.log(encryptedPassword);
+  // console.log(encryptedEmail);
+  // console.log(encryptedPassword);
 
-// Decrypt the email and password
-const email = decryptData(encryptedEmail);
-const password = decryptData(encryptedPassword);
+  // Decrypt the email and password
+  const email = decryptData(encryptedEmail);
+  const password = decryptData(encryptedPassword);
 
-console.log(email);
-  console.log(password);
+  // console.log(email);
+  //   console.log(password);
 
   try {
     // Finding a user with the provided credentials

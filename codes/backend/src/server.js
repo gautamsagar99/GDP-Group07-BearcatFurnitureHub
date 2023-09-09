@@ -4,15 +4,16 @@ const cors = require("cors");
 const { Op } = require("sequelize"); // Import Op from Sequelize
 const sequelize = require("./config/database");
 const authRoutes = require("./routes/authRoutes");
+const furnitureRoutes = require("./routes/furnitureRoutes");
 const cron = require("node-cron");
 const path = require("path");
 const dotenv = require("dotenv");
 
 // Specify the path to your .env file
 const envPath = path.join(
-  "C:/Users/S555619/Documents/Classes/Third Sem/GDP1/GDP-Group07-BearcatFurnitureHub/codes/backend/",
+  "C:/Users/S555619/OneDrive - nwmissouri.edu/Documents/Classes/Third Sem/GDP1/GDP-Group07-BearcatFurnitureHub/codes/backend/",
   ".env"
-); // Update the path as needed
+);
 
 // Load the environment variables from the specified .env file
 dotenv.config({ path: envPath });
@@ -24,6 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 app.use(authRoutes);
+app.use(furnitureRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -47,7 +49,8 @@ cron.schedule("0 0 * * *", async () => {
 const PORT = process.env.PORT || 5000;
 sequelize.sync().then(() => {
   app.listen(PORT, () => {
-    console.log(process.env.EMAIL_PASSWORD);
+    // console.log(process.env.ENCRYPTION_KEY);
+    // console.log(process.env.ENCRYPTION_IV);
     console.log(`Server started on port ${PORT}`);
   });
 });

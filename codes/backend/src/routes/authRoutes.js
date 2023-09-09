@@ -10,6 +10,8 @@ function verifyToken(req, res, next) {
     req.originalUrl === "/login" ||
     req.originalUrl === "/signup" ||
     req.originalUrl === "/register" ||
+    req.originalUrl === "/create-furniture" ||
+    req.originalUrl === "/get-furniture" ||
     req.originalUrl === "/test"
   ) {
     return next(); // Skip token verification for these routes
