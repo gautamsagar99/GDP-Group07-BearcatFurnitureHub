@@ -8,7 +8,7 @@ import Form from "react-bootstrap/Form";
 
 import "./Login.css";
 
-import furniture from "../../assets/images/mainImage.jpg";
+import furniture from "../../assets/images/B2.png";
 
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -91,22 +91,17 @@ const Login = () => {
     <div className="form-center">
       <img src={furniture} alt="Logo" className="logo"></img>
 
-      <Form>
-        <h1>
-          Welcome to <br />
-          Bearcat
-          <br /> Furniture Hub
-        </h1>
-
+      <Form className="rightFormContainer">
+    
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <TextField
             type="email"
             value={emailAddress}
-            label="Email Address"
+            // label="Email Address"
             name="emailAddress"
             placeholder="Email Address"
             onChange={onchange}
-            required={true}
+            // required={true}
           />
 
           {emailAddress.length > 0 &&
@@ -120,20 +115,19 @@ const Login = () => {
             )}
         </Form.Group>
         <br />
-        <br />
+      
 
         <Form.Group className="mb-3" controlId="formBasicPassword">
           <TextField
             type="password"
             value={password}
-            label="Password"
+            // label="Password"
             name="password"
             placeholder="Password"
             onChange={onchange}
-            required={true}
+            // required={true}
           />
         </Form.Group>
-        <br />
         <br />
 
         <Button
@@ -142,21 +136,24 @@ const Login = () => {
           onClick={handleLogin}
           color="primary"
         />
+        <br/>
+      
+
+        <a href="/enter-email" className="forgotpassword">
+        Forgot Password?
+        </a>
+      <br />
+      
 
         <Button
           type="button"
-          label="SignUp"
+          label="Signup"
           onClick={handleRegister}
           color="primary"
         />
-
         <br />
 
-        <br />
-
-        <a href="/enter-email" className="forgotpassword">
-          <u>Forgot Password?</u>
-        </a>
+     
       </Form>
     </div>
   );

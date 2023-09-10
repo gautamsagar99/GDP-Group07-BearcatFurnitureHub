@@ -1,4 +1,4 @@
-.form-center form {
+/* .form-center form {
     position: absolute;
     top: 42%;
     left: 68%;
@@ -6,16 +6,13 @@
     margin: 0%;
   }
 
-.blackbutton {
-    background-color: black;
-    color: white ;
-    height:40px;
-    width:250px;
-}
 
-.label {
+
+.text-field label {
     margin-bottom: 10px;
-    display:block;
+    display:block;  
+    padding-left: 25px;
+
   }
 .red-heading {
     color: red;
@@ -27,9 +24,6 @@
     color:"red";
 }
 
-.welcome {
-    padding-right: 10px;
-}
 
 .input-lg {
     font-size: 16px;
@@ -48,11 +42,20 @@
 .forgotpassword {
   
     color:black;
-    padding-left: 65px;
+    padding-left: 0px;
 }
 
 a:hover {
 
     color:black;
 }
-  
+
+.text-field input {
+  width: 283px;
+  padding: 10px 0px;
+ 
+  margin:0 18.50px 0 18.50px;
+  padding-left: 15px;
+}
+
+   */

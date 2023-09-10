@@ -3,10 +3,21 @@
     font-size: 16px;
     border: none;
     cursor: pointer;
+    border: none;
+    background-color: #1877f2;
+    color: white;
+    margin: auto;
+    width: 300px;
+    display: block;
+    border-radius: 5px;
+    padding: 10px 0;
+    font-weight: bold;
+    cursor: pointer;
+
   }
   
   .primary {
-    background-color: #007bff;
+    background-color:#006A4E;
     color: white;
   }
 
