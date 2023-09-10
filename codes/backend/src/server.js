@@ -1,14 +1,6 @@
 // src/server.js
-const express = require("express");
-const cors = require("cors");
-const { Op } = require("sequelize"); // Import Op from Sequelize
-const sequelize = require("./config/database");
-const authRoutes = require("./routes/authRoutes");
-const furnitureRoutes = require("./routes/furnitureRoutes");
-const cron = require("node-cron");
-const path = require("path");
 const dotenv = require("dotenv");
-
+const path = require("path");
 // Specify the path to your .env file
 const envPath = path.join(
   "C:/Users/S555619/OneDrive - nwmissouri.edu/Documents/Classes/Third Sem/GDP1/GDP-Group07-BearcatFurnitureHub/codes/backend/",
@@ -17,6 +9,14 @@ const envPath = path.join(
 
 // Load the environment variables from the specified .env file
 dotenv.config({ path: envPath });
+
+const express = require("express");
+const cors = require("cors");
+const { Op } = require("sequelize"); // Import Op from Sequelize
+const sequelize = require("./config/database");
+const authRoutes = require("./routes/authRoutes");
+const furnitureRoutes = require("./routes/furnitureRoutes");
+const cron = require("node-cron");
 
 const app = express();
 

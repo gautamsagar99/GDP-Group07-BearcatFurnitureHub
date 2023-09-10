@@ -1,13 +1,16 @@
 // src/config/database.js
 const { Sequelize } = require("sequelize");
 
-const sequelize = new Sequelize("bearcathub", "root", "$A1andreas", {
-  host: "localhost",
-  dialect: "mysql",
-  logging: false,
-});
-
-
+const sequelize = new Sequelize(
+  process.env.DATABASE_NAME,
+  process.env.DATABASE_USERNAME,
+  process.env.DATABASE_PASSWORD,
+  {
+    host: "localhost",
+    dialect: "mysql",
+    logging: false,
+  }
+);
 
 // Syncing the model with the database
 // Updating the above schema into database
@@ -20,5 +23,4 @@ sequelize
     console.error("Error synchronizing database:", err);
   });
 
-  
 module.exports = sequelize;
