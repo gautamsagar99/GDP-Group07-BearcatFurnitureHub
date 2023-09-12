@@ -13,6 +13,7 @@ import furniture from "../../assets/images/B2.png";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import CryptoJS from "crypto-js";
+import { loginPost } from "../../utils/api";
 
 const Login = () => {
   const [data, setData] = useState({ emailAddress: "", password: "" });
@@ -46,42 +47,50 @@ const Login = () => {
         iv: ivBytes,
       }).toString();
 
-      axios
-        .post(
-          "http://localhost:5000/login",
-          {
-            encryptedEmail: encryptedEmail,
-            encryptedPassword: encryptedPassword,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        )
-        .then((response) => {
-          console.log(response.data); // Handle the response data
+   const body={encryptedEmail: encryptedEmail,encryptedPassword: encryptedPassword}
+   if(loginPost(body))
+   {
+    navigate("/home");
+   }
+  //  loginPost(body)
+  //  .then((response)=>{
+  //   if(response.data === "Login successful")
+  //   {
+  //     navigate("/home");
+  //   }
+  //  })
+      // axios
+      //   .post(
+      //     "http://localhost:5000/login",
+      //     {
+      //       encryptedEmail: encryptedEmail,
+      //       encryptedPassword: encryptedPassword,
+      //     },
+      //     {
+      //       headers: {
+      //         "Content-Type": "application/json",
+      //       },
+      //     }
+      //   )
+      //   .then((response) => {
+      //     console.log(response.data); // Handle the response data
 
-          if (response.data && response.data.token) {
-            const jwtToken = response.data.token;
-            localStorage.setItem("jwtToken", jwtToken);
-          }
-          if (response.data === "Login successful") {
-            // Assuming you have the 'navigate' function available
-            navigate("/home");
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+      //     if (response.data && response.data.token) {
+      //       const jwtToken = response.data.token;
+      //       localStorage.setItem("jwtToken", jwtToken);
+      //     }
+      //     if (response.data === "Login successful") {
+      //       // Assuming you have the 'navigate' function available
+      //       navigate("/home");
+      //     }
+      //   })
+      //   .catch((error) => {
+      //     console.error("Error:", error);
+      //   });
 
       // const output = await fetch("http://localhost:3000/test");
 
       // console.log(`output using ftech api ${output.text()}`);
-
-      console.log(
-        "write logic for sending login details to server using api(http:localhost:8080/login) with axios module"
-      );
     }
   };
 
