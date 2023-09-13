@@ -2,10 +2,7 @@
 const dotenv = require("dotenv");
 const path = require("path");
 // Specify the path to your .env file
-const envPath = path.join(
-  "C:/GDP-Group07-BearcatFurnitureHub/codes/backend",
-  ".env"
-);
+const envPath = path.join("__dirname", "../.env");
 
 // Load the environment variables from the specified .env file
 dotenv.config({ path: envPath });
