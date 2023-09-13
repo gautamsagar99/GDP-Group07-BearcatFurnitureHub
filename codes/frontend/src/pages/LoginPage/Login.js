@@ -11,7 +11,7 @@ import "./Login.css";
 import furniture from "../../assets/images/B2.png";
 
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+
 import CryptoJS from "crypto-js";
 import { loginPost } from "../../utils/api";
 
@@ -47,18 +47,20 @@ const Login = () => {
         iv: ivBytes,
       }).toString();
 
-   const body={encryptedEmail: encryptedEmail,encryptedPassword: encryptedPassword}
-   if(loginPost(body))
-   {
-    navigate("/home");
-   }
-  //  loginPost(body)
-  //  .then((response)=>{
-  //   if(response.data === "Login successful")
-  //   {
-  //     navigate("/home");
-  //   }
-  //  })
+      const body = {
+        encryptedEmail: encryptedEmail,
+        encryptedPassword: encryptedPassword,
+      };
+      if (loginPost(body)) {
+        navigate("/home");
+      }
+      //  loginPost(body)
+      //  .then((response)=>{
+      //   if(response.data === "Login successful")
+      //   {
+      //     navigate("/home");
+      //   }
+      //  })
       // axios
       //   .post(
       //     "http://localhost:5000/login",
@@ -101,7 +103,6 @@ const Login = () => {
       <img src={furniture} alt="Logo" className="logo"></img>
 
       <Form className="rightFormContainer">
-    
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <TextField
             type="email"
@@ -124,7 +125,6 @@ const Login = () => {
             )}
         </Form.Group>
         <br />
-      
 
         <Form.Group className="mb-3" controlId="formBasicPassword">
           <TextField
@@ -145,14 +145,12 @@ const Login = () => {
           onClick={handleLogin}
           color="primary"
         />
-        <br/>
-      
+        <br />
 
         <a href="/enter-email" className="forgotpassword">
-        Forgot Password?
+          Forgot Password?
         </a>
-      <br />
-      
+        <br />
 
         <Button
           type="button"
@@ -161,8 +159,6 @@ const Login = () => {
           color="primary"
         />
         <br />
-
-     
       </Form>
     </div>
   );
