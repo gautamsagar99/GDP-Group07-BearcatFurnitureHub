@@ -204,7 +204,7 @@ function Register() {
         </Form.Group>
         <br/>
         <br/>
-        <Button label="Register" onClick={handleRegister} color="primary"/>
+        <Button type="button" label="Register" onClick={handleRegister} color="primary"/>
 
       </Form>
     </div>

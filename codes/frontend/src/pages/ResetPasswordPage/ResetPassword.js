@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import Button from "../../components/Button/Button"
+import TextField from "../../components/TextField/Textfield";
 import { useNavigate } from "react-router-dom";
 import "./ResetPassword.css";
 import image from "../../assets/images/mainImage.jpg";
@@ -77,37 +78,34 @@ function ResetPassword() {
         <h1 className="heading">Reset Password</h1>
         <br />
         <Form.Group className="mb-7" controlId="formBasicemail">
-          <Form.Control
+          <TextField
             type="email"
             value={email}
             name="email"
             onChange={onchange}
             placeholder="Email Address"
             // disabled="true"
-            style={{ fontSize: "16px", height: "15px", padding: "10px 24px" }}
           />
           {errors.email && <div className="error">{errors.email}</div>}
         </Form.Group>
         <br />
         <Form.Group className="mb-3" controlId="formBasicpassword">
-          <Form.Control
+          <TextField
             type="password"
             value={newPassword}
             name="newPassword"
             onChange={onchange}
             placeholder="New Password"
-            style={{ fontSize: "16px", height: "15px", padding: "10px 24px" }}
           />
         </Form.Group>
         <br />
         <Form.Group className="mb-3" controlId="formBasicconfirmpassword">
-          <Form.Control
+          <TextField
             type="password"
             value={confirmPassword}
             name="confirmPassword"
             onChange={onchange}
             placeholder="Confirm Password"
-            style={{ fontSize: "16px", height: "15px", padding: "10px 24px" }}
           />
           {errors.confirmPassword && (
             <div className="error">{errors.confirmPassword}</div>
@@ -115,9 +113,7 @@ function ResetPassword() {
         </Form.Group>
         <br />
         <br />
-        <Button className="black" onClick={handleResetPassword}>
-          Submit
-        </Button>
+        <Button label="Submit" type="button" color="primary" onClick={handleResetPassword}/>
       </Form>
     </div>
   );
