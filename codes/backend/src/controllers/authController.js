@@ -6,6 +6,7 @@ const { User } = require("../models/user");
 const sendResetToken = require("../utils/mailer");
 const ResetCode = require("../models/resetCode");
 const { decryptData } = require("../utils/cryptoUtils");
+const jwt = require("jsonwebtoken");
 
 var currentEmail = "";
 
@@ -34,14 +35,14 @@ async function login(req, res) {
     if (user) {
       // If a matching user is found, send login success message
       console.log(`Login successful with email ID - ${email}`);
-      res.send("Login successful");
+      // res.send("Login successful");
 
-      // const token = jwt.sign({ email: user.email }, 'your-secret-key', {
-      //   expiresIn: '1h', // Set the token expiration time (e.g., 1 hour)
-      // });
-
-      // // Send the token as a response
-      // res.status(200).json({ token });
+      const token = jwt.sign({ email: email }, "1234", {
+        expiresIn: "1h", // Set the token expiration time (e.g., 1 hour)
+      });
+      console.log(token);
+      // Send the token as a response
+      res.status(200).json({ token });
     } else {
       // If no matching user is found, send login failed message
       console.log("Login failed ");
