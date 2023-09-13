@@ -1,0 +1,39 @@
+/* DonateFurniturePage.css */
+
+.container {
+    max-width: 400px;
+    margin: 10px auto 0;
+    padding: 30px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+  }
+  
+  h2 {
+    text-align: center;
+    font-size: 24px;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  label {
+    /* font-weight: bold; */
+    margin-bottom: 5px;
+  }
+  
+  input,
+  select {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+  }
+  
+  input[type="file"] {
+    padding: 10px;
+  }
+  
+  

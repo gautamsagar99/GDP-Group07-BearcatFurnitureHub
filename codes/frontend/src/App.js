@@ -22,8 +22,8 @@ const App = () => {
           <Route path="/forgot-password" element={<SendCode/>} />
           <Route path="/ResetPassword" element={<ResetPassword/>} />
           <Route path="/DonateFurniture" element={<DonateFurniture/>} />
-          <Route path="/ProductDetails" element={<ProductDetails/>} />
-          <Route path="/ProfileDetails" element={<ProfileDetails/>} />
+          <Route path="/product/:productId" element={<ProductDetails />} />
+          <Route path="/ProfileDetails" element={<ProfileDetails/>} />        
         </Routes>
       </div>
     </Router>
