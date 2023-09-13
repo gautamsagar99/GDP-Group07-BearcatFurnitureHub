@@ -1,47 +1,56 @@
-.card {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 16px;
-    margin: 16px;
-    max-width: 250px;
-    max-height: 350px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  
-  .card-image {
-    width: 100%;
-    max-height: 100%;
-    object-fit: cover;
-    border-radius: 4px;
-  }
-  
-  .card-label {
-    font-size: 1.2rem;
-    margin-top: 1px;
-  }
-  
-  .card-description {
-    margin-top: 8px;
-  }
-  
-  .card-button {
-    margin-top: 1px;
-    padding: 8px 16px;
-    background-color: #006747;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
+/* Flex container for the cards */
+.card-container {
+  display: flex;
+  flex-wrap: wrap; /* Allow cards to wrap to the next line when necessary */
+  justify-content: flex-start; /* Distribute space evenly between cards */
+}
 
-  .card-button-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: auto; /* Push the button to the bottom of the card */
-  }
-  
+.card {
+  /* Card styles with increased width */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px;
+  max-width: 185px; /* Increase the max-width to make the cards wider */
+  max-height: 350px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+  /* display: flex; */
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-image {
+  width: 100%;
+  height: 200px; /* Set a fixed height for all card images */
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.card-label {
+  font-size: 1.2rem;
+  margin-top: 1px;
+}
+
+.card-description {
+  margin-top: 8px;
+}
+
+.card-button {
+  margin-top: 1px;
+  padding: 8px 16px;
+  background-color: #006747;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: none;
+}
+
+.card-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: auto; /* Push the button to the bottom of the card */
+}
