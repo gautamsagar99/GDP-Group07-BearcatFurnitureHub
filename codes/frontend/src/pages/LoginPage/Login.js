@@ -8,7 +8,7 @@ import Form from "react-bootstrap/Form";
 
 import "./Login.css";
 
-import furniture from "../../assets/images/B2.png";
+import furniture from "../../assets/images/B3.png";
 
 import { useNavigate } from "react-router-dom";
 
@@ -100,9 +100,18 @@ const Login = () => {
 
   return (
     <div className="form-center">
-      <img src={furniture} alt="Logo" className="logo"></img>
 
+<<<<<<< HEAD
       <Form className="rightFormContainer">
+=======
+      <div className="logoDiv">
+      <img src={furniture} alt="Logo" className="logo"></img>
+   
+      </div>
+
+<div className="formDiv">
+  <Form className="rightFormContainer">
+>>>>>>> sanjay-frontend
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <TextField
             type="email"
@@ -123,6 +132,8 @@ const Login = () => {
                 Please enter @nwmissouri.edu email
               </span>
             )}
+
+            
         </Form.Group>
         <br />
 
@@ -145,12 +156,28 @@ const Login = () => {
           onClick={handleLogin}
           color="primary"
         />
+<<<<<<< HEAD
         <br />
 
         <a href="/enter-email" className="forgotpassword">
           Forgot Password?
         </a>
         <br />
+=======
+        <br/>
+      
+      <div className="forgotpassword">
+      <a href="/enter-email">
+        Forgot Password?
+        </a>
+      </div>
+
+        {/* <a href="/enter-email" className="forgotpassword">
+        Forgot Password?
+        </a> */}
+      <br />
+      
+>>>>>>> sanjay-frontend
 
         <Button
           type="button"
@@ -159,7 +186,14 @@ const Login = () => {
           color="primary"
         />
         <br />
+<<<<<<< HEAD
       </Form>
+=======
+
+     
+      </Form></div>
+      
+>>>>>>> sanjay-frontend
     </div>
   );
 };
