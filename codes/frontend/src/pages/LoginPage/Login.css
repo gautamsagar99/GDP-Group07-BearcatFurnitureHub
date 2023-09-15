@@ -1,10 +1,19 @@
-.form-center form {
-    position: absolute;
+.form-center  {
+    /* position: absolute;
     top: 42%;
-    left: 68%;
-    transform: translate(-50%, -50%);
+    left: 68%; */
+    /* transform: translate(-50%, -50%); */
     margin: 0%;
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    /* overflow: hidden; */
+    display: flex;
+    justify-content: center; 
+    align-items: center; /* Center vertically */
+    /* height: 100vh; Full viewport height */
 }
+
 
 .blackbutton {
     background-color: black;
@@ -15,7 +24,7 @@
 
 .label {
     margin-bottom: 10px;
-    display: block;
+    /* display: block; */
     padding-left: 33px;
 }
 
@@ -23,6 +32,7 @@
     color: red;
     font-size: 12px;
     margin-top: 5px;
+    margin-left: 41.50px;
 }
 
 .alert {
@@ -38,34 +48,22 @@
 }
 
 
-.logo {
-    height: 600px;
-    width: 600px;
-    padding-left: 20px;
-}
 
 .forgotpassword {
 
     color: black;
-    padding: 0px;
+    /* padding: 0px; */
+    height:18px;
+    width: 300px;
+    margin-top: 8px;
+    margin-bottom: 0px;
+    text-align:center ;
 }
 
 a:hover {
 
     color: black;
 }
-
-/* form {
-    background-color: #fff;
-    position: absolute;
-    width: 320px;
-    height: 270px;
-    padding: 10px 5px 20px 5px;
-    margin: -10vh 850px;
-    border-radius: 5px;
-    box-shadow: 5px 5px 6px -7px;
-} */
-
 
 .text-field input {
     width: 283px;
@@ -78,26 +76,7 @@ a:hover {
     height: 30px;
 }
 
-/* .text-field{
-    margin-top: 20px;
-    width: 300px;
-} */
 
-
-.rightFormContainer {
-
-    align-items: center;
-    background-color: #fff;
-    border: none;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, .1), 0 8px 16px rgba(0, 0, 0, .1);
-    box-sizing: border-box;
-    /* margin: 40px 0 0; */
-    /* padding: 0px 30px 0px 30px; */
-    width: 396px;
-    height: 348px;
-   
-}
 
 .forgotpassword{
     margin-left: 48px;
@@ -113,4 +92,71 @@ input[type='email']{
 input[type='password']{
 margin-top: -5px;
 }
+.logo {
+    height: 133px;
+    width: 496px;
+    padding-left: 20px;
+    margin-top: 150px;
+}
+
+
+.logoDiv{
+    margin-bottom:90px;
+    flex:50%;
+}
+.formDiv{
+    margin-top: 70px;
+    flex:50%;
+
+}
+
+.rightFormContainer {
+
+    align-items: center;
+    background-color: #fff;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .1), 0 8px 16px rgba(0, 0, 0, .1);
+    box-sizing: border-box;
+    width: 396px;
+    height: 348px;
+    margin-left: 90px;
+    
+}
+
+
+@media only screen and (max-width:900px) {
+ 
+.form-center{
+        display: flex;
+        flex-direction: column;
+    }
+
+    .logoDiv{
+        transform: translate(0px, -100px);
+        margin-left: 25%;
+        margin-right: 25%;
+        margin-bottom: 0px;
+    }
+    .logo{
+     padding: 0;
+     margin-top:100px
+    }
+    .formDiv{
+        transform: translate(0px, -100px);
+        margin-top: 0px;
+        margin-left: 25%;
+        margin-right: 25%;
+        /* height: 133px;
+        width: 496px; */
+    }
+    .rightFormContainer{
+        margin: 0;
+       
+
+    }
+
+
+
+  }
 

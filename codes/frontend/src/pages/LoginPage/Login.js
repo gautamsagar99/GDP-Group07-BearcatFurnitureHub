@@ -8,7 +8,7 @@ import Form from "react-bootstrap/Form";
 
 import "./Login.css";
 
-import furniture from "../../assets/images/B2.png";
+import furniture from "../../assets/images/B3.png";
 
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -89,10 +89,14 @@ const Login = () => {
 
   return (
     <div className="form-center">
-      <img src={furniture} alt="Logo" className="logo"></img>
 
-      <Form className="rightFormContainer">
-    
+      <div className="logoDiv">
+      <img src={furniture} alt="Logo" className="logo"></img>
+   
+      </div>
+
+<div className="formDiv">
+  <Form className="rightFormContainer">
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <TextField
             type="email"
@@ -113,6 +117,8 @@ const Login = () => {
                 Please enter @nwmissouri.edu email
               </span>
             )}
+
+            
         </Form.Group>
         <br />
       
@@ -138,10 +144,15 @@ const Login = () => {
         />
         <br/>
       
-
-        <a href="/enter-email" className="forgotpassword">
+      <div className="forgotpassword">
+      <a href="/enter-email">
         Forgot Password?
         </a>
+      </div>
+
+        {/* <a href="/enter-email" className="forgotpassword">
+        Forgot Password?
+        </a> */}
       <br />
       
 
@@ -154,7 +165,8 @@ const Login = () => {
         <br />
 
      
-      </Form>
+      </Form></div>
+      
     </div>
   );
 };
