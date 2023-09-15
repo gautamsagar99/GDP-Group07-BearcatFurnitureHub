@@ -2,6 +2,7 @@
 
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
+const { User } = require("./user"); // Import the User model
 
 const Furniture = sequelize.define(
   "furniture",
@@ -25,6 +26,27 @@ const Furniture = sequelize.define(
     furniture_type: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    furniture_description: {
+      type: DataTypes.TEXT, // Use TEXT data type for longer descriptions
+      allowNull: true,
+    },
+    Donated_date: {
+      type: DataTypes.DATE, // Use DATE data type for date values
+      allowNull: true,
+    },
+    user_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: User,
+        key: "id",
+      },
+    },
+    status: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: "available", // Set a default status value (e.g., "available")
     },
   },
   {

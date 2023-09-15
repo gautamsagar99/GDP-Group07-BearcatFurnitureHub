@@ -11,6 +11,8 @@ const express = require("express");
 const cors = require("cors");
 const { Op } = require("sequelize"); // Import Op from Sequelize
 const sequelize = require("./config/database");
+const { Furniture } = require("./models/furniture"); // Import the Furniture model
+const { Requested } = require("./models/requested");
 const authRoutes = require("./routes/authRoutes");
 const furnitureRoutes = require("./routes/furnitureRoutes");
 const cron = require("node-cron");
@@ -43,12 +45,23 @@ cron.schedule("0 0 * * *", async () => {
   console.log("Expired reset codes cleaned up.");
 });
 
+// Define the associations between models if needed
+// For example, if Furniture and Requested have associations:
+Furniture.hasMany(Requested, { foreignKey: "furniture_id" });
+Requested.belongsTo(Furniture, { foreignKey: "furniture_id" });
+
 const PORT = process.env.PORT || 5000;
-sequelize.sync().then(() => {
-  app.listen(PORT, () => {
-    // console.log(process.env.ENCRYPTION_KEY);
-    // console.log(process.env.ENCRYPTION_IV);
-    console.log(`Server started on port ${PORT}`);
+sequelize
+  .sync()
+  .then(() => {
+    console.log("Database synchronized");
+    app.listen(PORT, () => {
+      // console.log(process.env.ENCRYPTION_KEY);
+      // console.log(process.env.ENCRYPTION_IV);
+      console.log(`Server started on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("Error synchronizing database:", err);
   });
-});
 //server.js
