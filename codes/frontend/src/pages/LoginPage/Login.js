@@ -100,100 +100,74 @@ const Login = () => {
 
   return (
     <div className="form-center">
-
-<<<<<<< HEAD
-      <Form className="rightFormContainer">
-=======
       <div className="logoDiv">
-      <img src={furniture} alt="Logo" className="logo"></img>
-   
+        <img src={furniture} alt="Logo" className="logo"></img>
       </div>
 
-<div className="formDiv">
-  <Form className="rightFormContainer">
->>>>>>> sanjay-frontend
-        <Form.Group className="mb-3" controlId="formBasicEmail">
-          <TextField
-            type="email"
-            value={emailAddress}
-            // label="Email Address"
-            name="emailAddress"
-            placeholder="Email Address"
-            onChange={onchange}
-            // required={true}
+      <div className="formDiv">
+        <Form className="rightFormContainer">
+          <Form.Group className="mb-3" controlId="formBasicEmail">
+            <TextField
+              type="email"
+              value={emailAddress}
+              // label="Email Address"
+              name="emailAddress"
+              placeholder="Email Address"
+              onChange={onchange}
+              // required={true}
+            />
+
+            {emailAddress.length > 0 &&
+              !emailAddress.includes("nwmissouri.edu") && (
+                <span
+                  className="error"
+                  style={{ color: "red", display: "block" }}
+                >
+                  Please enter @nwmissouri.edu email
+                </span>
+              )}
+          </Form.Group>
+          <br />
+
+          <Form.Group className="mb-3" controlId="formBasicPassword">
+            <TextField
+              type="password"
+              value={password}
+              // label="Password"
+              name="password"
+              placeholder="Password"
+              onChange={onchange}
+              // required={true}
+            />
+          </Form.Group>
+          <br />
+
+          <Button
+            type="button"
+            label="Login"
+            onClick={handleLogin}
+            color="primary"
           />
+          <br />
 
-          {emailAddress.length > 0 &&
-            !emailAddress.includes("nwmissouri.edu") && (
-              <span
-                className="error"
-                style={{ color: "red", display: "block" }}
-              >
-                Please enter @nwmissouri.edu email
-              </span>
-            )}
+          <div className="forgotpassword">
+            <a href="/enter-email">Forgot Password?</a>
+          </div>
 
-            
-        </Form.Group>
-        <br />
-
-        <Form.Group className="mb-3" controlId="formBasicPassword">
-          <TextField
-            type="password"
-            value={password}
-            // label="Password"
-            name="password"
-            placeholder="Password"
-            onChange={onchange}
-            // required={true}
-          />
-        </Form.Group>
-        <br />
-
-        <Button
-          type="button"
-          label="Login"
-          onClick={handleLogin}
-          color="primary"
-        />
-<<<<<<< HEAD
-        <br />
-
-        <a href="/enter-email" className="forgotpassword">
-          Forgot Password?
-        </a>
-        <br />
-=======
-        <br/>
-      
-      <div className="forgotpassword">
-      <a href="/enter-email">
-        Forgot Password?
-        </a>
-      </div>
-
-        {/* <a href="/enter-email" className="forgotpassword">
+          {/* <a href="/enter-email" className="forgotpassword">
         Forgot Password?
         </a> */}
-      <br />
-      
->>>>>>> sanjay-frontend
+          <br />
 
-        <Button
-          type="button"
-          label="Signup"
-          onClick={handleRegister}
-          color="primary"
-        />
-        <br />
-<<<<<<< HEAD
-      </Form>
-=======
-
-     
-      </Form></div>
-      
->>>>>>> sanjay-frontend
+          <Button
+            type="button"
+            label="Signup"
+            onClick={handleRegister}
+            color="primary"
+          />
+          <br />
+        </Form>
+      </div>
     </div>
   );
 };
