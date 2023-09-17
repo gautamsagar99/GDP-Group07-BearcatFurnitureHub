@@ -1,0 +1,24 @@
+version: "3"
+services:
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: bearcathub
+    ports:
+      - "3306:3306" # Map host port 3306 to container port 3306
+
+  nodeapp:
+    build:
+      context: . # Use the current directory (where your Dockerfile is)
+    ports:
+      - "5000:5000" # Map host port 3000 to container port 3000
+    depends_on:
+      - mysql # Make sure the MySQL container is up before starting this one
+    command: ["sh", "-c", "sleep 60 && npm start"]
+
+  frontend:
+    build:
+      context: ../frontend # Path to your frontend application directory
+    ports:
+      - "80:3000" # Assuming your React app runs on port 80
