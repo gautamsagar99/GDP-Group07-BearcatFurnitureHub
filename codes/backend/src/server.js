@@ -3,8 +3,7 @@ const dotenv = require("dotenv");
 const path = require("path");
 // Specify the path to your .env file
 const envPath = path.join(
-  "C:/Users/S555619/OneDrive - nwmissouri.edu/Documents/Classes/Third Sem/GDP1/GDP-Group07-BearcatFurnitureHub/codes/backend/",
-  ".env"
+  "C:/Users/S554224/Documents/GitHub/GDP-Group07-BearcatFurnitureHub/codes/backend/.env"
 );
 
 // Load the environment variables from the specified .env file
