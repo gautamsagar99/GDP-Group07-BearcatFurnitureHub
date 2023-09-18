@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import Button from "react-bootstrap/Button";
-
 import Form from "react-bootstrap/Form";
 import { useNavigate } from "react-router-dom";
 import img from "../../assets/images/mainImage.jpg";
 import "./ResetPassword.css";
+import Button from "../../components/Button/Button";
+
+import TextField from "../../components/TextField/Textfield";
 
 const EmailAdress = () => {
   const [data, setData] = useState({ emailAddress: "" });
@@ -49,17 +50,14 @@ const EmailAdress = () => {
       <img src={img} alt="Logo" className="imglogo"></img>
       <Form>
         <Form.Group className="mb-3" controlId="forgotpasswordEmail">
-          <Form.Label className="label">
-            Email address <span style={{ color: "red" }}>*</span>
-          </Form.Label>
 
-          <Form.Control
+          <TextField
             type="email"
             value={emailAddress}
             name="emailAddress"
             placeholder="Email Address"
             onChange={onchange}
-            style={{ fontSize: "16px", height: "15px", padding: "10px 24px" }}
+            required={true}
           />
 
           {emailAddress.length > 0 &&
@@ -70,9 +68,7 @@ const EmailAdress = () => {
             )}
         </Form.Group>
         <br />
-        <Button className="otpbutton" onClick={handleCode}>
-          Send Code
-        </Button>
+        <Button type="button" onClick={handleCode} color="primary" label="Send Code"/>
       </Form>
     </div>
   );

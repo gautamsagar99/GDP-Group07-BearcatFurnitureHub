@@ -12,4 +12,16 @@ router.put("/update-furniture/:id", furnitureController.updateFurniture); // Upd
 router.delete("/delete-furniture/:id", furnitureController.deleteFurniture);
 // Add more routes for updating and deleting furniture records as needed
 
+router.get("/get-closed-furniture", furnitureController.getClosedFurniture);
+router.post(
+  "/get-available-and-requested-furniture",
+  furnitureController.getAvailableAndRequestedFurniture
+);
+router.post(
+  "/get-requested-furniture-for-user",
+  furnitureController.getRequestedFurnitureForUser
+);
+router.post("/get-furniture-for-user", furnitureController.getFurnitureForUser);
+router.post("/search-furniture", furnitureController.searchFurniture);
+
 module.exports = router;

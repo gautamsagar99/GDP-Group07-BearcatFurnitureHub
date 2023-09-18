@@ -8,11 +8,12 @@ import Form from "react-bootstrap/Form";
 
 import "./Login.css";
 
-import furniture from "../../assets/images/B2.png";
+import furniture from "../../assets/images/B3.png";
 
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+
 import CryptoJS from "crypto-js";
+import { loginPost } from "../../utils/api";
 
 const Login = () => {
   const [data, setData] = useState({ emailAddress: "", password: "" });
@@ -46,42 +47,52 @@ const Login = () => {
         iv: ivBytes,
       }).toString();
 
-      axios
-        .post(
-          "http://localhost:5000/login",
-          {
-            encryptedEmail: encryptedEmail,
-            encryptedPassword: encryptedPassword,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        )
-        .then((response) => {
-          console.log(response.data); // Handle the response data
+      const body = {
+        encryptedEmail: encryptedEmail,
+        encryptedPassword: encryptedPassword,
+      };
+      if (loginPost(body)) {
+        navigate("/home");
+      }
+      //  loginPost(body)
+      //  .then((response)=>{
+      //   if(response.data === "Login successful")
+      //   {
+      //     navigate("/home");
+      //   }
+      //  })
+      // axios
+      //   .post(
+      //     "http://localhost:5000/login",
+      //     {
+      //       encryptedEmail: encryptedEmail,
+      //       encryptedPassword: encryptedPassword,
+      //     },
+      //     {
+      //       headers: {
+      //         "Content-Type": "application/json",
+      //       },
+      //     }
+      //   )
+      //   .then((response) => {
+      //     console.log(response.data); // Handle the response data
 
-          if (response.data && response.data.token) {
-            const jwtToken = response.data.token;
-            localStorage.setItem("jwtToken", jwtToken);
-          }
-          if (response.data === "Login successful") {
-            // Assuming you have the 'navigate' function available
-            navigate("/home");
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+      //     if (response.data && response.data.token) {
+      //       const jwtToken = response.data.token;
+      //       localStorage.setItem("jwtToken", jwtToken);
+      //     }
+      //     if (response.data === "Login successful") {
+      //       // Assuming you have the 'navigate' function available
+      //       navigate("/home");
+      //     }
+      //   })
+      //   .catch((error) => {
+      //     console.error("Error:", error);
+      //   });
 
       // const output = await fetch("http://localhost:3000/test");
 
       // console.log(`output using ftech api ${output.text()}`);
-
-      console.log(
-        "write logic for sending login details to server using api(http:localhost:8080/login) with axios module"
-      );
     }
   };
 
@@ -89,72 +100,74 @@ const Login = () => {
 
   return (
     <div className="form-center">
-      <img src={furniture} alt="Logo" className="logo"></img>
+      <div className="logoDiv">
+        <img src={furniture} alt="Logo" className="logo"></img>
+      </div>
 
-      <Form className="rightFormContainer">
-    
-        <Form.Group className="mb-3" controlId="formBasicEmail">
-          <TextField
-            type="email"
-            value={emailAddress}
-            // label="Email Address"
-            name="emailAddress"
-            placeholder="Email Address"
-            onChange={onchange}
-            // required={true}
+      <div className="formDiv">
+        <Form className="rightFormContainer">
+          <Form.Group className="mb-3" controlId="formBasicEmail">
+            <TextField
+              type="email"
+              value={emailAddress}
+              // label="Email Address"
+              name="emailAddress"
+              placeholder="Email Address"
+              onChange={onchange}
+              // required={true}
+            />
+
+            {emailAddress.length > 0 &&
+              !emailAddress.includes("nwmissouri.edu") && (
+                <span
+                  className="error"
+                  style={{ color: "red", display: "block" }}
+                >
+                  Please enter @nwmissouri.edu email
+                </span>
+              )}
+          </Form.Group>
+          <br />
+
+          <Form.Group className="mb-3" controlId="formBasicPassword">
+            <TextField
+              type="password"
+              value={password}
+              // label="Password"
+              name="password"
+              placeholder="Password"
+              onChange={onchange}
+              // required={true}
+            />
+          </Form.Group>
+          <br />
+
+          <Button
+            type="button"
+            label="Login"
+            onClick={handleLogin}
+            color="primary"
           />
+          <br />
 
-          {emailAddress.length > 0 &&
-            !emailAddress.includes("nwmissouri.edu") && (
-              <span
-                className="error"
-                style={{ color: "red", display: "block" }}
-              >
-                Please enter @nwmissouri.edu email
-              </span>
-            )}
-        </Form.Group>
-        <br />
-      
+          <div className="forgotpassword">
+            <a href="/enter-email">Forgot Password?</a>
+          </div>
 
-        <Form.Group className="mb-3" controlId="formBasicPassword">
-          <TextField
-            type="password"
-            value={password}
-            // label="Password"
-            name="password"
-            placeholder="Password"
-            onChange={onchange}
-            // required={true}
-          />
-        </Form.Group>
-        <br />
-
-        <Button
-          type="button"
-          label="Login"
-          onClick={handleLogin}
-          color="primary"
-        />
-        <br/>
-      
-
-        <a href="/enter-email" className="forgotpassword">
+          {/* <a href="/enter-email" className="forgotpassword">
         Forgot Password?
-        </a>
-      <br />
-      
+        </a> */}
+          <br />
 
-        <Button
-          type="button"
-          label="Signup"
-          onClick={handleRegister}
-          color="primary"
-        />
-        <br />
-
-     
-      </Form>
+          <Button
+            type="button"
+            label="Signup"
+            onClick={handleRegister}
+            color="primary"
+          />
+          <br />
+        </Form>
+      </div>
     </div>
   );
 };

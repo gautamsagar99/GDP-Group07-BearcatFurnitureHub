@@ -5,6 +5,8 @@ import Form from "react-bootstrap/Form";
 import { useNavigate } from "react-router-dom";
 import "./Register.css";
 import image from "../../assets/images/mainImage.jpg";
+import { RegisterPost } from "../../utils/api";
+import CryptoJS from "crypto-js";
 
 function Register() {
   const [data, setData] = useState({
@@ -25,34 +27,52 @@ function Register() {
 
   const { firstname, password, lastname, email, confirmpassword } = data;
   const navigate = useNavigate();
+  const encryptionKey = "1234";
 
   const handleRegister = () => {
 
-
+    const iv = "1234";
+    const ivBytes = CryptoJS.enc.Utf8.parse(iv);
     const isValid = validateForm();
 
     if (isValid) {
-      fetch("http://localhost:5000/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: email,
-          first_name: firstname,
-          last_name: lastname,
-          password: password,
-        }),
-      })
-        .then((response) => response.text())
-        .then((text) => {
-          console.log(text); // Handle the response text
-          alert(text);
-          navigate("/");
-        })
-        .catch((error) => {
-          console.error(error); // Handle any errors
-        });
+      const encryptedEmail = CryptoJS.AES.encrypt(email, encryptionKey, {
+        iv: ivBytes,
+      }).toString();
+      const encryptedPassword = CryptoJS.AES.encrypt(password, encryptionKey, {
+        iv: ivBytes,
+      }).toString();
+      const body={
+            email: encryptedEmail,
+            first_name: firstname,
+            last_name: lastname,
+            password: encryptedPassword,
+          }
+   if(RegisterPost(body)) 
+   {
+    navigate("/")
+   }
+      // fetch("http://localhost:5000/signup", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({
+      //     email: email,
+      //     first_name: firstname,
+      //     last_name: lastname,
+      //     password: password,
+      //   }),
+      // })
+      //   .then((response) => response.text())
+      //   .then((text) => {
+      //     console.log(text); // Handle the response text
+      //     alert(text);
+      //     navigate("/");
+      //   })
+      //   .catch((error) => {
+      //     console.error(error); // Handle any errors
+      //   });
     } else {
       console.log("Form validation failed");
     }
@@ -204,7 +224,7 @@ function Register() {
         </Form.Group>
         <br/>
         <br/>
-        <Button label="Register" onClick={handleRegister} color="primary"/>
+        <Button type="button" label="Register" onClick={handleRegister} color="primary"/>
 
       </Form>
     </div>

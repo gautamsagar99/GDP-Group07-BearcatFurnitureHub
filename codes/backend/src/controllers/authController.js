@@ -6,21 +6,16 @@ const { User } = require("../models/user");
 const sendResetToken = require("../utils/mailer");
 const ResetCode = require("../models/resetCode");
 const { decryptData } = require("../utils/cryptoUtils");
+const jwt = require("jsonwebtoken");
 
 var currentEmail = "";
 
 async function login(req, res) {
   const { encryptedEmail, encryptedPassword } = req.body;
 
-  // console.log(encryptedEmail);
-  // console.log(encryptedPassword);
-
   // Decrypt the email and password
   const email = decryptData(encryptedEmail);
   const password = decryptData(encryptedPassword);
-
-  // console.log(email);
-  //   console.log(password);
 
   try {
     // Finding a user with the provided credentials
@@ -34,22 +29,18 @@ async function login(req, res) {
     if (user) {
       // If a matching user is found, send login success message
       console.log(`Login successful with email ID - ${email}`);
-      res.send("Login successful");
+      // res.send("Login successful");
 
-      // const token = jwt.sign({ email: user.email }, 'your-secret-key', {
-      //   expiresIn: '1h', // Set the token expiration time (e.g., 1 hour)
-      // });
-
-      // // Send the token as a response
-      // res.status(200).json({ token });
+      const token = jwt.sign({ email: email }, "1234", {
+        expiresIn: "1h", // Set the token expiration time (e.g., 1 hour)
+      });
+      console.log(token);
+      // Send the token as a response
+      res.status(200).json({ token });
     } else {
       // If no matching user is found, send login failed message
       console.log("Login failed ");
-      res.send("Invalid Email ID/Password ");
-
-      // // If no matching user is found, send an error response
-      // console.log("Login failed ");
-      // res.status(401).json({ message: "Invalid Email ID/Password" });
+      res.status(401).json({ message: "Invalid Email ID/Password" });
     }
   } catch (err) {
     console.error("Error finding user:");
@@ -60,13 +51,11 @@ async function login(req, res) {
 async function signup(req, res) {
   const { email, password, first_name, last_name } = req.body;
 
-  // Decrypt the data
-  // const email = CryptoJS.AES.decrypt(encryptedEmail, key, { iv }).toString(
-  //   CryptoJS.enc.Utf8
-  // );
-  // const password = CryptoJS.AES.decrypt(encryptedPassword, key, {
-  //   iv,
-  // }).toString(CryptoJS.enc.Utf8);
+  // Decrypt the email and password
+  // const email = decryptData(encryptedEmail);
+  // const password = decryptData(encryptedPassword);
+  // const first_name = decryptData(encryptedEmail);
+  // const last_name = decryptData(encryptedPassword);
 
   try {
     // Check if a user with the same email already exists
@@ -88,7 +77,8 @@ async function signup(req, res) {
 
     // If the user is successfully created, send a success response
     console.log(`Signup successful for email ${email}`);
-    res.send("Signup successful");
+    // res.send("Signup successful");
+    res.status(200).json({ message: "Signup successful" });
   } catch (err) {
     console.error("Error creating user:", err);
     res.status(500).send("Internal Server Error");
@@ -96,10 +86,8 @@ async function signup(req, res) {
 }
 
 async function forgotPassword(req, res) {
-  // Generate a unique token or code
-  // const resetToken = uuidv4();
-
-  // TODO: Save the reset token and associate it with the user (e.g., in a database)
+  // Decrypt the email and password
+  // const email = decryptData(req.body.email);
 
   const uuid = uuidv4();
   const numericPart = uuid.replace(/\D/g, ""); // Extract only the numeric characters from the UUID
@@ -114,17 +102,16 @@ async function forgotPassword(req, res) {
     // Store the reset code in the database
     await ResetCode.create({
       email: req.body.email,
+      // email: email,
       code: fourDigitNumber,
       expiresAt,
     });
 
     // Send the reset token to the user's email
     sendResetToken(req.body.email, fourDigitNumber);
+    // sendResetToken(email, fourDigitNumber);
 
-    // sendResetToken(req.body.email, fourDigitNumber);
     console.log("The reset token after generating " + fourDigitNumber);
-    // currentCode = fourDigitNumber;
-    // Return a response to the client
     res
       .status(200)
       .json({ message: "Password reset token generated and sent." });
@@ -135,24 +122,18 @@ async function forgotPassword(req, res) {
 }
 
 async function checkCode(req, res) {
-  // console.log(currentCode + "server code");
-  // console.log(req.body.code + "from frontend to backend code");
-  // console.log(typeof currentCode + "server code");
-  // console.log(typeof req.body.code + "from frontend to backend code");
-  // if (Number.parseInt(req.body.code) == currentCode) {
-  //   console.log("both codes are equal");
-  //   res.status(200).json({ message: "Success" });
-  // } else {
-  //   return res.status(404).json({ message: "Failed" });
-  // }
-  // Return a response to the client
+  // Decrypt the email and password
+  // const email = decryptData(req.body.email);
+  // const code = decryptData(req.body.code);
 
   try {
     // Find the reset code
     const resetCodeRecord = await ResetCode.findOne({
       where: {
         email: currentEmail,
+        // email: email,
         code: req.body.code,
+        // code: code,
         expiresAt: {
           [Op.gt]: new Date(), // Check if expiration time is greater than now
         },
@@ -173,7 +154,12 @@ async function checkCode(req, res) {
 }
 
 async function updatePassword(req, res) {
+  
   const { email, newPassword } = req.body;
+
+  // Decrypt the email and password
+  // const email = decryptData(req.body.email);
+  // const newPassword = decryptData(req.body.newPassword);
 
   console.log("password is changing with " + email + " " + newPassword);
 

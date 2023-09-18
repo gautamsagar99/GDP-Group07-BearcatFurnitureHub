@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import Button from "react-bootstrap/Button";
+import Button from "../../components/Button/Button"
+import TextField from "../../components/TextField/Textfield";
 import Form from "react-bootstrap/Form";
 import imges from "../../assets/images/mainImage.jpg";
 import { useNavigate } from "react-router-dom";
@@ -48,23 +49,18 @@ const SendCode = () => {
       <img src={imges} alt="Logo" className="imglogo"></img>
       <Form>
         <Form.Group className="mb-3" controlId="sendCode">
-          <Form.Label className="label">
-            Please Enter Code <span style={{ color: "red" }}>*</span>
-          </Form.Label>
 
-          <Form.Control
+          <TextField
             type="code"
             name="code"
             value={code}
+            label="Please Enter Code"
             placeholder="XXXXXX"
             onChange={onchange}
-            style={{ fontSize: "16px", height: "15px", padding: "10px 24px" }}
           />
         </Form.Group>
         <br />
-        <Button className="otpbutton" onClick={handleValidation}>
-          Validate
-        </Button>
+        <Button label="Validate" color="primary" type="button" onClick={handleValidation}/>
       </Form>
     </div>
   );
