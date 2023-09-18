@@ -18,7 +18,7 @@ export async function loginPost(userCredentials) {
       localStorage.setItem("jwtToken", jwtToken);
       console.log("jwt token: " + jwtToken);
     }
-    if (response.data === "Login successful") {
+    if (response.status===200) {
       authenticated = true;
     }
     return authenticated;
@@ -40,7 +40,7 @@ export async function RegisterPost(userCredentials) {
       }
     );
 
-    if (response.data === "Signup successful") {
+    if (response.status === 200) {
       registered = true;
     }
     return registered;
@@ -48,3 +48,77 @@ export async function RegisterPost(userCredentials) {
     console.error("Error:", error);
   }
 }
+
+export async function EmailAddressPost(emailId) {
+    try {
+      var emailValid = false;
+      const response = await axios.post(
+        "http://localhost:5000/forgot-password",
+        emailId,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if(response.status===200)
+      {
+         emailValid=true;
+      }
+      return emailValid;
+    }
+      catch(error)
+       {
+        console.error("Error:", error); // Handle any errors
+      };
+  }
+
+  export async function emailAddressAndCodePost(emailIdAndCode) {
+    try {
+      var isValid = false;
+      const response = await axios.post(
+        "http://localhost:5000/check-code",
+        emailIdAndCode,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if(response.status===200)
+      {
+         isValid=true;
+      }
+      
+      return isValid;
+    }
+      catch(error)
+       {
+        console.error("Error:", error); // Handle any errors
+      };
+  }
+
+  export async function emailAddressAndPasswordPost(emailIdAndPassword) {
+    try {
+      var isValid = false;
+      const response = await axios.post(
+        "http://localhost:5000/update-password",
+        emailIdAndPassword,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if(response.status===200)
+      {
+         isValid=true;
+      }
+      return isValid;
+    }
+      catch(error)
+       {
+        console.error("Error:", error); // Handle any errors
+      };
+  }
+

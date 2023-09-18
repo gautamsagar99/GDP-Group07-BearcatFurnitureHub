@@ -4,6 +4,7 @@ import TextField from "../../components/TextField/Textfield";
 import Form from "react-bootstrap/Form";
 import imges from "../../assets/images/mainImage.jpg";
 import { useNavigate } from "react-router-dom";
+import { emailAddressAndCodePost } from "../../utils/api";
 
 const SendCode = () => {
   const [data, setCode] = useState("");
@@ -17,30 +18,44 @@ const SendCode = () => {
     if (code.length === 0) {
       alert("Enter Code");
     } else {
-      fetch("http://localhost:5000/check-code", {
-        method: "POST",
+      const emailAddress=localStorage.getItem("email");
+      //console.log(emailAddress);
+      const body={
+        email:emailAddress,
+        code:code
+      };
+      const isValid=await emailAddressAndCodePost(body);
+      if(isValid)
+      {
+        nav("/ResetPassword");
+      }
+      else{
+        nav("/");
+      }
+      // fetch("http://localhost:5000/check-code", {
+      //   method: "POST",
 
-        headers: {
-          "Content-Type": "application/json",
-        },
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
 
-        body: JSON.stringify({ code: code }),
-      })
-        .then((response) => response.json())
+      //   body: JSON.stringify({ code: code }),
+      // })
+      //   .then((response) => response.json())
 
-        .then((text) => {
-          // Handle the response text
-          alert(text.message);
-          if (text.message === "Success") {
-            nav("/ResetPassword");
-          } else {
-            nav("/");
-          }
-        })
+      //   .then((text) => {
+      //     // Handle the response text
+      //     alert(text.message);
+      //     if (text.message === "Success") {
+      //       nav("/ResetPassword");
+      //     } else {
+      //       nav("/");
+      //     }
+      //   })
 
-        .catch((error) => {
-          console.error(error); // Handle any errors
-        });
+      //   .catch((error) => {
+      //     console.error(error); // Handle any errors
+      //   });
     }
   };
 
