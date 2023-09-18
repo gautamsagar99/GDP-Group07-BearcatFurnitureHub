@@ -9,6 +9,7 @@ const ProductDetails = () => {
   const { productId } = useParams(); // Get the productId from the route
 
   const [product, setProduct] = useState(null);
+  const [showMessageCancelBtn, setShowMessageCancelBtn] = useState(false);
 
   useEffect(() => {
     // Fetch product details based on the product ID using Axios
@@ -25,6 +26,9 @@ const ProductDetails = () => {
   if (!product) {
     return <div>Loading...</div>;
   }
+  var isRequested = () =>{
+    setShowMessageCancelBtn(true);
+  } 
 
   return (
     <div>
@@ -37,7 +41,14 @@ const ProductDetails = () => {
           <h2>{product.name}</h2>
           <p>Years Used: {product.years_used}</p>
           <p>Furniture Condition: {product.furniture_condition}</p>
-          <Button type='button' label="Request Furniture" color='primary'/>
+          <Button type='button' label="Request Furniture" onClick={isRequested} color='primary'/>
+
+          {showMessageCancelBtn ? (
+          <div row-4>
+          <Button type='button' label="Message" color='primary'/>
+          <Button type='button' label="Cancel Request" color='red'/>
+          </div>
+          ):(<p></p>)}
         </div>
       </div>
     </div>
