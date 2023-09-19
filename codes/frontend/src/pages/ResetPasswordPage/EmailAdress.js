@@ -11,17 +11,23 @@ import { EmailAddressPost } from "../../utils/api";
 const EmailAdress = () => {
   const [data, setData] = useState({ emailAddress: "" });
   const { emailAddress } = data;
+  const encryptionKey = "1234";
   let nav = useNavigate();
 
   const onchange = (e) => setData({ ...data, [e.target.name]: e.target.value });
   const handleCode = async () => {
+    const iv = "1234";
+    const ivBytes = CryptoJS.enc.Utf8.parse(iv);
     if (emailAddress.length === 0) {
       alert("Email Address is required");
     } else if (!emailAddress.includes("nwmissouri.edu")) {
       alert("Invalid Email");
     } else {
+      const encryptedEmail = CryptoJS.AES.encrypt(emailAddress, encryptionKey, {
+        iv: ivBytes,
+      }).toString();
       const body={
-        email:emailAddress
+        email:encryptedEmail
       };
       const isValid=await EmailAddressPost(body);
       if(isValid)

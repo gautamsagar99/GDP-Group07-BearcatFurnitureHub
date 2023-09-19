@@ -22,15 +22,24 @@ function ResetPassword() {
 
   const { email, newPassword, confirmPassword } = data;
   const navigate = useNavigate();
-
+  const encryptionKey = "1234";
   const handleResetPassword = async () => {
+    const iv = "1234";
+    const ivBytes = CryptoJS.enc.Utf8.parse(iv);
     const isValid = validateForm();
-    const body={
-      email:email,
-      newPassword:newPassword
-    };
+    
     
     if (isValid) {
+      const encryptedEmail = CryptoJS.AES.encrypt(email, encryptionKey, {
+        iv: ivBytes,
+      }).toString();
+      const encryptedPassword = CryptoJS.AES.encrypt(newPassword, encryptionKey, {
+        iv: ivBytes,
+      }).toString();
+      const body={
+        email:encryptedEmail,
+        newPassword:encryptedPassword
+      };
       const validated=await emailAddressAndPasswordPost(body);
       if(validated)
       {

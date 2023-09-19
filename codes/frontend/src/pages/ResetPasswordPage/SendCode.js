@@ -9,20 +9,30 @@ import { emailAddressAndCodePost } from "../../utils/api";
 const SendCode = () => {
   const [data, setCode] = useState("");
   const { code } = data;
+  const encryptionKey = "1234";
   const onchange = (e) => setCode({ ...data, [e.target.name]: e.target.value });
   let nav = useNavigate();
   // alert(localStorage.getItem("email"));
   //   const { codeentered } = code;
 
   const handleValidation = async () => {
+    const iv = "1234";
+    const ivBytes = CryptoJS.enc.Utf8.parse(iv);
     if (code.length === 0) {
       alert("Enter Code");
     } else {
       const emailAddress=localStorage.getItem("email");
+      const encryptedEmail = CryptoJS.AES.encrypt(emailAddress, encryptionKey, {
+        iv: ivBytes,
+      }).toString();
+      const encryptedCode = CryptoJS.AES.encrypt(code, encryptionKey, {
+        iv: ivBytes,
+      }).toString();
+      
       //console.log(emailAddress);
       const body={
-        email:emailAddress,
-        code:code
+        email:encryptedEmail,
+        code:encryptedCode
       };
       const isValid=await emailAddressAndCodePost(body);
       if(isValid)
