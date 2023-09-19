@@ -5,6 +5,7 @@ import Form from "react-bootstrap/Form";
 import imges from "../../assets/images/mainImage.jpg";
 import { useNavigate } from "react-router-dom";
 import { emailAddressAndCodePost } from "../../utils/api";
+import CryptoJS from "crypto-js";
 
 const SendCode = () => {
   const [data, setCode] = useState("");

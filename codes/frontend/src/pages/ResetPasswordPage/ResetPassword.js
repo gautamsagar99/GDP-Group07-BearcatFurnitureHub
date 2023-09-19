@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import "./ResetPassword.css";
 import image from "../../assets/images/mainImage.jpg";
 import { emailAddressAndPasswordPost } from "../../utils/api";
+import CryptoJS from "crypto-js";
 
 function ResetPassword() {
   const [data, setData] = useState({

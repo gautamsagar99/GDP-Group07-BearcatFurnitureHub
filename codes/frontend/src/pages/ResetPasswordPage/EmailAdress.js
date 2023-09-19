@@ -7,6 +7,7 @@ import Button from "../../components/Button/Button";
 
 import TextField from "../../components/TextField/Textfield";
 import { EmailAddressPost } from "../../utils/api";
+import CryptoJS from "crypto-js";
 
 const EmailAdress = () => {
   const [data, setData] = useState({ emailAddress: "" });
