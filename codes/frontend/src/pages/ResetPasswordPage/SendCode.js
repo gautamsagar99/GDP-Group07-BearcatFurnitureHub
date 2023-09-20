@@ -22,7 +22,7 @@ const SendCode = () => {
     if (code.length === 0) {
       alert("Enter Code");
     } else {
-      const emailAddress=localStorage.getItem("email");
+      const emailAddress=localStorage.getItem("forgotEmail");
       const encryptedEmail = CryptoJS.AES.encrypt(emailAddress, encryptionKey, {
         iv: ivBytes,
       }).toString();

@@ -35,7 +35,7 @@ const EmailAdress = () => {
       {
         nav("/forgot-password");
       }
-      localStorage.setItem("email", emailAddress);
+      localStorage.setItem("forgotEmail", emailAddress);
       // fetch("http://localhost:5000/forgot-password", {
       //   method: "POST",
       //   headers: {
