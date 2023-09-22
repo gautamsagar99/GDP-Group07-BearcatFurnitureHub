@@ -48,7 +48,8 @@ function Register() {
             last_name: lastname,
             password: encryptedPassword,
           }
-   if(RegisterPost(body)) 
+          const isValid=RegisterPost(body);
+   if(isValid) 
    {
     navigate("/")
    }

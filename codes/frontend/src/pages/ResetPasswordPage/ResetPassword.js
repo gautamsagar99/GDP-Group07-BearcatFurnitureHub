@@ -5,6 +5,8 @@ import TextField from "../../components/TextField/Textfield";
 import { useNavigate } from "react-router-dom";
 import "./ResetPassword.css";
 import image from "../../assets/images/mainImage.jpg";
+import { emailAddressAndPasswordPost } from "../../utils/api";
+import CryptoJS from "crypto-js";
 
 function ResetPassword() {
   const [data, setData] = useState({
@@ -21,33 +23,52 @@ function ResetPassword() {
 
   const { email, newPassword, confirmPassword } = data;
   const navigate = useNavigate();
-
-  const handleResetPassword = () => {
+  const encryptionKey = "1234";
+  const handleResetPassword = async () => {
+    const iv = "1234";
+    const ivBytes = CryptoJS.enc.Utf8.parse(iv);
     const isValid = validateForm();
-
+    
+    
     if (isValid) {
-      fetch("http://localhost:5000/update-password", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: email,
-          newPassword: newPassword,
-        }),
-      })
-        .then((response) => response.json())
-        .then((text) => {
-          console.log(text.message); // Handle the response text
-          // alert(text.message);
-          if (text.message === "Success") {
-            alert("password updated successfully");
-            navigate("/");
-          }
-        })
-        .catch((error) => {
-          console.error(error); // Handle any errors
-        });
+      const encryptedEmail = CryptoJS.AES.encrypt(email, encryptionKey, {
+        iv: ivBytes,
+      }).toString();
+      const encryptedPassword = CryptoJS.AES.encrypt(newPassword, encryptionKey, {
+        iv: ivBytes,
+      }).toString();
+      const body={
+        email:encryptedEmail,
+        newPassword:encryptedPassword
+      };
+      const validated=await emailAddressAndPasswordPost(body);
+      if(validated)
+      {
+        alert("password updated successfully");
+        navigate("/");
+      }
+      // fetch("http://localhost:5000/update-password", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({
+      //     email: email,
+      //     newPassword: newPassword,
+      //   }),
+      // })
+      //   .then((response) => response.json())
+      //   .then((text) => {
+      //     console.log(text.message); // Handle the response text
+      //     // alert(text.message);
+      //     if (text.message === "Success") {
+      //       alert("password updated successfully");
+      //       navigate("/");
+      //     }
+      //   })
+      //   .catch((error) => {
+      //     console.error(error); // Handle any errors
+      //   });
     } else {
       console.log("Form validation failed");
     }

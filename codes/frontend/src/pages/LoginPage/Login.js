@@ -51,7 +51,8 @@ const Login = () => {
         encryptedEmail: encryptedEmail,
         encryptedPassword: encryptedPassword,
       };
-      if (loginPost(body)) {
+      const isValid=await loginPost(body);
+      if (isValid) {
         navigate("/home");
       }
       //  loginPost(body)
