@@ -28,10 +28,30 @@ const bucketPolicy = {
   ],
 };
 
+const updatedCorsRules = [
+  {
+    AllowedOrigins: ["*"], // Replace with your frontend domain
+    AllowedMethods: ["GET"],
+    AllowedHeaders: ["*"],
+    MaxAgeSeconds: 3000,
+  },
+];
+
+// Define the CORS configuration
+const corsConfiguration = {
+  CORSRules: updatedCorsRules,
+};
+
 // Apply the bucket policy
 const params = {
   Bucket: bucketName,
   Policy: JSON.stringify(bucketPolicy),
+};
+
+// Set the CORS configuration for the bucket
+const corsParams = {
+  Bucket: bucketName,
+  CORSConfiguration: corsConfiguration,
 };
 
 s3.putBucketPolicy(params, (err, data) => {
@@ -39,6 +59,14 @@ s3.putBucketPolicy(params, (err, data) => {
     console.error("Error applying bucket policy:", err);
   } else {
     console.log("Bucket policy applied successfully");
+  }
+});
+
+s3.putBucketCors(corsParams, (err, data) => {
+  if (err) {
+    console.error("Error updating bucket CORS configuration:", err);
+  } else {
+    console.log("Bucket CORS configuration updated successfully");
   }
 });
 
