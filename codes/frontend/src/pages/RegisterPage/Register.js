@@ -4,7 +4,7 @@ import TextField from "../../components/TextField/Textfield";
 import Form from "react-bootstrap/Form";
 import { useNavigate } from "react-router-dom";
 import "./Register.css";
-import image from "../../assets/images/mainImage.jpg";
+import furniture from "../../assets/images/B3.png";
 import { RegisterPost } from "../../utils/api";
 import CryptoJS from "crypto-js";
 
@@ -136,20 +136,23 @@ function Register() {
   };
 
   return (
-    <div className="form-middle">
-      <img src={image} alt="Logo" className="imglogo" />
+    <div className="form-middleR">
+           <div className="logoDivR">
+        <img src={furniture} alt="Logo" className="logoR"></img>
+      </div>
 
-      <Form>
-        <h1 className="heading">Register</h1>
-        <br/>
-        <Form.Group className="mb-3" controlId="formBasicFirstName">
-       
-          <TextField
+      <div className="formDivR">
+      <Form className="rightFormContainerR">
+      <h1 className="signUpHeading">Sign Up</h1>
+      <div className="formInsiderightFormContainerR">
+      <div className="elementNames">
+       <Form.Group className="mb-3" controlId="formBasicFirstName">
+       <TextField
             type="firstname"
             value={firstname}
-            name="firstname"
-            label="First Name"
-            required={true}
+            name="firstnameR"
+            // label="First Name"
+            // required={true}
             onChange={onchange}
             placeholder="First Name"
           />
@@ -158,33 +161,34 @@ function Register() {
         </Form.Group>
         <br/>
         <Form.Group className="mb-3" controlId="formBasicLastName">
-   
-
+  
           <TextField
             type="lastname"
             value={lastname}
-            name="lastname"
+            name="lastnameR"
             onChange={onchange}
             placeholder="Last Name"
-            label="Last Name"
-            required={true}
+            // label="Last Name"
+            // required={true}
           />
           {/* {errors.lastname && <span className="error">{errors.lastname}</span>} */}
           {errors.lastname && <div className="error">{errors.lastname}</div>}
 
         </Form.Group>
         <br/>
+       </div>
+   
         <Form.Group className="mb-3" controlId="formBasicemail">
         
 
           <TextField
             type="email"
             value={email}
-            name="email"
+            name="emailR"
             onChange={onchange}
             placeholder="Email Address"
-            label="Email"
-            required={true}
+            // label="Email"
+            // required={true}
             
           />
           {errors.email && <div className="error">{errors.email}</div>}
@@ -197,11 +201,11 @@ function Register() {
           <TextField
             type="password"
             value={password}
-            name="password"
+            name="passwordR"
             onChange={onchange}
             placeholder="Password"
-            label="Password"
-            required={true}
+            // label="Password"
+            // required={true}
             
           />
           {errors.password && <div className="error">{errors.password}</div>}
@@ -213,11 +217,11 @@ function Register() {
         <TextField
             type="password"
             value={confirmpassword}
-            name="confirmpassword"
+            name="confirmpasswordR"
             onChange={onchange}
             placeholder="Confirm Password"
-            label="Confirm Password"
-            required={true}
+            // label="Confirm Password"
+            // required={true}
           />
           {errors.confirmpassword && <div className="error">{errors.confirmpassword}</div>}
 
@@ -226,7 +230,11 @@ function Register() {
         <br/>
         <Button type="button" label="Register" onClick={handleRegister} color="primary"/>
 
+      </div>
+       
       </Form>
+      </div>
+
     </div>
   );
 }
