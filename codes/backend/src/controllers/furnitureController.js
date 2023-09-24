@@ -9,8 +9,8 @@ const multer = require("multer");
 const storage = multer.memoryStorage(); // Store files in memory
 const upload = multer({ storage });
 
-const imagePath = path.join(__dirname, "chair.jpeg");
-const imageURL = fs.readFileSync(imagePath);
+// const imagePath = path.join(__dirname, "chair.jpeg");
+// const imageURL = fs.readFileSync(imagePath);
 const AWS = require("aws-sdk"); // Import AWS SDK
 const s3 = new AWS.S3();
 
