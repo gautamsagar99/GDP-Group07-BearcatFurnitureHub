@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
 	Nav,
 	NavLink,
@@ -12,7 +12,21 @@ import {
 } from './NavbarElements';
 import { FaBell, FaUser, FaEnvelope } from 'react-icons/fa';
 
-const Navbar = () => {
+
+
+const Navbar = ({ onSearch, onResetSearch }) => {
+		const [searchQuery, setSearchQuery] = useState('');
+	  
+		const handleSearch = () => {
+		  onSearch(searchQuery);
+		};
+		const allProducts = () => {
+			onResetSearch();
+			// setSearchQuery = ""
+			// onSearch(" ");
+			SearchInput.placeholder ="Search for products"
+			setSearchQuery('');
+		};
 	const bellIconStyle = {
 		color: 'white', // Change the color to white
 		fontSize: '24px', // Increase the font size
@@ -25,6 +39,7 @@ const Navbar = () => {
 		color: 'white', // Change the color to white
 		fontSize: '24px', // Increase the font size
 	};
+	
 
 	return (
 		<>
@@ -32,23 +47,26 @@ const Navbar = () => {
 			<Nav>
 
 				<NavMenu>
-					<NavHome activeStyle>
+					<NavHome>
 						<b>Bearcat Furniture Hub</b>
 					</NavHome>
 
-					<NavLink to='/home' activeStyle>
+					<NavLink to='/home' onClick={allProducts}>
 						All Products
 					</NavLink>
-					<NavLink to='/DonateFurniture' activeStyle>
+					<NavLink to='/DonateFurniture'>
 						Donate Furniture
 					</NavLink>
 					{/* Second Nav */}
 					{/* <NavBtnLink to='/sign-in'>Sign In</NavBtnLink> */}
 				</NavMenu>
-				<SearchInput type="text" placeholder="Search for products">
+				<SearchInput type="text" id="searchInput"
+				value={searchQuery}
+				onChange={(e) => setSearchQuery(e.target.value)}
+				placeholder="Search for products">
 				</SearchInput>
 				
-				<SearchBtnLink to='/home'>Search</SearchBtnLink>
+				<SearchBtnLink onClick={handleSearch}>Search</SearchBtnLink>
 				
 				<NavBtn>
 					<NavNotificationBtnLink>

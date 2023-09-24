@@ -9,6 +9,11 @@
   padding: 10px; 
   max-width: 100%;
 }
+.button-container {
+  display: flex; /* Use flexbox to arrange children horizontally */
+  gap: 10px; /* Add some space between the buttons */
+}
+
 
 .product-image img {
   max-width: 100%;

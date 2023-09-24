@@ -6,7 +6,7 @@ const FurnitureCard = ({ productId, imageSrc, label, description }) => {
   return (
     <div className="card">
       <img src={imageSrc} alt={label} className="card-image" />
-      <p className="card-description">{description}</p>
+      <p className="card-description">{label}</p>
       <div className="card-button-container">
         <Link to={`/product/${productId}`} className="card-button">
           Get the Product
