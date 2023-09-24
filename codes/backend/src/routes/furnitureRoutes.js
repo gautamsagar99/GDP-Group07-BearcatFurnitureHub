@@ -1,11 +1,16 @@
 // routes/furnitureRoutes.js
 const express = require("express");
 const furnitureController = require("../controllers/furnitureController");
+const multer = require("multer");
+
+// Configure multer to specify where to store uploaded files
+const storage = multer.memoryStorage(); // Store files in memory
+const upload = multer({ storage });
 
 const router = express.Router();
 
 // Define routes for furniture-related functionality
-router.post("/create-furniture", furnitureController.createFurniture);
+router.post("/create-furniture", upload.fields([{ name: 'image' }]), furnitureController.createFurniture);
 router.get("/get-furniture", furnitureController.getAllFurniture);
 router.get("/get-furniture/:id", furnitureController.getFurnitureById);
 router.put("/update-furniture/:id", furnitureController.updateFurniture); // Update furniture by ID
