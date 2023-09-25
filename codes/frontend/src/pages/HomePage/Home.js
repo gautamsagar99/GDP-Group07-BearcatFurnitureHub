@@ -31,16 +31,16 @@ function Home() {
     const searchQueryWords = lowerSearchQuery.split(' '); // Split lowerSearchQuery into individual words
 
     const conditionMatches = lowerSearchQuery.includes(furnitureCondition); // Check if the furniture condition matches the search query
-    console.log("conditionMatches",conditionMatches);
+    // console.log("conditionMatches",conditionMatches);
 
     const nameMatches = searchQueryWords.every(word => {
       const wordRegex = new RegExp(`\\b${word}\\b`, 'i'); // Match whole word with case-insensitivity
       return wordRegex.test(lowerItemName);
     });
-    console.log("nameMatches",nameMatches);
+    // console.log("nameMatches",nameMatches);
 
     const typeMatches = searchQueryWords.some(word => lowerItemType.includes(word))
-    console.log("typeMatches",typeMatches);
+    // console.log("typeMatches",typeMatches);
 
     if(nameMatches){
       return nameMatches;
