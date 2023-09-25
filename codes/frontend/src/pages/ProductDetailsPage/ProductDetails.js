@@ -4,6 +4,7 @@ import Navbar from '../../components/Navbar';
 import axios from 'axios';
 import '../ProductDetailsPage/ProductDetails.css';
 import Button from '../../components/Button/Button';
+import {UpdateFurniture} from "../../utils/api";
 
 const ProductDetails = () => {
   const { productId } = useParams();
@@ -28,6 +29,23 @@ const ProductDetails = () => {
 
   const handleRequestClick = () => {
     setIsRequesting(true);
+    const requestData = {
+      id: product.id,
+      name: product.name,
+      furniture_condition: product.furniture_condition,
+      years_used: product.years_used,
+      image_url: product.image_url,
+      furniture_type: product.furniture_type,
+      furniture_description: product.furniture_description,
+      status: 'requested',
+      userEmail: localStorage.getItem("LoggedInUser"),
+    };
+    console.log("requestData", requestData);
+
+    // Call the function from api.js to make the Axios request
+    const response = UpdateFurniture(productId, requestData);
+    console.log(response)
+      
   };
 
   const handleMessageClick = () => {
@@ -35,6 +53,22 @@ const ProductDetails = () => {
 
   const handleCancelRequestClick = () => {
     setIsRequesting(false);
+    const requestData = {
+      id: product.id,
+      name: product.name,
+      furniture_condition: product.furniture_condition,
+      years_used: product.years_used,
+      image_url: product.image_url,
+      furniture_type: product.furniture_type,
+      furniture_description: product.furniture_description,
+      status: 'cancelled',
+      userEmail: localStorage.getItem("LoggedInUser"),
+    };
+    console.log("requestData", requestData);
+
+    // Call the function from api.js to make the Axios request
+    const response = UpdateFurniture(productId, requestData);
+    console.log(response)
   };
 
   if (!product) {

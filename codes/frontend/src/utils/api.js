@@ -122,3 +122,51 @@ export async function EmailAddressPost(emailId) {
       };
   }
 
+  export async function UpdateFurniture(requestData){
+    try {
+      var isUpdated = false;
+      const response = await axios.post(
+        `http://localhost:5000/update-furniture/`,
+        requestData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if(response.status===200)
+      {
+        isUpdated=true;
+      }
+      return isUpdated;
+    }
+      catch(error)
+       {
+        console.error("Error:", error); // Handle any errors
+      };
+  };
+
+  export async function getFurnitureForUser() {
+    const LoggedInUser = localStorage.getItem("LoggedInUser");
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/get-furniture-for-user",
+        LoggedInUser,
+        {
+          headers: {
+            "Access-Control-Allow-Headers": "*",
+            "Access-Control-Allow-Origin": "*",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+  
+      if (response.status === 200) {
+        return response.data; // Return the actual data
+      }
+    } catch (error) {
+      console.error("Error:", error); // Handle any errors
+      throw error; // Rethrow the error to handle it in your component
+    }
+  }
+  
