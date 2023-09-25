@@ -1,5 +1,5 @@
 // controllers/furnitureController.js
-const { Furniture } = require("../models/furniture"); // Import your Furniture model
+const { Furniture, Requested } = require("../models/furniture"); // Import your Furniture model
 const { User } = require("../models/user");
 const fs = require("fs");
 const path = require("path");
