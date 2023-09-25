@@ -8,7 +8,6 @@
     flex-direction: row;
     text-align: center;
     /* overflow: hidden; */
-    display: flex;
     justify-content: center; 
     align-items: center; /* Center vertically */
     /* height: 100vh; Full viewport height */
@@ -91,7 +90,9 @@ input[type='email']{
 
 input[type='password']{
 margin-top: -5px;
+margin: -5px 15px 0px 15px;
 }
+
 .logo {
     height: 133px;
     width: 496px;
