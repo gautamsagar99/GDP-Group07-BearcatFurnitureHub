@@ -1,14 +1,16 @@
-.form-middle form {
-    position: absolute;
-    top: 42%;
-    left: 68%;
-    transform: translate(-50%,-50%);
-    white-space: nowrap;
-    padding-left: 10px;
-    padding-top: 60px;
-
-
+ .form-middleR {
+    margin: 0%;
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    justify-content: center; 
+    align-items: center;
   }
+
+  body{
+    /* overflow: hidden; */
+  }
+
 
   .error {
     color: red;
@@ -24,17 +26,6 @@
     width:250px;
 }
 
-.heading{
-    padding-left: 0px;
-    padding-bottom: 0px;
-}
-
-.imglogo
-{
-    height:555px;
-    width:600px;
-    padding-left: 20px;
-}
 
 
 a:hover {
@@ -45,6 +36,7 @@ a:hover {
 .mb-3{
     height: 60px;
 }
+
 .label{
 height:18px;
 padding-bottom: 0px;
@@ -53,3 +45,126 @@ padding-bottom: 0px;
 .form-control{
 padding-bottom: 5px;
 }
+
+.signUpHeading{
+    margin:0px 0px 0px 0px;
+}
+
+
+
+.logoDivR{
+    margin-top: 50px;
+    margin-bottom:0px;
+    flex:50%;
+   
+}
+.formDivR{
+    margin-top: 30px;
+    flex:50%;
+}
+
+.rightFormContainerR{
+
+    align-items: center;
+    background-color: #fff;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .1), 0 8px 16px rgba(0, 0, 0, .1);
+    box-sizing: border-box;
+    width: 432px;
+    height: 442px;
+    margin-left: 90px;
+    margin-bottom: 40px;
+    
+}
+
+.formInsiderightFormContainerR{
+    height: 452.63px;
+    width:432px;
+    padding: 16px;
+    border-top: 0.667px;
+}
+input[name='firstnameR'],input[name='lastnameR']{
+    width:170.33px;
+    
+}
+input[name='firstnameR']{
+    margin-left: 15px;
+    margin-right: 15px;
+}
+input[name='lastnameR']{
+margin-right: 15px;
+margin-left: 0px;
+}
+
+
+input[name='firstnameR'],input[`name='lastnameR'],
+input[name='emailR'],input[name='passwordR'],input[name='confirmpasswordR']{
+    height:16px;
+   
+}
+
+input[name='emailR'],input[name='passwordR'],input[name='confirmpasswordR']{
+height:16px;
+width: 375px;
+padding:11px;
+/* border: 0.667px; */
+}
+
+
+
+input[name='emailR']{
+    margin-right: 15px;
+    margin-left: 15px;
+}
+
+
+
+.elementNames{
+    display: flex;
+    flex-direction: row;
+}
+
+
+
+@media only screen and (max-width:900px) {
+ 
+.form-middleR{
+        display: flex;
+        flex-direction: column;
+    }
+
+    .logoDivR{
+        transform: translate(0px, -50px);
+        margin-left: 25%;
+        margin-right: 25%;
+        margin-bottom: 0px;
+    }
+    
+    .logoR{
+     padding: 0;
+    }
+    .formDivR{
+        transform: translate(0px, -50px);
+        margin-top: 10px;
+        margin-left: 25%;
+        margin-right: 25%;
+        margin-bottom: 5px;
+        /* height: 133px;
+        width: 496px; */
+    }
+    .rightFormContainerR{
+        margin: 0;
+       
+
+    }
+    .formInsiderightFormContainerR{
+        height: 452.63px;
+        width:432px;
+        padding: 16px;
+        border-top: 0.667px;
+    }
+
+
+
+  } 

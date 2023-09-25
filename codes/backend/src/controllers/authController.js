@@ -49,13 +49,11 @@ async function login(req, res) {
 }
 
 async function signup(req, res) {
-  const { email, password, first_name, last_name } = req.body;
+  let { email, password, first_name, last_name } = req.body;
 
   // Decrypt the email and password
-  // const email = decryptData(encryptedEmail);
-  // const password = decryptData(encryptedPassword);
-  // const first_name = decryptData(encryptedEmail);
-  // const last_name = decryptData(encryptedPassword);
+  email = decryptData(email);
+  password = decryptData(password);
 
   try {
     // Check if a user with the same email already exists
@@ -87,13 +85,14 @@ async function signup(req, res) {
 
 async function forgotPassword(req, res) {
   // Decrypt the email and password
-  // const email = decryptData(req.body.email);
+
+  const email = decryptData(req.body.email);
 
   const uuid = uuidv4();
   const numericPart = uuid.replace(/\D/g, ""); // Extract only the numeric characters from the UUID
   const fourDigitNumber = numericPart.slice(0, 6); // Take the first four digits
-  console.log(req.body.email);
-  currentEmail = req.body.email;
+  console.log(email);
+  // const email = decryptData(req.body.email);
   // Calculate expiration time (1 day from now)
   const expiresAt = new Date();
   expiresAt.setDate(expiresAt.getDate() + 1);
@@ -101,14 +100,14 @@ async function forgotPassword(req, res) {
   try {
     // Store the reset code in the database
     await ResetCode.create({
-      email: req.body.email,
+      email: email,
       // email: email,
       code: fourDigitNumber,
       expiresAt,
     });
 
     // Send the reset token to the user's email
-    sendResetToken(req.body.email, fourDigitNumber);
+    sendResetToken(email, fourDigitNumber);
     // sendResetToken(email, fourDigitNumber);
 
     console.log("The reset token after generating " + fourDigitNumber);
@@ -123,16 +122,16 @@ async function forgotPassword(req, res) {
 
 async function checkCode(req, res) {
   // Decrypt the email and password
-  // const email = decryptData(req.body.email);
-  // const code = decryptData(req.body.code);
+  const email = decryptData(req.body.email);
+  const code = decryptData(req.body.code);
 
   try {
     // Find the reset code
     const resetCodeRecord = await ResetCode.findOne({
       where: {
-        email: currentEmail,
+        email: email,
         // email: email,
-        code: req.body.code,
+        code: code,
         // code: code,
         expiresAt: {
           [Op.gt]: new Date(), // Check if expiration time is greater than now
@@ -154,14 +153,13 @@ async function checkCode(req, res) {
 }
 
 async function updatePassword(req, res) {
-  
-  const { email, newPassword } = req.body;
+  // let { email, newPassword } = req.body;
 
   // Decrypt the email and password
-  // const email = decryptData(req.body.email);
-  // const newPassword = decryptData(req.body.newPassword);
+  const email = decryptData(req.body.email);
+  const newPassword = decryptData(req.body.newPassword);
 
-  console.log("password is changing with " + email + " " + newPassword);
+  console.log("password is changing to " + email + " with: " + newPassword);
 
   try {
     // Find the user based on the email
