@@ -53,6 +53,7 @@ const Login = () => {
       };
       const isValid=await loginPost(body);
       if (isValid) {
+        localStorage.setItem("LoggedInUser",emailAddress);
         navigate("/home");
       }
       //  loginPost(body)
