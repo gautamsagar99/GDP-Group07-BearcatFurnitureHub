@@ -27,11 +27,18 @@ function Home() {
     const lowerItemName = item.name.toLowerCase().trim(); // Trim whitespace from the item's name
     const lowerItemType = item.furniture_type.toLowerCase().trim();
     const furnitureCondition = item.furniture_condition.toLowerCase().trim(); // Trim whitespace from furniture_condition
-
+    const furnitureDescription = item.furniture_description.toLowerCase().trim(); 
     const searchQueryWords = lowerSearchQuery.split(' '); // Split lowerSearchQuery into individual words
 
     const conditionMatches = lowerSearchQuery.includes(furnitureCondition); // Check if the furniture condition matches the search query
     // console.log("conditionMatches",conditionMatches);
+    // console.log("furnitureDescription",furnitureDescription);
+    const descriptionMatches = searchQueryWords.every(word => {
+      const wordRegex = new RegExp(`\\b${word}\\b`, 'i'); // Match whole word with case-insensitivity
+      return wordRegex.test(furnitureDescription);
+    });
+
+    // console.log("descriptionMatches",descriptionMatches);
 
     const nameMatches = searchQueryWords.every(word => {
       const wordRegex = new RegExp(`\\b${word}\\b`, 'i'); // Match whole word with case-insensitivity
@@ -46,6 +53,17 @@ function Home() {
       return nameMatches;
     }
 
+    if(descriptionMatches){
+      return descriptionMatches;
+    }
+
+    else if(conditionMatches && nameMatches && descriptionMatches){
+      return conditionMatches && nameMatches && descriptionMatches;
+    }
+
+    else if(conditionMatches && typeMatches && descriptionMatches){
+      return conditionMatches && typeMatches && descriptionMatches;
+    }
     else if(conditionMatches && nameMatches){
       return conditionMatches && nameMatches;
     }
