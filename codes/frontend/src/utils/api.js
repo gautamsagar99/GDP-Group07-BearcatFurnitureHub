@@ -135,7 +135,9 @@ export async function UpdateFurniture(requestData) {
 }
 
 export async function getFurnitureForUser() {
-  const LoggedInUser = localStorage.getItem("LoggedInUser");
+  const LoggedInUser = {
+    userEmail: localStorage.getItem("LoggedInUser"),
+  };
   try {
     const response = await axios.post(
       "http://localhost:5000/get-furniture-for-user",
@@ -150,7 +152,7 @@ export async function getFurnitureForUser() {
     );
 
     if (response.status === 200) {
-      return response.data; // Return the actual data
+      return response.data.json(); // Return the actual data
     }
   } catch (error) {
     console.error("Error:", error); // Handle any errors
