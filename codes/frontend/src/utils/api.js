@@ -134,13 +134,14 @@ export async function UpdateFurniture(requestData) {
   }
 }
 
-export async function getFurnitureForUser() {
+export async function getClosedFurniture() {
   const LoggedInUser = {
-    userEmail: localStorage.getItem("LoggedInUser"),
+    userEmail: "s555620@nwmissouri.edu",
   };
+  console.log("userEmail",LoggedInUser);
   try {
     const response = await axios.post(
-      "http://localhost:5000/get-furniture-for-user",
+      "http://localhost:5000/get-closed-furniture",
       LoggedInUser,
       {
         headers: {

@@ -10,7 +10,7 @@ const MyDonations = ({ imageSrc, label, condition, status }) => {
       <div className="card-details-mydonations">
         <p className="card-name-mydonations">{label}</p>
         <p className="card-condition-mydonations">Condition: {condition}</p>
-        <p className="card-status-mydonations">Status: {status}</p>
+        <p className="card-status-mydonations">Status: Successfully Donated</p>
       </div>
     </div>
   );

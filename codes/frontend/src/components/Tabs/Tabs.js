@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Tabs.css'; // Import the CSS file for styling
-import { getFurnitureForUser } from "../../utils/api";
+import { getClosedFurniture } from "../../utils/api";
 import MyDonations from '../../components/MyDonations/MyDonations';
 
 const Tabs = () => {
@@ -14,7 +14,7 @@ const Tabs = () => {
       setIsLoading(true);
       var data = [];
       if (tabName === "My Donations") {
-        const donationsData = await getFurnitureForUser();
+        const donationsData = await getClosedFurniture();
         setMyDonationsData(donationsData); // Set MyDonationsData to the fetched data
       }
       console.log("MyDonationsData",MyDonationsData);

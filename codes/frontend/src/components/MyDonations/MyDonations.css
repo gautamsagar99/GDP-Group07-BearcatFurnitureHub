@@ -43,8 +43,11 @@
     margin-bottom: 8px;
   }
   
-  .card-condition-mydonations,
+  .card-condition-mydonations{
+    margin: 4px 0; /* Add spacing between details */
+  }
   .card-status-mydonations {
     margin: 4px 0; /* Add spacing between details */
+    color: green;
   }
   
