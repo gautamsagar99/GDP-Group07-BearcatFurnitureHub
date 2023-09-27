@@ -21,11 +21,14 @@ const Navbar = ({ onSearch, onResetSearch }) => {
 		  onSearch(searchQuery);
 		};
 		const allProducts = () => {
-			onResetSearch();
-			// setSearchQuery = ""
-			// onSearch(" ");
-			SearchInput.placeholder ="Search for products"
-			setSearchQuery('');
+			if(searchQuery != ""){
+				onResetSearch();
+				// setSearchQuery = ""
+				// onSearch(" ");
+				SearchInput.placeholder ="Search for products"
+				setSearchQuery('');
+			}
+			
 		};
 	const bellIconStyle = {
 		color: 'white', // Change the color to white
