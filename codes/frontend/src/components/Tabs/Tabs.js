@@ -1,19 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import './Tabs.css'; // Import the CSS file for styling
 import { getFurnitureForUser } from "../../utils/api";
+import MyDonations from '../../components/MyDonations/MyDonations';
 
 const Tabs = () => {
   const [activeTab, setActiveTab] = useState('My Donations');
   const [tabData, setTabData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [MyDonationsData, setMyDonationsData] = useState([]);
 
   const fetchDataForTab = async (tabName) => {
     try {
       setIsLoading(true);
-      var data = ""
-      if(tabName === "My Donations"){
-        data = await getFurnitureForUser();
+      var data = [];
+      if (tabName === "My Donations") {
+        const donationsData = await getFurnitureForUser();
+        setMyDonationsData(donationsData); // Set MyDonationsData to the fetched data
       }
+      console.log("MyDonationsData",MyDonationsData);
        // Fetch data asynchronously
 
       // Store the data for the tab
@@ -61,7 +65,17 @@ const Tabs = () => {
       <div className="tab-content">
         {isLoading && <p>Loading...</p>}
         {activeTab === 'My Donations' && (
-          <p>Content for My Donations tab: {tabData['My Donations']}</p>
+          <div className="card-container-mydonations">
+          {MyDonationsData.map((item, index) => (
+            <MyDonations
+              key={index}
+              status={item.status}
+              imageSrc={item.image_url}
+              label={item.name}
+              condition={item.furniture_condition}
+            />
+          ))}
+        </div>
         )}
         {activeTab === 'Active Donations' && (
           <p>Content for Active Donations tab: {tabData['Active Donations']}</p>

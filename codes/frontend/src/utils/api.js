@@ -152,7 +152,7 @@ export async function getFurnitureForUser() {
     );
 
     if (response.status === 200) {
-      return response.data.json(); // Return the actual data
+      return response.data; // Return the actual data
     }
   } catch (error) {
     console.error("Error:", error); // Handle any errors
