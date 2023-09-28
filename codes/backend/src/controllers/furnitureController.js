@@ -212,7 +212,7 @@ async function getFurnitureById(req, res) {
     const furniture = await Furniture.findOne({
       where: {
         id,
-        status: "available",
+        status: ["available", "requested"],
       },
     });
 
@@ -220,6 +220,11 @@ async function getFurnitureById(req, res) {
       return res.status(404).json({ message: "Available furniture not found" });
     }
 
+    
+    const user = await User.findOne({ where: { id: furniture.user_id } });
+    console.log(user.email);
+    furniture.dataValues.user_email = user.email;
+    console.log(furniture)
     res.status(200).json(furniture);
   } catch (error) {
     console.error("Error retrieving available furniture by ID:", error);
