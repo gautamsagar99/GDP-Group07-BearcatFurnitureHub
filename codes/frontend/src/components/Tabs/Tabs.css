@@ -51,3 +51,16 @@
   max-width: 100%; /* Ensure cards don't exceed the container width */
   margin: 16px 0; /* Adjust vertical margin to separate cards */
 }
+
+.card-container-activedonations {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.card-activedonations {
+  flex: 1; /* Each card takes full width */
+  max-width: 100%; /* Ensure cards don't exceed the container width */
+  margin: 16px 0; /* Adjust vertical margin to separate cards */
+}
+

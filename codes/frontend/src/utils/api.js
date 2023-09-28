@@ -135,14 +135,42 @@ export async function UpdateFurniture(requestData) {
 }
 
 export async function getClosedFurniture() {
-  const LoggedInUser = {
-    userEmail: "s555620@nwmissouri.edu",
+  const LoggedInUserEmail = {
+    userEmail: localStorage.getItem("LoggedInUser"),
   };
-  console.log("userEmail",LoggedInUser);
+  console.log("userEmail",LoggedInUserEmail);
   try {
     const response = await axios.post(
       "http://localhost:5000/get-closed-furniture",
-      LoggedInUser,
+      LoggedInUserEmail,
+      {
+        headers: {
+          "Access-Control-Allow-Headers": "*",
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (response.status === 200) {
+      return response.data; // Return the actual data
+    }
+  } catch (error) {
+    console.error("Error:", error); // Handle any errors
+    throw error; // Rethrow the error to handle it in your component
+  }
+}
+
+
+export async function getAvailableAndRequestedFurniture() {
+  const LoggedInUserEmail = {
+    userEmail: localStorage.getItem("LoggedInUser"),
+  };
+  console.log("userEmail",LoggedInUserEmail);
+  try {
+    const response = await axios.post(
+      "http://localhost:5000/get-available-and-requested-furniture",
+      LoggedInUserEmail,
       {
         headers: {
           "Access-Control-Allow-Headers": "*",
