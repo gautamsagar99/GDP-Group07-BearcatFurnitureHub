@@ -179,7 +179,34 @@ export async function getAvailableAndRequestedFurniture() {
         },
       }
     );
+    if (response.status === 200) {
+      return response.data; // Return the actual data
+    }
+  } catch (error) {
+    console.error("Error:", error); // Handle any errors
+    throw error; // Rethrow the error to handle it in your component
+  }
+}
 
+
+export async function getMyRequests() {
+  const LoggedInUserEmail = {
+    userEmail: localStorage.getItem("LoggedInUser"),
+  };
+  console.log("userEmail",LoggedInUserEmail);
+  try {
+    const response = await axios.post(
+      "http://localhost:5000/get-requested-furniture-for-user",
+      LoggedInUserEmail,
+      {
+        headers: {
+          "Access-Control-Allow-Headers": "*",
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json",
+        },
+      }
+    );
+      // console.log("response.data",response.data)
     if (response.status === 200) {
       return response.data; // Return the actual data
     }
