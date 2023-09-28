@@ -21,7 +21,7 @@ const Navbar = ({ onSearch, onResetSearch }) => {
 		  onSearch(searchQuery);
 		};
 		const allProducts = () => {
-			if(searchQuery != ""){
+			if(searchQuery !== ""){
 				onResetSearch();
 				// setSearchQuery = ""
 				// onSearch(" ");
