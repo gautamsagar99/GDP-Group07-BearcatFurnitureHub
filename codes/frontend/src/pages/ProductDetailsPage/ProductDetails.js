@@ -49,6 +49,24 @@ const ProductDetails = () => {
 
   const handleMessageClick = () => {};
 
+  const handleSuccessfulDonationClick = () => {};
+
+  
+  const handleDeleteClick = () => {
+    axios
+      .delete(`http://localhost:5000/delete-furniture/${productId}`)
+      .then((response) => {
+        console.log("Response data:", response.data);
+        if(response.data.message === "Furniture marked as deleted"){
+          console.log("Furniture deleted successfully");
+          window.location.href = "/home";
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+
   const handleCancelRequestClick = () => {
     setIsRequesting(false);
     const requestData = {
@@ -81,12 +99,20 @@ console.log("email", product.user_email);
     product.user_email === localStorage.getItem("LoggedInUser")
   ) {
     buttonsToRender = (
+      <div className="button-container">
       <Button
         type="button"
         label="Edit Furniture"
         // Add onClick handler for editing here
         color="edit"
       />
+      <Button
+          type="button"
+          label="Delete Furniture"
+          onClick={handleDeleteClick}
+          color="danger"
+        />
+      </div>
     );
   } else if (
     product.status === "available" &&
@@ -102,7 +128,7 @@ console.log("email", product.user_email);
     );
   } else if (
     product.status === "requested" &&
-    product.user_email === localStorage.getItem("LoggedInUser")
+    product.user_email !== localStorage.getItem("LoggedInUser")
   ) {
     buttonsToRender = (
       <div className="button-container">
@@ -117,6 +143,26 @@ console.log("email", product.user_email);
           label="Cancel Furniture"
           onClick={handleCancelRequestClick}
           color="danger"
+        />
+      </div>
+    );
+  }else if (
+    product.status === "requested" &&
+    product.user_email === localStorage.getItem("LoggedInUser")
+  ) {
+    buttonsToRender = (
+      <div className="button-container">
+        <Button
+          type="button"
+          label="Message"
+          onClick={handleMessageClick}
+          color="message"
+        />
+        <Button
+          type="button"
+          label="Donated Successfully"
+          onClick={handleSuccessfulDonationClick}
+          color="primary"
         />
       </div>
     );
