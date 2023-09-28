@@ -589,10 +589,9 @@ async function getRequestedFurnitureForUser(req, res) {
         furniture &&
         (furniture.status === "available" || furniture.status === "requested")
       ) {
-        requestedFurniture.push({
-          furniture: furniture,
-          status: furniture.status,
-        });
+        requestedFurniture.push(
+furniture,
+        );
       }
     }
 
