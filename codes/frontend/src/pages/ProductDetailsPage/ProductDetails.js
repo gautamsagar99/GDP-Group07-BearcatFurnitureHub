@@ -73,6 +73,55 @@ const ProductDetails = () => {
     return <div>Loading...</div>;
   }
 
+  let buttonsToRender = null;
+console.log("status", product.status);
+console.log("email", product.user_email);
+  if (
+    product.status === "available" &&
+    product.user_email === localStorage.getItem("LoggedInUser")
+  ) {
+    buttonsToRender = (
+      <Button
+        type="button"
+        label="Edit Furniture"
+        // Add onClick handler for editing here
+        color="edit"
+      />
+    );
+  } else if (
+    product.status === "available" &&
+    product.user_email !== localStorage.getItem("LoggedInUser")
+  ) {
+    buttonsToRender = (
+      <Button
+        type="button"
+        label="Request Furniture"
+        onClick={handleRequestClick}
+        color="primary"
+      />
+    );
+  } else if (
+    product.status === "requested" &&
+    product.user_email === localStorage.getItem("LoggedInUser")
+  ) {
+    buttonsToRender = (
+      <div className="button-container">
+        <Button
+          type="button"
+          label="Message"
+          onClick={handleMessageClick}
+          color="message"
+        />
+        <Button
+          type="button"
+          label="Cancel Furniture"
+          onClick={handleCancelRequestClick}
+          color="danger"
+        />
+      </div>
+    );
+  }
+
   return (
     <div>
       <Navbar onSearch={setSearchQuery} onResetSearch={resetSearchQuery} />
@@ -85,7 +134,7 @@ const ProductDetails = () => {
           <p>Years Used: {product.years_used}</p>
           <p>Furniture Condition: {product.furniture_condition}</p>
           <p>Description: {product.furniture_description}</p>
-          <br></br>
+          <br />
           {isRequesting ? (
             <div className="button-container">
               <Button
@@ -102,12 +151,7 @@ const ProductDetails = () => {
               />
             </div>
           ) : (
-            <Button
-              type="button"
-              label="Request Furniture"
-              onClick={handleRequestClick}
-              color="primary"
-            />
+            buttonsToRender // Render the appropriate buttons here
           )}
         </div>
       </div>
