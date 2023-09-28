@@ -3,7 +3,7 @@ import './Tabs.css';
 import { getClosedFurniture, getAvailableAndRequestedFurniture, getMyRequests } from '../../utils/api';
 import MyDonations from '../../components/MyDonations/MyDonations';
 import ActiveDonations from '../../components/ActiveDonations/ActiveDonations';
-import MyRequests from '../../components/MyRequests/MyRequests';
+// import MyRequests from '../../components/MyRequests/MyRequests';
 
 const Tabs = () => {
   const [activeTab, setActiveTab] = useState('My Donations');
@@ -55,10 +55,10 @@ const Tabs = () => {
     return <p>{messages[tabName]}</p>;
   };
 
-  const removeCard = (idToRemove) => {
-    const updatedData = MyRequestsData.filter((item) => item.id !== idToRemove);
-    setMyRequestsData(updatedData);
-  };
+  // const removeCard = (idToRemove) => {
+  //   const updatedData = MyRequestsData.filter((item) => item.id !== idToRemove);
+  //   setMyRequestsData(updatedData);
+  // };
 
   return (
     <div className="tabs-container">
@@ -118,18 +118,26 @@ const Tabs = () => {
         {activeTab === 'My Requests' && MyRequestsData.length > 0 ? (
           <div className="card-container-myrequests">
             {MyRequestsData.map((item, index) => (
-              <MyRequests
+              // <MyRequests
+              //   key={index}
+              //   id={item.id}
+              //   years_used = {item.years_used}
+              //   furniture_type = {item.furniture_type}
+              //   furniture_description = {item.furniture_description}
+              //   productId={item.id}
+              //   status={item.status}
+              //   imageSrc={item.image_url}
+              //   label={item.name}
+              //   condition={item.furniture_condition}
+              //   removeCard={removeCard}
+              // />
+              <ActiveDonations
                 key={index}
-                id={item.id}
-                years_used = {item.years_used}
-                furniture_type = {item.furniture_type}
-                furniture_description = {item.furniture_description}
                 productId={item.id}
                 status={item.status}
                 imageSrc={item.image_url}
                 label={item.name}
                 condition={item.furniture_condition}
-                removeCard={removeCard}
               />
             ))}
           </div>
