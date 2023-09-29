@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import { useNavigate } from "react-router-dom";
-import img from "../../assets/images/mainImage.jpg";
+import furniture from "../../assets/images/B3.png";
 import "./ResetPassword.css";
 import Button from "../../components/Button/Button";
 
@@ -47,7 +47,11 @@ const EmailAdress = () => {
 
   return (
     <div className="form-inmiddle">
-      <img src={img} alt="Logo" className="imglogo"></img>
+      <div className="logoDiv">      
+      <img src={furniture} alt="Logo" className="logo"></img>
+      </div>
+      <div className="formDiv">
+        <div className="formContainer"></div>
       <Form>
         <Form.Group className="mb-3" controlId="forgotpasswordEmail">
 
@@ -70,6 +74,8 @@ const EmailAdress = () => {
         <br />
         <Button type="button" onClick={handleCode} color="primary" label="Send Code"/>
       </Form>
+      </div>
+ 
     </div>
   );
 };
