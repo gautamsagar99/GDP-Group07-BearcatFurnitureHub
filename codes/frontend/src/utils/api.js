@@ -12,7 +12,6 @@ export async function loginPost(userCredentials) {
         },
       }
     );
-
     if (response.data && response.data.token) {
       const jwtToken = response.data.token;
       localStorage.setItem("jwtToken", jwtToken);
@@ -125,10 +124,12 @@ export async function UpdateFurniture(requestData) {
         },
       }
     );
+    console.log(response.status + " response from status")
     if (response.status === 200) {
       isUpdated = true;
+      return isUpdated;
     }
-    return isUpdated;
+    return false;
   } catch (error) {
     console.error("Error:", error); // Handle any errors
   }

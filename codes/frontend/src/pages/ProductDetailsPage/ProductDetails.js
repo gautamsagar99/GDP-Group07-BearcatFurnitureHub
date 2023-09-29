@@ -11,6 +11,7 @@ const ProductDetails = () => {
   const [product, setProduct] = useState(null);
   const [isRequesting, setIsRequesting] = useState(false);
   const [setSearchQuery] = useState("");
+  const [productStatus, setProductStatus] = useState(null);
   const resetSearchQuery = () => {
     setSearchQuery(""); // Reset the search query to an empty string
   };
@@ -51,13 +52,12 @@ const ProductDetails = () => {
 
   const handleSuccessfulDonationClick = () => {};
 
-  
   const handleDeleteClick = () => {
     axios
       .delete(`http://localhost:5000/delete-furniture/${productId}`)
       .then((response) => {
         console.log("Response data:", response.data);
-        if(response.data.message === "Furniture marked as deleted"){
+        if (response.data.message === "Furniture marked as deleted") {
           console.log("Furniture deleted successfully");
           window.location.href = "/home";
         }
@@ -67,24 +67,29 @@ const ProductDetails = () => {
       });
   };
 
-  const handleCancelRequestClick = () => {
-    setIsRequesting(false);
-    const requestData = {
-      id: product.id,
-      name: product.name,
-      furniture_condition: product.furniture_condition,
-      years_used: product.years_used,
-      image_url: product.image_url,
-      furniture_type: product.furniture_type,
-      furniture_description: product.furniture_description,
-      status: "cancelled",
-      userEmail: localStorage.getItem("LoggedInUser"),
-    };
-    console.log("requestData", requestData);
-
-    // Call the function from api.js to make the Axios request
-    const response = UpdateFurniture(requestData);
-    console.log(response);
+  const handleCancelClick = async () => {
+      const requestData = {
+        id: product.id,
+        name: product.name,
+        furniture_condition: product.furniture_condition,
+        years_used: product.years_used,
+        image_url: product.image_url,
+        furniture_type: product.furniture_type,
+        furniture_description: product.furniture_description,
+        status: "cancelled",
+        userEmail: localStorage.getItem("LoggedInUser"),
+      };
+      console.log("requestData", requestData);
+  
+      // Call the function from api.js to make the Axios request
+      const responseResult = await UpdateFurniture(requestData);
+      console.log("response from method", responseResult);
+      if(responseResult === true){
+        setIsRequesting(false);
+        setProductStatus("available")
+      }
+      
+    
   };
 
   if (!product) {
@@ -92,21 +97,22 @@ const ProductDetails = () => {
   }
 
   let buttonsToRender = null;
-console.log("status", product.status);
-console.log("email", product.user_email);
+  console.log("status", product.status);
+  console.log("email", product.user_email);
+
   if (
     product.status === "available" &&
     product.user_email === localStorage.getItem("LoggedInUser")
   ) {
     buttonsToRender = (
       <div className="button-container">
-      <Button
-        type="button"
-        label="Edit Furniture"
-        // Add onClick handler for editing here
-        color="edit"
-      />
-      <Button
+        <Button
+          type="button"
+          label="Edit Furniture"
+          // Add onClick handler for editing here
+          color="edit"
+        />
+        <Button
           type="button"
           label="Delete Furniture"
           onClick={handleDeleteClick}
@@ -115,7 +121,7 @@ console.log("email", product.user_email);
       </div>
     );
   } else if (
-    product.status === "available" &&
+    (product.status === "available"  || productStatus === "available") &&  !isRequesting &&
     product.user_email !== localStorage.getItem("LoggedInUser")
   ) {
     buttonsToRender = (
@@ -127,26 +133,27 @@ console.log("email", product.user_email);
       />
     );
   } else if (
-    product.status === "requested" &&
+    (product.status === "requested") &&
     product.user_email !== localStorage.getItem("LoggedInUser")
   ) {
     buttonsToRender = (
-      <div className="button-container">
-        <Button
-          type="button"
-          label="Message"
-          onClick={handleMessageClick}
-          color="message"
-        />
-        <Button
-          type="button"
-          label="Cancel Furniture"
-          onClick={handleCancelRequestClick}
-          color="danger"
-        />
-      </div>
+    <div className="button-container">
+      <Button
+        type="button"
+        label="Message"
+        onClick={handleMessageClick}
+        color="primary"
+      />
+      <Button
+        type="button"
+        label="Cancel Request"
+        onClick={handleCancelClick}
+        color="danger"
+      />
+    </div>
     );
-  }else if (
+    
+  } else if (
     product.status === "requested" &&
     product.user_email === localStorage.getItem("LoggedInUser")
   ) {
@@ -192,7 +199,7 @@ console.log("email", product.user_email);
               <Button
                 type="button"
                 label="Cancel Request"
-                onClick={handleCancelRequestClick}
+                onClick={handleCancelClick}
                 color="danger"
               />
             </div>
