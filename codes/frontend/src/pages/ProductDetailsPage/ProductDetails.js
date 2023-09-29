@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { CSSTransition } from 'react-transition-group';
 import { useParams } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import axios from "axios";
@@ -12,9 +13,23 @@ const ProductDetails = () => {
   const [isRequesting, setIsRequesting] = useState(false);
   const [setSearchQuery] = useState("");
   const [productStatus, setProductStatus] = useState(null);
+  const [showFurnitureCancelledMessage, setShowFurnitureCancelledMessage] = useState(false);
+  const [messageText, setMessageText] = useState('');
+
   const resetSearchQuery = () => {
     setSearchQuery(""); // Reset the search query to an empty string
   };
+
+  useEffect(() => {
+    if (showFurnitureCancelledMessage) {
+      const timer = setTimeout(() => {
+        setShowFurnitureCancelledMessage(false);
+      }, 3000); // 5000 milliseconds (5 seconds)
+      
+      // Clear the timer when the component unmounts or when showFacultyAddedMessage changes
+      return () => clearTimeout(timer);
+    }
+  }, [showFurnitureCancelledMessage]);
 
   useEffect(() => {
     axios
@@ -28,8 +43,8 @@ const ProductDetails = () => {
       });
   }, [productId]);
 
-  const handleRequestClick = () => {
-    setIsRequesting(true);
+  const handleRequestClick =  async () =>  {
+    
     const requestData = {
       id: product.id,
       name: product.name,
@@ -44,8 +59,15 @@ const ProductDetails = () => {
     console.log("requestData", requestData);
 
     // Call the function from api.js to make the Axios request
-    const response = UpdateFurniture(requestData);
-    console.log(response);
+    const responseResult = await UpdateFurniture(requestData);
+    console.log("response from method", responseResult);
+    if(responseResult === true){
+      setIsRequesting(true);
+      setShowFurnitureCancelledMessage(!showFurnitureCancelledMessage);
+      setMessageText("Furniture Requested Successfully");
+    }
+    // setMessageText("Furniture Requested Successfully");
+    // console.log(response);
   };
 
   const handleMessageClick = () => {};
@@ -59,6 +81,7 @@ const ProductDetails = () => {
         console.log("Response data:", response.data);
         if (response.data.message === "Furniture marked as deleted") {
           console.log("Furniture deleted successfully");
+          setMessageText("Furniture deleted successfully");
           window.location.href = "/home";
         }
       })
@@ -87,6 +110,8 @@ const ProductDetails = () => {
       if(responseResult === true){
         setIsRequesting(false);
         setProductStatus("available")
+        setShowFurnitureCancelledMessage(!showFurnitureCancelledMessage);
+        setMessageText("Furniture Cancelled Successfully");
       }
       
     
@@ -179,6 +204,11 @@ const ProductDetails = () => {
     <div>
       <Navbar onSearch={setSearchQuery} onResetSearch={resetSearchQuery} />
       <div className="product-details-container">
+      <CSSTransition in={showFurnitureCancelledMessage} timeout={30}  classNames="fade"  unmountOnExit>
+        <div className="furniturecancelledpopup">
+          {messageText}
+        </div>
+      </CSSTransition>
         <div className="product-image">
           <img src={product.image_url} alt={product.name} />
         </div>
