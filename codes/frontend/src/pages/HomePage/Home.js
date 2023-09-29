@@ -7,12 +7,13 @@ import Navbar from '../../components/Navbar';
 function Home() {
   const [furnitureData, setFurnitureData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const userEmail = localStorage.getItem("LoggedInUser")
   const resetSearchQuery = () => {
     setSearchQuery(''); // Reset the search query to an empty string
   };
 
   useEffect(() => {
-    axios.get('http://localhost:5000/get-furniture')
+    axios.get('http://localhost:5000/get-all-furniture/'+userEmail)
       .then(response => {
         console.log('Response data:', response.data);
         setFurnitureData(response.data);
@@ -20,7 +21,7 @@ function Home() {
       .catch(error => {
         console.error('Error:', error);
       });
-  }, []);
+  }, [userEmail]);
 
   const filteredFurniture = furnitureData.filter(item => {
     const lowerSearchQuery = searchQuery.toLowerCase().trim(); // Trim whitespace from the search query

@@ -15,7 +15,7 @@ router.post(
   upload.fields([{ name: "image" }]),
   furnitureController.createFurniture
 );
-router.get("/get-furniture", furnitureController.getAllFurniture);
+router.get("/get-all-furniture/:userEmail", furnitureController.getAllFurniture);
 router.get("/get-furniture/:id", furnitureController.getFurnitureById);
 router.put("/update-furniture", furnitureController.updateFurniture); // Update furniture by ID
 router.delete("/delete-furniture/:id", furnitureController.deleteFurniture);

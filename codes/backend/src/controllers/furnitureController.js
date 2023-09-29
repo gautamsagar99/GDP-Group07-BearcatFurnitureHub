@@ -188,9 +188,15 @@ async function createFurniture(req, res) {
 // Function to get all available furniture records
 async function getAllFurniture(req, res) {
   try {
+    const { userEmail } = req.params;
     // Retrieve all furniture records with status "available" from the database
+    const user = await User.findOne({ where: { email: userEmail } });
+    const { Op } = require('sequelize');
     const furnitureList = await Furniture.findAll({
-      where: { status: "available" },
+      where: { user_id: {
+        [Op.not]: user.id // Exclude rows with user_id equal to user.id
+      },
+         status: "available" },
     });
 
     res.status(200).json(furnitureList);
