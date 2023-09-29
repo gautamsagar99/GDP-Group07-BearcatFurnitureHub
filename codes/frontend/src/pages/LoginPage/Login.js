@@ -51,7 +51,9 @@ const Login = () => {
         encryptedEmail: encryptedEmail,
         encryptedPassword: encryptedPassword,
       };
-      if (loginPost(body)) {
+      const isValid=await loginPost(body);
+      if (isValid) {
+        localStorage.setItem("LoggedInUser",emailAddress);
         navigate("/home");
       }
       //  loginPost(body)

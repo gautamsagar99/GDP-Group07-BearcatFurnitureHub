@@ -1,38 +1,81 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom'; // Import useParams
-import Index from '../../components/Navbar/index';
-import axios from 'axios';
-import '../ProductDetailsPage/ProductDetails.css'
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import Navbar from "../../components/Navbar";
+import axios from "axios";
+import "../ProductDetailsPage/ProductDetails.css";
 import Button from "../../components/Button/Button";
+import { UpdateFurniture } from "../../utils/api";
 
 const ProductDetails = () => {
-  const { productId } = useParams(); // Get the productId from the route
-
+  const { productId } = useParams();
   const [product, setProduct] = useState(null);
-  const [showMessageCancelBtn, setShowMessageCancelBtn] = useState(false);
+  const [isRequesting, setIsRequesting] = useState(false);
+  const [setSearchQuery] = useState("");
+  const resetSearchQuery = () => {
+    setSearchQuery(""); // Reset the search query to an empty string
+  };
 
   useEffect(() => {
-    // Fetch product details based on the product ID using Axios
-    axios.get(`http://localhost:5000/get-furniture/${productId}`)
-      .then(response => {
-        console.log('Response data:', response.data);
+    axios
+      .get(`http://localhost:5000/get-furniture/${productId}`)
+      .then((response) => {
+        console.log("Response data:", response.data);
         setProduct(response.data);
       })
-      .catch(error => {
-        console.error('Error:', error);
+      .catch((error) => {
+        console.error("Error:", error);
       });
   }, [productId]);
+
+  const handleRequestClick = () => {
+    setIsRequesting(true);
+    const requestData = {
+      id: product.id,
+      name: product.name,
+      furniture_condition: product.furniture_condition,
+      years_used: product.years_used,
+      image_url: product.image_url,
+      furniture_type: product.furniture_type,
+      furniture_description: product.furniture_description,
+      status: "requested",
+      userEmail: localStorage.getItem("LoggedInUser"),
+    };
+    console.log("requestData", requestData);
+
+    // Call the function from api.js to make the Axios request
+    const response = UpdateFurniture(requestData);
+    console.log(response);
+  };
+
+  const handleMessageClick = () => {};
+
+  const handleCancelRequestClick = () => {
+    setIsRequesting(false);
+    const requestData = {
+      id: product.id,
+      name: product.name,
+      furniture_condition: product.furniture_condition,
+      years_used: product.years_used,
+      image_url: product.image_url,
+      furniture_type: product.furniture_type,
+      furniture_description: product.furniture_description,
+      status: "cancelled",
+      userEmail: localStorage.getItem("LoggedInUser"),
+    };
+    console.log("requestData", requestData);
+
+    // Call the function from api.js to make the Axios request
+    const response = UpdateFurniture(requestData);
+    console.log(response);
+  };
 
   if (!product) {
     return <div>Loading...</div>;
   }
-  var isRequested = () =>{
-    setShowMessageCancelBtn(true);
-  } 
 
   return (
     <div>
-      <Index />
+      <Navbar onSearch={setSearchQuery} onResetSearch={resetSearchQuery} />
       <div className="product-details-container">
         <div className="product-image">
           <img src={product.image_url} alt={product.name} />
@@ -41,14 +84,31 @@ const ProductDetails = () => {
           <h2>{product.name}</h2>
           <p>Years Used: {product.years_used}</p>
           <p>Furniture Condition: {product.furniture_condition}</p>
-          <Button type='button' label="Request Furniture" onClick={isRequested} color='primary'/>
-
-          {showMessageCancelBtn ? (
-          <div row-4>
-          <Button type='button' label="Message" color='primary'/>
-          <Button type='button' label="Cancel Request" color='red'/>
-          </div>
-          ):(<p></p>)}
+          <p>Description: {product.furniture_description}</p>
+          <br></br>
+          {isRequesting ? (
+            <div className="button-container">
+              <Button
+                type="button"
+                label="Message"
+                onClick={handleMessageClick}
+                color="primary"
+              />
+              <Button
+                type="button"
+                label="Cancel Request"
+                onClick={handleCancelRequestClick}
+                color="danger"
+              />
+            </div>
+          ) : (
+            <Button
+              type="button"
+              label="Request Furniture"
+              onClick={handleRequestClick}
+              color="primary"
+            />
+          )}
         </div>
       </div>
     </div>

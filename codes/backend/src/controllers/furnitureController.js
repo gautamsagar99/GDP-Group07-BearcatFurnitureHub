@@ -1,58 +1,84 @@
 // controllers/furnitureController.js
 const { Furniture } = require("../models/furniture"); // Import your Furniture model
+const { Requested } = require("../models/requested"); 
 const { User } = require("../models/user");
+const fs = require("fs");
+const path = require("path");
+const multer = require("multer");
 
-// const AWS = require("aws-sdk"); // Import AWS SDK
-// const s3 = new AWS.S3();
+// Configure multer to specify where to store uploaded files
+const storage = multer.memoryStorage(); // Store files in memory
+const upload = multer({ storage });
+
+// const imagePath = path.join(__dirname, "chair.jpeg");
+// const imageURL = fs.readFileSync(imagePath);
+const AWS = require("aws-sdk"); // Import AWS SDK
+const s3 = new AWS.S3();
+
+const bucketName = "bearcatbucket"; // Replace with your bucket name
+const bucketPolicy = {
+  Version: "2012-10-17",
+  Statement: [
+    {
+      Sid: "AllowAllActions",
+      Effect: "Allow",
+      Principal: "*",
+      Action: "s3:*",
+      Resource: `arn:aws:s3:::${bucketName}/*`,
+    },
+  ],
+};
+
+const updatedCorsRules = [
+  {
+    AllowedOrigins: ["*"], // Replace with your frontend domain
+    AllowedMethods: ["GET"],
+    AllowedHeaders: ["*"],
+    MaxAgeSeconds: 3000,
+  },
+];
+
+// Define the CORS configuration
+const corsConfiguration = {
+  CORSRules: updatedCorsRules,
+};
+
+// Apply the bucket policy
+const params = {
+  Bucket: bucketName,
+  Policy: JSON.stringify(bucketPolicy),
+};
+
+// Set the CORS configuration for the bucket
+const corsParams = {
+  Bucket: bucketName,
+  CORSConfiguration: corsConfiguration,
+};
+
+s3.putBucketPolicy(params, (err, data) => {
+  if (err) {
+    console.error("Error applying bucket policy:", err);
+  } else {
+    console.log("Bucket policy applied successfully");
+  }
+});
+
+s3.putBucketCors(corsParams, (err, data) => {
+  if (err) {
+    console.error("Error updating bucket CORS configuration:", err);
+  } else {
+    console.log("Bucket CORS configuration updated successfully");
+  }
+});
 
 /// Function to create a new furniture record
-async function createFurniture(req, res) {
-  try {
-    const {
-      name,
-      condition,
-      yearsUsed,
-      imageUrl,
-      category,
-      furniture_description,
-      userEmail, // Add userEmail to the request body
-    } = req.body;
-
-    // Find the user by email to get the user ID
-    const user = await User.findOne({ where: { email: userEmail } });
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    // Create a new furniture record in the database with today's date for Donated_date
-    const furniture = await Furniture.create({
-      name,
-      condition,
-      yearsUsed,
-      imageUrl,
-      category,
-      furniture_description, // New column
-      Donated_date: new Date(), // Set Donated_date to today's date
-      user_id: user.id, // Use the retrieved user ID
-    });
-
-    res
-      .status(201)
-      .json({ message: "Furniture created successfully", furniture });
-  } catch (error) {
-    console.error("Error creating furniture:", error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-}
-
 // async function createFurniture(req, res) {
 //   try {
 //     const {
 //       name,
 //       condition,
 //       yearsUsed,
-//       image, // Change the name from imageUrl to image
+//       imageUrl,
 //       category,
 //       furniture_description,
 //       userEmail, // Add userEmail to the request body
@@ -65,29 +91,12 @@ async function createFurniture(req, res) {
 //       return res.status(404).json({ message: "User not found" });
 //     }
 
-//     // Generate a unique filename for the image using the furniture name
-//     const imageKey = `${name}-${Date.now()}.jpg`;
-
-//     // Configure the S3 parameters for uploading the image
-//     const s3Params = {
-//       Bucket: name, // Use the furniture name as the bucket name
-//       Key: imageKey, // Use the unique filename for the image
-//       Body: image, // The image file
-//       ACL: "public-read", // Make the uploaded image public-readable
-//     };
-
-//     // Upload the image to S3
-//     const s3UploadResponse = await s3.upload(s3Params).promise();
-
-//     // Get the URL of the uploaded image
-//     const imageUrl = s3UploadResponse.Location;
-
 //     // Create a new furniture record in the database with today's date for Donated_date
 //     const furniture = await Furniture.create({
 //       name,
 //       condition,
 //       yearsUsed,
-//       imageUrl, // Use the S3 URL for the image
+//       imageUrl,
 //       category,
 //       furniture_description, // New column
 //       Donated_date: new Date(), // Set Donated_date to today's date
@@ -102,6 +111,79 @@ async function createFurniture(req, res) {
 //     res.status(500).json({ message: "Internal Server Error" });
 //   }
 // }
+
+async function createFurniture(req, res) {
+  const uploadedImage = req.files["image"][0];
+  try {
+    const {
+      name,
+      condition,
+      yearsUsed,
+      category,
+      furniture_description,
+      userEmail, // Add userEmail to the request body
+    } = req.body;
+
+    console.log(
+      name +
+        " " +
+        condition +
+        " " +
+        yearsUsed +
+        " " +
+        category +
+        " " +
+        furniture_description +
+        " " +
+        userEmail
+    );
+    // Find the user by email to get the user ID
+    const user = await User.findOne({ where: { email: userEmail } });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Generate a unique filename for the image using the furniture name
+    const imageKey = `${name}-${Date.now()}.jpeg`;
+
+    // Configure the S3 parameters for uploading the image
+    const s3Params = {
+      Bucket: "bearcatbucket", // Use the furniture name as the bucket name
+      Key: imageKey, // Use the unique filename for the image
+      // Body: imageURL, // The image file
+      Body: uploadedImage,
+      ACL: "public-read", // Make the uploaded image public-readable
+      ContentType: "image/jpeg",
+    };
+
+    // Upload the image to S3
+    const s3UploadResponse = await s3.upload(s3Params).promise();
+
+    // Get the URL of the uploaded image
+    const imageUrl = s3UploadResponse.Location;
+
+    console.log("image url " + imageUrl);
+    // Create a new furniture record in the database with today's date for Donated_date
+    const furniture = await Furniture.create({
+      name,
+      furniture_condition: condition,
+      years_used: yearsUsed,
+      image_url: imageUrl,
+      furniture_type: category,
+      furniture_description: furniture_description, // New column
+      Donated_date: new Date(), // Set Donated_date to today's date
+      user_id: user.id, // Use the retrieved user ID
+    });
+
+    res
+      .status(201)
+      .json({ message: "Furniture created successfully", furniture });
+  } catch (error) {
+    console.error("Error creating furniture:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
 
 // Function to get all available furniture records
 async function getAllFurniture(req, res) {
@@ -148,8 +230,9 @@ async function getFurnitureById(req, res) {
 // Function to update a specific furniture record by ID
 async function updateFurniture(req, res) {
   try {
-    const { id } = req.params;
+    // const { id } = req.params;
     const {
+      id,
       name,
       furniture_condition,
       years_used,
@@ -163,6 +246,7 @@ async function updateFurniture(req, res) {
     // Retrieve the furniture record by ID from the database
     const furniture = await Furniture.findByPk(id);
 
+    console.log(furniture.status);
     if (!furniture) {
       return res.status(404).json({ message: "Furniture not found" });
     }
