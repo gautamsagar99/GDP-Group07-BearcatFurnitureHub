@@ -1,5 +1,6 @@
 // controllers/furnitureController.js
 const { Furniture } = require("../models/furniture"); // Import your Furniture model
+const { Requested } = require("../models/requested"); 
 const { User } = require("../models/user");
 const fs = require("fs");
 const path = require("path");
@@ -229,8 +230,9 @@ async function getFurnitureById(req, res) {
 // Function to update a specific furniture record by ID
 async function updateFurniture(req, res) {
   try {
-    const { id } = req.params;
+    // const { id } = req.params;
     const {
+      id,
       name,
       furniture_condition,
       years_used,
@@ -244,6 +246,7 @@ async function updateFurniture(req, res) {
     // Retrieve the furniture record by ID from the database
     const furniture = await Furniture.findByPk(id);
 
+    console.log(furniture.status);
     if (!furniture) {
       return res.status(404).json({ message: "Furniture not found" });
     }
@@ -261,9 +264,9 @@ async function updateFurniture(req, res) {
       }
 
       // Delete the user record from the Requested table
-      // await Requested.destroy({
-      //   where: { user_id: user.id, furniture_id: id },
-      // });
+      await Requested.destroy({
+        where: { user_id: user.id, furniture_id: id },
+      });
     }
 
     // Update the furniture record properties if provided
