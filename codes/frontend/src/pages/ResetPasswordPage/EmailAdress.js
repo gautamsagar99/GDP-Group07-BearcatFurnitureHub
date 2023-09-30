@@ -76,7 +76,7 @@ const EmailAdress = () => {
             name="emailAddress"
             placeholder="Email Address"
             onChange={onchange}
-            required={true}
+            // required={true}
           />
 
           {emailAddress.length > 0 &&
