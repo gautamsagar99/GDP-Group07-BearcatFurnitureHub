@@ -1,17 +1,14 @@
 import axios from "axios";
+const apiUrl = process.env.REACT_APP_API_URL;
 
 export async function loginPost(userCredentials) {
   try {
     var authenticated = false;
-    const response = await axios.post(
-      "http://localhost:5000/login",
-      userCredentials,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await axios.post(apiUrl + "/login", userCredentials, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     if (response.data && response.data.token) {
       const jwtToken = response.data.token;
       localStorage.setItem("jwtToken", jwtToken);
@@ -30,15 +27,12 @@ export async function loginPost(userCredentials) {
 export async function RegisterPost(userCredentials) {
   try {
     var registered = false;
-    const response = await axios.post(
-      "http://localhost:5000/signup",
-      userCredentials,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await axios.post(apiUrl + "/signup", userCredentials, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("jwtToken"),
+      },
+    });
 
     if (response.status === 200) {
       registered = true;
@@ -52,15 +46,12 @@ export async function RegisterPost(userCredentials) {
 export async function EmailAddressPost(emailId) {
   try {
     var emailValid = false;
-    const response = await axios.post(
-      "http://localhost:5000/forgot-password",
-      emailId,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await axios.post(apiUrl + "/forgot-password", emailId, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("jwtToken"),
+      },
+    });
     if (response.status === 200) {
       emailValid = true;
     }
@@ -73,15 +64,12 @@ export async function EmailAddressPost(emailId) {
 export async function emailAddressAndCodePost(emailIdAndCode) {
   try {
     var isValid = false;
-    const response = await axios.post(
-      "http://localhost:5000/check-code",
-      emailIdAndCode,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await axios.post(apiUrl + "/check-code", emailIdAndCode, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("jwtToken"),
+      },
+    });
     if (response.status === 200) {
       isValid = true;
     }
@@ -96,11 +84,12 @@ export async function emailAddressAndPasswordPost(emailIdAndPassword) {
   try {
     var isValid = false;
     const response = await axios.post(
-      "http://localhost:5000/update-password",
+      apiUrl + "/update-password",
       emailIdAndPassword,
       {
         headers: {
           "Content-Type": "application/json",
+          Authorization: localStorage.getItem("jwtToken"),
         },
       }
     );
@@ -117,15 +106,16 @@ export async function UpdateFurniture(requestData) {
   try {
     var isUpdated = false;
     const response = await axios.put(
-      `http://localhost:5000/update-furniture`,
+      apiUrl + "/update-furniture",
       requestData,
       {
         headers: {
           "Content-Type": "application/json",
+          Authorization: localStorage.getItem("jwtToken"),
         },
       }
     );
-    console.log(response.status + " response from status")
+    console.log(response.status + " response from status");
     if (response.status === 200) {
       isUpdated = true;
       return isUpdated;
@@ -140,16 +130,17 @@ export async function getClosedFurniture() {
   const LoggedInUserEmail = {
     userEmail: localStorage.getItem("LoggedInUser"),
   };
-  console.log("userEmail",LoggedInUserEmail);
+  console.log("userEmail", LoggedInUserEmail);
   try {
     const response = await axios.post(
-      "http://localhost:5000/get-closed-furniture",
+      apiUrl + "/get-closed-furniture",
       LoggedInUserEmail,
       {
         headers: {
           "Access-Control-Allow-Headers": "*",
           "Access-Control-Allow-Origin": "*",
           "Content-Type": "application/json",
+          Authorization: localStorage.getItem("jwtToken"),
         },
       }
     );
@@ -162,22 +153,22 @@ export async function getClosedFurniture() {
     throw error; // Rethrow the error to handle it in your component
   }
 }
-
 
 export async function getAvailableAndRequestedFurniture() {
   const LoggedInUserEmail = {
     userEmail: localStorage.getItem("LoggedInUser"),
   };
-  console.log("userEmail",LoggedInUserEmail);
+  console.log("userEmail", LoggedInUserEmail);
   try {
     const response = await axios.post(
-      "http://localhost:5000/get-available-and-requested-furniture",
+      apiUrl + "/get-available-and-requested-furniture",
       LoggedInUserEmail,
       {
         headers: {
           "Access-Control-Allow-Headers": "*",
           "Access-Control-Allow-Origin": "*",
           "Content-Type": "application/json",
+          Authorization: localStorage.getItem("jwtToken"),
         },
       }
     );
@@ -190,25 +181,25 @@ export async function getAvailableAndRequestedFurniture() {
   }
 }
 
-
 export async function getMyRequests() {
   const LoggedInUserEmail = {
     userEmail: localStorage.getItem("LoggedInUser"),
   };
-  console.log("userEmail",LoggedInUserEmail);
+  console.log("userEmail", LoggedInUserEmail);
   try {
     const response = await axios.post(
-      "http://localhost:5000/get-requested-furniture-for-user",
+      apiUrl + "/get-requested-furniture-for-user",
       LoggedInUserEmail,
       {
         headers: {
           "Access-Control-Allow-Headers": "*",
           "Access-Control-Allow-Origin": "*",
           "Content-Type": "application/json",
+          Authorization: localStorage.getItem("jwtToken"),
         },
       }
     );
-      // console.log("response.data",response.data)
+    // console.log("response.data",response.data)
     if (response.status === 200) {
       return response.data; // Return the actual data
     }
@@ -220,14 +211,13 @@ export async function getMyRequests() {
 
 const setAuthToken = (token) => {
   if (token) {
+    console.log("Auth token " + token);
     // Apply the token to every request header
-    axios.defaults.headers.common['Authorization'] = `${token}`;
+    axios.defaults.headers.Authorization = `${token}`;
   } else {
     // If no token, remove the Authorization header
-    delete axios.defaults.headers.common['Authorization'];
+    delete axios.defaults.headers.Authorization;
   }
 };
 
 export default setAuthToken;
-
-
