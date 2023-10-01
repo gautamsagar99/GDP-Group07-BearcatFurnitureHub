@@ -15,6 +15,7 @@ export async function loginPost(userCredentials) {
     if (response.data && response.data.token) {
       const jwtToken = response.data.token;
       localStorage.setItem("jwtToken", jwtToken);
+      setAuthToken(jwtToken);
       console.log("jwt token: " + jwtToken);
     }
     if (response.status === 200) {
@@ -216,3 +217,17 @@ export async function getMyRequests() {
     throw error; // Rethrow the error to handle it in your component
   }
 }
+
+const setAuthToken = (token) => {
+  if (token) {
+    // Apply the token to every request header
+    axios.defaults.headers.common['Authorization'] = `${token}`;
+  } else {
+    // If no token, remove the Authorization header
+    delete axios.defaults.headers.common['Authorization'];
+  }
+};
+
+export default setAuthToken;
+
+
