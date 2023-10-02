@@ -220,4 +220,30 @@ const setAuthToken = (token) => {
   }
 };
 
+
+export async function CreateFurniture(formData) {
+
+  console.log("formData",formData)
+  try {
+    var isDonated = false;
+    const response = await axios.post( apiUrl + '/create-furniture',
+     formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      }
+    );
+    console.log(response.status + " response from status");
+    if (response.status === 201) {
+      isDonated = true;
+      return isDonated;
+    }
+    return false;
+  } catch (error) {
+    console.error("Error:", error); // Handle any errors
+  }
+}
+
 export default setAuthToken;
