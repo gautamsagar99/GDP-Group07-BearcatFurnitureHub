@@ -27,11 +27,12 @@
     padding-left: 33px;
 }
 
-.error {
+.errorOnLoginPage {
     color: red;
     font-size: 12px;
-    margin-top: 5px;
-    margin-left: 41.50px;
+    float: left;
+    margin-left: 40px;
+
 }
 
 .alert {
@@ -57,24 +58,37 @@
     margin-top: 8px;
     margin-bottom: 0px;
     text-align:center ;
+    margin-left: 5%;
+    margin-right: 10%;
+    border-bottom: 1px solid;
+    padding-bottom: 8px;
 }
 
 a:hover {
 
     color: black;
+
 }
 
-.text-field input {
+a{
+    text-decoration: none;
+
+}
+
+
+
+.rightFormContainer .text-field input {
     width: 283px;
     padding: 10px 5px 10px 15px;
-    margin:0 41.50px 0 41.50px;
+    margin:15px 41.50px 0 41.50px;
     border-radius: 6px;
 }
+
+
 
 .mb-3{
     height: 30px;
 }
-
 
 
 .forgotpassword{
@@ -88,10 +102,13 @@ input[type='email']{
     margin-top: 15px;
 }
 
-input[type='password']{
-margin-top: -5px;
-margin: -5px 15px 0px 15px;
-}
+/* input[name='passwordL']{
+    margin-top: -5px;
+    margin: -5px 10px 0px 10px;
+    } */
+
+
+
 
 .logo {
     height: 133px;

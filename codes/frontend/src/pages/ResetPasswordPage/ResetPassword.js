@@ -3,10 +3,12 @@ import Form from "react-bootstrap/Form";
 import Button from "../../components/Button/Button"
 import TextField from "../../components/TextField/Textfield";
 import { useNavigate } from "react-router-dom";
+import furniture from "../../assets/images/B3.png";
 import "./ResetPassword.css";
 import image from "../../assets/images/mainImage.jpg";
 import { emailAddressAndPasswordPost } from "../../utils/api";
 import CryptoJS from "crypto-js";
+
 
 function ResetPassword() {
   const [data, setData] = useState({
@@ -93,7 +95,11 @@ function ResetPassword() {
 
   return (
     <div className="form-middle">
-      <img src={image} alt="Logo" className="imglogo" />
+      
+      <div className="logoDiv">      
+      <img src={furniture} alt="Logo" className="logo"></img>
+      </div>
+      <div className="formDiv">
 
       <Form>
         <h1 className="heading">Reset Password</h1>
@@ -136,6 +142,7 @@ function ResetPassword() {
         <br />
         <Button label="Submit" type="button" color="primary" onClick={handleResetPassword}/>
       </Form>
+      </div>
     </div>
   );
 }

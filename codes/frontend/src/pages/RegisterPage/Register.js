@@ -151,7 +151,7 @@ function Register() {
        <TextField
             type="firstname"
             value={firstname}
-            name="firstnameR"
+            name="firstname"
             // label="First Name"
             // required={true}
             onChange={onchange}
@@ -166,7 +166,7 @@ function Register() {
           <TextField
             type="lastname"
             value={lastname}
-            name="lastnameR"
+            name="lastname"
             onChange={onchange}
             placeholder="Last Name"
             // label="Last Name"
@@ -185,7 +185,7 @@ function Register() {
           <TextField
             type="email"
             value={email}
-            name="emailR"
+            name="email"
             onChange={onchange}
             placeholder="Email Address"
             // label="Email"
@@ -202,7 +202,7 @@ function Register() {
           <TextField
             type="password"
             value={password}
-            name="passwordR"
+            name="password"
             onChange={onchange}
             placeholder="Password"
             // label="Password"
@@ -218,7 +218,7 @@ function Register() {
         <TextField
             type="password"
             value={confirmpassword}
-            name="confirmpasswordR"
+            name="confirmpassword"
             onChange={onchange}
             placeholder="Confirm Password"
             // label="Confirm Password"
