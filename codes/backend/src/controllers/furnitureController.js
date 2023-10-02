@@ -1,7 +1,13 @@
 // controllers/furnitureController.js
 const { Furniture } = require("../models/furniture"); // Import your Furniture model
-const { Requested } = require("../models/requested"); 
+const { Requested } = require("../models/requested");
 const { User } = require("../models/user");
+const {
+  sendDeleteFurnitureMail,
+  sendCancelFurnitureMail,
+  sendRequestFurnitureMail,
+  sendSucessfulFurnitureMail,
+} = require("../utils/mailer");
 const fs = require("fs");
 const path = require("path");
 const multer = require("multer");
@@ -113,7 +119,6 @@ s3.putBucketCors(corsParams, (err, data) => {
 // }
 
 async function createFurniture(req, res) {
-  const uploadedImage = req.files["image"][0];
   try {
     const {
       name,
@@ -123,7 +128,7 @@ async function createFurniture(req, res) {
       furniture_description,
       userEmail, // Add userEmail to the request body
     } = req.body;
-
+    const image = req.file.buffer;
     console.log(
       name +
         " " +
@@ -152,7 +157,7 @@ async function createFurniture(req, res) {
       Bucket: "bearcatbucket", // Use the furniture name as the bucket name
       Key: imageKey, // Use the unique filename for the image
       // Body: imageURL, // The image file
-      Body: uploadedImage,
+      Body: image,
       ACL: "public-read", // Make the uploaded image public-readable
       ContentType: "image/jpeg",
     };
@@ -191,12 +196,14 @@ async function getAllFurniture(req, res) {
     const { userEmail } = req.params;
     // Retrieve all furniture records with status "available" from the database
     const user = await User.findOne({ where: { email: userEmail } });
-    const { Op } = require('sequelize');
+    const { Op } = require("sequelize");
     const furnitureList = await Furniture.findAll({
-      where: { user_id: {
-        [Op.not]: user.id // Exclude rows with user_id equal to user.id
+      where: {
+        user_id: {
+          [Op.not]: user.id, // Exclude rows with user_id equal to user.id
+        },
+        status: "available",
       },
-         status: "available" },
     });
 
     res.status(200).json(furnitureList);
@@ -226,11 +233,10 @@ async function getFurnitureById(req, res) {
       return res.status(404).json({ message: "Available furniture not found" });
     }
 
-    
     const user = await User.findOne({ where: { id: furniture.user_id } });
     console.log(user.email);
     furniture.dataValues.user_email = user.email;
-    console.log(furniture)
+    console.log(furniture);
     res.status(200).json(furniture);
   } catch (error) {
     console.error("Error retrieving available furniture by ID:", error);
@@ -271,13 +277,22 @@ async function updateFurniture(req, res) {
       const user = await User.findOne({ where: { email: userEmail } });
 
       if (!user) {
-        return res.status(404).json({ message: "User not found" });
+        return res.status(404).json({ message: "Requested User not found" });
       }
 
       // Delete the user record from the Requested table
       await Requested.destroy({
         where: { user_id: user.id, furniture_id: id },
       });
+
+      const donated_user = await User.findOne({
+        where: { id: furniture.user_id },
+      });
+
+      if (!donated_user) {
+        return res.status(404).json({ message: "Donated User not found" });
+      }
+      sendCancelFurnitureMail(user.email, donated_user.email, furniture.name);
     }
 
     // Update the furniture record properties if provided
@@ -322,6 +337,30 @@ async function updateFurniture(req, res) {
         furniture_id: id,
         request_date: requestDate,
       });
+
+      const donated_user = await User.findOne({
+        where: { id: furniture.user_id },
+      });
+
+      if (!donated_user) {
+        return res.status(404).json({ message: "Donated User not found" });
+      }
+      sendRequestFurnitureMail(user.email, donated_user.email, furniture.name);
+    }
+
+    if (status === "closed") {
+      const donated_user = await User.findOne({
+        where: { id: furniture.user_id },
+      });
+
+      if (!donated_user) {
+        return res.status(404).json({ message: "Donated User not found" });
+      }
+      sendSucessfulFurnitureMail(
+        user.email,
+        donated_user.email,
+        furniture.name
+      );
     }
 
     res
@@ -461,6 +500,13 @@ async function deleteFurniture(req, res) {
     furniture.status = "deleted";
     await furniture.save();
 
+    const user = await User.findOne({ where: { id: furniture.user_id } });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    sendDeleteFurnitureMail(user.email, furniture.name);
     res.status(200).json({ message: "Furniture marked as deleted" });
   } catch (error) {
     console.error("Error marking furniture as deleted:", error);
@@ -595,9 +641,7 @@ async function getRequestedFurnitureForUser(req, res) {
         furniture &&
         (furniture.status === "available" || furniture.status === "requested")
       ) {
-        requestedFurniture.push(
-furniture,
-        );
+        requestedFurniture.push(furniture);
       }
     }
 
@@ -690,6 +734,25 @@ async function searchFurniture(req, res) {
   }
 }
 
+// Function to get all furniture records with status "available" or "requested" for a specific user
+async function getUserDetails(req, res) {
+  try {
+    const { userEmail } = req.body;
+
+    // Find the user by email to get the user ID
+    const user = await User.findOne({ where: { email: userEmail } });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Error retrieving user Details:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
 // Add more controller functions for updating and deleting furniture records as needed
 module.exports = {
   createFurniture,
@@ -703,4 +766,5 @@ module.exports = {
   getRequestedFurnitureForUser,
   getFurnitureForUser,
   searchFurniture,
+  getUserDetails,
 };
