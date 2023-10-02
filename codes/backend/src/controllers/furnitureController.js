@@ -1,6 +1,6 @@
 // controllers/furnitureController.js
 const { Furniture } = require("../models/furniture"); // Import your Furniture model
-const { Requested } = require("../models/requested"); 
+const { Requested } = require("../models/requested");
 const { User } = require("../models/user");
 const fs = require("fs");
 const path = require("path");
@@ -113,7 +113,6 @@ s3.putBucketCors(corsParams, (err, data) => {
 // }
 
 async function createFurniture(req, res) {
-  const uploadedImage = req.files["image"][0];
   try {
     const {
       name,
@@ -123,7 +122,7 @@ async function createFurniture(req, res) {
       furniture_description,
       userEmail, // Add userEmail to the request body
     } = req.body;
-
+    const image = req.file.buffer;
     console.log(
       name +
         " " +
@@ -152,7 +151,7 @@ async function createFurniture(req, res) {
       Bucket: "bearcatbucket", // Use the furniture name as the bucket name
       Key: imageKey, // Use the unique filename for the image
       // Body: imageURL, // The image file
-      Body: uploadedImage,
+      Body: image,
       ACL: "public-read", // Make the uploaded image public-readable
       ContentType: "image/jpeg",
     };
@@ -191,12 +190,14 @@ async function getAllFurniture(req, res) {
     const { userEmail } = req.params;
     // Retrieve all furniture records with status "available" from the database
     const user = await User.findOne({ where: { email: userEmail } });
-    const { Op } = require('sequelize');
+    const { Op } = require("sequelize");
     const furnitureList = await Furniture.findAll({
-      where: { user_id: {
-        [Op.not]: user.id // Exclude rows with user_id equal to user.id
+      where: {
+        user_id: {
+          [Op.not]: user.id, // Exclude rows with user_id equal to user.id
+        },
+        status: "available",
       },
-         status: "available" },
     });
 
     res.status(200).json(furnitureList);
@@ -226,11 +227,10 @@ async function getFurnitureById(req, res) {
       return res.status(404).json({ message: "Available furniture not found" });
     }
 
-    
     const user = await User.findOne({ where: { id: furniture.user_id } });
     console.log(user.email);
     furniture.dataValues.user_email = user.email;
-    console.log(furniture)
+    console.log(furniture);
     res.status(200).json(furniture);
   } catch (error) {
     console.error("Error retrieving available furniture by ID:", error);
@@ -595,9 +595,7 @@ async function getRequestedFurnitureForUser(req, res) {
         furniture &&
         (furniture.status === "available" || furniture.status === "requested")
       ) {
-        requestedFurniture.push(
-furniture,
-        );
+        requestedFurniture.push(furniture);
       }
     }
 
