@@ -2,6 +2,12 @@
 const { Furniture } = require("../models/furniture"); // Import your Furniture model
 const { Requested } = require("../models/requested");
 const { User } = require("../models/user");
+const {
+  sendDeleteFurnitureMail,
+  sendCancelFurnitureMail,
+  sendRequestFurnitureMail,
+  sendSucessfulFurnitureMail,
+} = require("../utils/mailer");
 const fs = require("fs");
 const path = require("path");
 const multer = require("multer");
@@ -271,13 +277,22 @@ async function updateFurniture(req, res) {
       const user = await User.findOne({ where: { email: userEmail } });
 
       if (!user) {
-        return res.status(404).json({ message: "User not found" });
+        return res.status(404).json({ message: "Requested User not found" });
       }
 
       // Delete the user record from the Requested table
       await Requested.destroy({
         where: { user_id: user.id, furniture_id: id },
       });
+
+      const donated_user = await User.findOne({
+        where: { id: furniture.user_id },
+      });
+
+      if (!donated_user) {
+        return res.status(404).json({ message: "Donated User not found" });
+      }
+      sendCancelFurnitureMail(user.email, donated_user.email, furniture.name);
     }
 
     // Update the furniture record properties if provided
@@ -322,6 +337,30 @@ async function updateFurniture(req, res) {
         furniture_id: id,
         request_date: requestDate,
       });
+
+      const donated_user = await User.findOne({
+        where: { id: furniture.user_id },
+      });
+
+      if (!donated_user) {
+        return res.status(404).json({ message: "Donated User not found" });
+      }
+      sendRequestFurnitureMail(user.email, donated_user.email, furniture.name);
+    }
+
+    if (status === "closed") {
+      const donated_user = await User.findOne({
+        where: { id: furniture.user_id },
+      });
+
+      if (!donated_user) {
+        return res.status(404).json({ message: "Donated User not found" });
+      }
+      sendSucessfulFurnitureMail(
+        user.email,
+        donated_user.email,
+        furniture.name
+      );
     }
 
     res
@@ -461,6 +500,13 @@ async function deleteFurniture(req, res) {
     furniture.status = "deleted";
     await furniture.save();
 
+    const user = await User.findOne({ where: { id: furniture.user_id } });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    sendDeleteFurnitureMail(user.email, furniture.name);
     res.status(200).json({ message: "Furniture marked as deleted" });
   } catch (error) {
     console.error("Error marking furniture as deleted:", error);
