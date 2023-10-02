@@ -734,6 +734,25 @@ async function searchFurniture(req, res) {
   }
 }
 
+// Function to get all furniture records with status "available" or "requested" for a specific user
+async function getUserDetails(req, res) {
+  try {
+    const { userEmail } = req.body;
+
+    // Find the user by email to get the user ID
+    const user = await User.findOne({ where: { email: userEmail } });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Error retrieving user Details:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
 // Add more controller functions for updating and deleting furniture records as needed
 module.exports = {
   createFurniture,
@@ -747,4 +766,5 @@ module.exports = {
   getRequestedFurnitureForUser,
   getFurnitureForUser,
   searchFurniture,
+  getUserDetails,
 };
