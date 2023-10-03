@@ -356,6 +356,25 @@ async function updateFurniture(req, res) {
       if (!donated_user) {
         return res.status(404).json({ message: "Donated User not found" });
       }
+
+      const requested_user = await Requested.findOne({
+        where: { furniture_id: id },
+      });
+
+      if (!requested_user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      console.log("requested user " + requested_user);
+
+      const user = await User.findOne({
+        where: { id: requested_user.user_id },
+      });
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      console.log("requested user " + user);
       sendSucessfulFurnitureMail(
         user.email,
         donated_user.email,
