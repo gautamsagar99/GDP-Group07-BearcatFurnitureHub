@@ -246,4 +246,32 @@ export async function CreateFurniture(formData) {
   }
 }
 
+export async function getUserDetails() {
+  const LoggedInUserEmail = {
+    userEmail: localStorage.getItem("LoggedInUser"),
+  };
+  console.log("userEmail in user", LoggedInUserEmail);
+  try {
+    const response = await axios.post(
+      apiUrl + "/get-user-details",
+      LoggedInUserEmail,
+      {
+        headers: {
+          "Access-Control-Allow-Headers": "*",
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      }
+    );
+    // console.log("response.data",response.data)
+    if (response.status === 200) {
+      return response.data; // Return the actual data
+    }
+  } catch (error) {
+    console.error("Error:", error); // Handle any errors
+    throw error; // Rethrow the error to handle it in your component
+  }
+}
+
 export default setAuthToken;
