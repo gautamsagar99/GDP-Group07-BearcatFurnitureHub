@@ -26,4 +26,14 @@
     color: white;
   }
 
+  .edit {
+    background-color: orange;
+    color: white;
+  }
+
+  .message {
+    background-color: blue;
+    color: white;
+  }
+
   

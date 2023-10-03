@@ -1,42 +1,78 @@
 /* Tabs Container */
 .tabs-container {
-    width: 100%;
-    max-width: 1200px; /* Adjust the maximum width as needed */
-    margin: 50px auto 0;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    overflow: hidden;
-  }
-  
-  /* Tab Header */
-  .tab-header {
-    display: flex;
-    justify-content: space-between;
-    background-color: #f0f0f0;
-  }
-  
-  /* Individual Tab */
-  .tab {
-    flex: 1;
-    padding: 10px 15px;
-    text-align: center;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .tab:hover {
-    background-color: #ddd;
-  }
-  
-  /* Active Tab */
-  .tab.active {
-    background-color: #006747;
-    color: #fff;
-  }
-  
-  /* Tab Content */
-  .tab-content {
-    padding: 15px;
-    background-color: #fff;
-  }
-  
+  width: 100%;
+  max-width: 1200px; /* Adjust the maximum width as needed */
+  margin: 50px auto 0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+/* Tab Header */
+.tab-header {
+  display: flex;
+  justify-content: space-between;
+  background-color: #f0f0f0;
+}
+
+/* Individual Tab */
+.tab {
+  flex: 1;
+  padding: 10px 15px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.tab:hover {
+  background-color: #ddd;
+}
+
+/* Active Tab */
+.tab.active {
+  background-color: #006747;
+  color: #fff;
+}
+
+/* Tab Content */
+.tab-content {
+  padding: 15px;
+  background-color: #fff;
+}
+
+.card-container-mydonations {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.card-mydonations {
+  flex: 1; /* Each card takes full width */
+  max-width: 100%; /* Ensure cards don't exceed the container width */
+  margin: 16px 0; /* Adjust vertical margin to separate cards */
+}
+
+.card-container-activedonations {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.card-activedonations {
+  flex: 1; /* Each card takes full width */
+  max-width: 100%; /* Ensure cards don't exceed the container width */
+  margin: 16px 0; /* Adjust vertical margin to separate cards */
+}
+
+.card-container-myrequests {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.card-myrequests {
+  flex: 1; /* Each card takes full width */
+  max-width: 100%; /* Ensure cards don't exceed the container width */
+  margin: 16px 0; /* Adjust vertical margin to separate cards */
+}
+

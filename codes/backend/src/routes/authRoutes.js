@@ -4,34 +4,36 @@ const jwt = require("jsonwebtoken");
 
 // Define your middleware for token verification
 function verifyToken(req, res, next) {
-  // console.log("verified");
-  // next();
-  // if (
-  //   req.originalUrl === "/login" ||
-  //   req.originalUrl === "/signup" ||
-  //   req.originalUrl === "/register" ||
-  //   req.originalUrl === "/create-furniture" ||
-  //   req.originalUrl === "/get-furniture" ||
-  //   req.originalUrl === "/forgot-password" ||
-  //   req.originalUrl === "/check-code" ||
-  //   req.originalUrl === "/update-password" ||
-  //   req.originalUrl === "/test"
-  // ) {
-  //   return next(); // Skip token verification for these routes
-  // }
+  // console.log(JSON.stringify(req.headers, null, 2));
+  // console.log(req.originalUrl);
+  if (
+    req.originalUrl === "/login" ||
+    req.originalUrl === "/signup" ||
+    req.originalUrl === "/register" ||
+    // req.originalUrl === "/create-furniture" ||
+    // req.originalUrl === "/get-furniture" ||
+    // req.originalUrl === "/forgot-password" ||
+    // req.originalUrl === "/check-code" ||
+    // req.originalUrl === "/update-password" ||
+    req.originalUrl === "/test"
+  ) {
+    return next(); // Skip token verification for these routes
+  }
 
-  // const token = req.headers.authorization; // Get the token from the request headers
+  const token = req.headers.authorization; // Get the token from the request headers
+  // console.log("header token " + token);
 
-  // if (!token) {
-  //   return res.status(401).json({ message: "Authorization token is missing" });
-  // }
+  if (!token) {
+    return res.status(401).json({ message: "Authorization token is missing" });
+  }
 
   try {
     // Verify the token
-    // const decoded = jwt.verify(token, "1234"); // Use the same secret key you used to sign the token
+    const decoded = jwt.verify(token, "1234"); // Use the same secret key you used to sign the token
 
-    // // Attach the decoded user information to the request for later use
-    // req.user = decoded;
+    // Attach the decoded user information to the request for later use
+    req.user = decoded;
+    // console.log("decoded message " + JSON.stringify(decoded, null, 2))
 
     // Continue to the next middleware or route handler
     next();
