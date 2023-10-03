@@ -35,6 +35,6 @@ router.post(
 );
 router.post("/get-furniture-for-user", furnitureController.getFurnitureForUser);
 router.post("/search-furniture", furnitureController.searchFurniture);
-router.get("/get-user-details", furnitureController.getUserDetails);
+router.post("/get-user-details", furnitureController.getUserDetails);
 
 module.exports = router;
