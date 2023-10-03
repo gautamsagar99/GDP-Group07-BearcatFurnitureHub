@@ -5,7 +5,6 @@ import TextField from "../../components/TextField/Textfield";
 import { useNavigate } from "react-router-dom";
 import furniture from "../../assets/images/B3.png";
 import "./ResetPassword.css";
-// import image from "../../assets/images/mainImage.jpg";
 import { emailAddressAndPasswordPost } from "../../utils/api";
 import CryptoJS from "crypto-js";
 
@@ -95,57 +94,59 @@ function ResetPassword() {
   };
 
   return (
-    <div className="form-middle">
+    <div className="form-inmiddle">
       <div className="logoDiv">
         <img src={furniture} alt="Logo" className="logo"></img>
       </div>
-      <div className="formDiv">
-        <Form>
-          <h1 className="heading">Reset Password</h1>
-          <br />
-          <Form.Group className="mb-7" controlId="formBasicemail">
-            <TextField
-              type="email"
-              value={email}
-              name="email"
-              onChange={onchange}
-              placeholder="Email Address"
-              // disabled="true"
+      <div className="formDivRP">
+        <div className="rightFormContainer">
+          <Form>
+            <h1 className="heading">Reset Password</h1>
+            <br />
+            <Form.Group className="mb-3" controlId="formBasicemail">
+              <TextField
+                type="email"
+                value={email}
+                name="email"
+                onChange={onchange}
+                placeholder="Email Address"
+                // disabled="true"
+              />
+              {errors.email && <div className="error">{errors.email}</div>}
+            </Form.Group>
+            <br />
+            <Form.Group className="mb-3" controlId="formBasicpassword">
+              <TextField
+                type="password"
+                value={newPassword}
+                name="newPassword"
+                onChange={onchange}
+                placeholder="New Password"
+              />
+            </Form.Group>
+            <br />
+            <Form.Group className="mb-3" controlId="formBasicconfirmpassword">
+              <TextField
+                type="password"
+                value={confirmPassword}
+                name="confirmPassword"
+                onChange={onchange}
+                placeholder="Confirm Password"
+              />
+              {errors.confirmPassword && (
+                <div className="error">{errors.confirmPassword}</div>
+              )}
+            </Form.Group>
+            <br />
+            <br />
+            <Button
+              label="Submit"
+              type="button"
+              color="primary"
+              onClick={handleResetPassword}
             />
-            {errors.email && <div className="error">{errors.email}</div>}
-          </Form.Group>
-          <br />
-          <Form.Group className="mb-3" controlId="formBasicpassword">
-            <TextField
-              type="password"
-              value={newPassword}
-              name="newPassword"
-              onChange={onchange}
-              placeholder="New Password"
-            />
-          </Form.Group>
-          <br />
-          <Form.Group className="mb-3" controlId="formBasicconfirmpassword">
-            <TextField
-              type="password"
-              value={confirmPassword}
-              name="confirmPassword"
-              onChange={onchange}
-              placeholder="Confirm Password"
-            />
-            {errors.confirmPassword && (
-              <div className="error">{errors.confirmPassword}</div>
-            )}
-          </Form.Group>
-          <br />
-          <br />
-          <Button
-            label="Submit"
-            type="button"
-            color="primary"
-            onClick={handleResetPassword}
-          />
-        </Form>
+          </Form>
+        </div>
       </div>
     </div>
   );
