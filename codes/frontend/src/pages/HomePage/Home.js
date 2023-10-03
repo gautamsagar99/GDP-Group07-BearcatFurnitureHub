@@ -58,6 +58,9 @@ function Home() {
     });
     // console.log("nameMatches",nameMatches);
 
+
+    
+
     const typeMatches = searchQueryWords.some((word) =>
       lowerItemType.includes(word)
     );
@@ -80,6 +83,17 @@ function Home() {
     }
     return false;
   });
+
+  //useEffect to enable to scroll on home page
+useEffect(() => {
+  // Set a class on the body when the component mounts
+  document.body.classList.add('custom-body-class');
+
+  // Cleanup function to remove the class when the component unmounts
+  return () => {
+    document.body.classList.remove('custom-body-class');
+  };
+}, []);
 
   return (
     <div>

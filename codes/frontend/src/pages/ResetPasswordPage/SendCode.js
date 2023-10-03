@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Button from "../../components/Button/Button"
 import TextField from "../../components/TextField/Textfield";
 import Form from "react-bootstrap/Form";
-import imges from "../../assets/images/mainImage.jpg";
+import furniture from "../../assets/images/B3.png";
 import { useNavigate } from "react-router-dom";
 import { emailAddressAndCodePost } from "../../utils/api";
 import CryptoJS from "crypto-js";
@@ -72,7 +72,10 @@ const SendCode = () => {
 
   return (
     <div className="form-inmiddle">
-      <img src={imges} alt="Logo" className="imglogo"></img>
+            <div className="logoDiv">      
+      <img src={furniture} alt="Logo" className="logo"></img>
+      </div>
+      <div className="formDiv">
       <Form>
         <Form.Group className="mb-3" controlId="sendCode">
 
@@ -88,6 +91,7 @@ const SendCode = () => {
         <br />
         <Button label="Validate" color="primary" type="button" onClick={handleValidation}/>
       </Form>
+      </div>
     </div>
   );
 };
