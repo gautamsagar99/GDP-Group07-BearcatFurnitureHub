@@ -1,20 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import './DonateFurniture.css';
-import Navbar from '../../components/Navbar';
-import Button from '../../components/Button/Button';
-import { CreateFurniture } from '../../utils/api';
-import { CSSTransition } from 'react-transition-group';
+import React, { useState, useEffect } from "react";
+import "./DonateFurniture.css";
+import Navbar from "../../components/Navbar";
+import Button from "../../components/Button/Button";
+import { CreateFurniture } from "../../utils/api";
+import { CSSTransition } from "react-transition-group";
 
 const DonateFurniture = () => {
-  const [name, setName] = useState('');
-  const [yearsUsed, setYearsUsed] = useState('');
-  const [condition, setCondition] = useState('Good');
-  const [Category, setCategory] = useState('Sofa');
-  const [description, setDescription] = useState('');
+  const [name, setName] = useState("");
+  const [yearsUsed, setYearsUsed] = useState("1");
+  const [condition, setCondition] = useState("Good");
+  const [Category, setCategory] = useState("Sofa");
+  const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
-  const userEmail = localStorage.getItem('LoggedInUser');
+  const userEmail = localStorage.getItem("LoggedInUser");
 
-  const [showFurnitureDonatedMessage, setShowFurnitureDonatedMessage] = useState(false);
+  const [showFurnitureDonatedMessage, setShowFurnitureDonatedMessage] =
+    useState(false);
 
   useEffect(() => {
     if (showFurnitureDonatedMessage) {
@@ -54,26 +55,26 @@ const DonateFurniture = () => {
 
     // Create an object with all the form data
     const formData = new FormData();
-    formData.append('name', name);
-    formData.append('yearsUsed', yearsUsed);
-    formData.append('condition', condition);
-    formData.append('category', Category);
-    formData.append('furniture_description', description);
-    formData.append('image', image);
-    formData.append('userEmail', userEmail);
+    formData.append("name", name);
+    formData.append("yearsUsed", yearsUsed);
+    formData.append("condition", condition);
+    formData.append("category", Category);
+    formData.append("furniture_description", description);
+    formData.append("image", image);
+    formData.append("userEmail", userEmail);
 
     // Send formData to the server using your API function
     const responseResult = await CreateFurniture(formData);
 
     if (responseResult === true) {
-      console.log('Furniture Created Successfully');
-      setName('');
-    setYearsUsed('');
-    setCondition('Good');
-    setCategory('Sofa');
-    setDescription('');
-    setImage(null);
-    setShowFurnitureDonatedMessage(!showFurnitureDonatedMessage);
+      console.log("Furniture Created Successfully");
+      setName("");
+      setYearsUsed("1");
+      setCondition("Good");
+      setCategory("Sofa");
+      setDescription("");
+      setImage(null);
+      setShowFurnitureDonatedMessage(!showFurnitureDonatedMessage);
     }
   };
 
@@ -82,11 +83,16 @@ const DonateFurniture = () => {
       <Navbar />
 
       <div className="container">
-      <CSSTransition in={showFurnitureDonatedMessage} timeout={30}  classNames="fade"  unmountOnExit>
-        <div className="furnitureaddedpopup">
-        Furniture Added Successfully
-        </div>
-      </CSSTransition>
+        <CSSTransition
+          in={showFurnitureDonatedMessage}
+          timeout={30}
+          classNames="fade"
+          unmountOnExit
+        >
+          <div className="furnitureaddedpopup">
+            Furniture Added Successfully
+          </div>
+        </CSSTransition>
         <h2 className="text-center">Donate Furniture</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
