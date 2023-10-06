@@ -15,6 +15,8 @@ import { useNavigate } from "react-router-dom";
 import CryptoJS from "crypto-js";
 import { loginPost } from "../../utils/api";
 
+
+
 const Login = () => {
   const [data, setData] = useState({ emailAddress: "", password: "" });
   // const [showValidationMessage, setShowValidationMessage] = useState(false);
@@ -122,7 +124,7 @@ const Login = () => {
             {emailAddress.length > 0 &&
               !emailAddress.includes("nwmissouri.edu") && (
                 <span
-                  className="error"
+                  className="errorOnLoginPage"
                   style={{ color: "red", display: "block" }}
                 >
                   Please enter @nwmissouri.edu email
@@ -141,6 +143,7 @@ const Login = () => {
               onChange={onchange}
               // required={true}
             />
+
           </Form.Group>
           <br />
 

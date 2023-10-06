@@ -1,0 +1,90 @@
+.card-rectangular-myrequests {
+    display: flex;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    background-color: #fff;
+    width: 100%; /* Set all cards to have 100% width */
+    max-width: 500px; /* Set a maximum width for each card */
+    height: auto; /* Let the height adjust to content */
+    padding: 16px; /* Add padding inside each card */
+    box-sizing: border-box; /* Include padding and border in width calculation */
+    display: flex;
+    align-items: center; /* Vertically center card contents */
+  }
+  
+  .card-image-myrequests {
+    width: 200px; /* Set the width for all images */
+    height: 200px; /* Set the height for all images */
+    object-fit: cover;
+    border-radius: 4px;
+    flex: 1; /* Allow the image to grow and shrink as needed */
+    margin-right: 16px; /* Add spacing between image and details */
+  }
+  
+  .card-image-myrequests img {
+    max-width: 150px;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+  
+  .card-details-myrequests {
+    flex: 2; /* Allow details to grow and take more space */
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .card-name-myrequests {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+  
+  .card-condition-myrequests,
+  .card-status-myrequests{
+    margin: 4px 0; /* Add spacing between details */
+  }
+
+  .button-container-myrequests {
+    display: flex; /* Use flexbox to arrange children horizontally */
+    gap: 2px; /* Add some space between the buttons */
+  }
+
+  .message-button-myrequests {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    border: none;
+    background-color: #1877f2;
+    color: white;
+    margin: auto;
+    width: 100px;
+    display: block;
+    border-radius: 5px;
+    padding: 10px 0;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  
+  .cancel-button-myrequests {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    border: none;
+    background-color: red;
+    color: white;
+    margin: auto;
+    width: 150px;
+    display: block;
+    border-radius: 5px;
+    padding: 10px 0;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  

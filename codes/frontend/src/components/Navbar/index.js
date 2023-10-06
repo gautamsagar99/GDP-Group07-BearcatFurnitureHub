@@ -10,7 +10,8 @@ import {
 	NavNotificationBtnLink,
 	SearchBtnLink
 } from './NavbarElements';
-import { FaBell, FaUser, FaEnvelope } from 'react-icons/fa';
+import {FaUser, FaEnvelope } from 'react-icons/fa';
+// import { FaBell } from 'react-icons/fa';
 
 
 
@@ -21,16 +22,19 @@ const Navbar = ({ onSearch, onResetSearch }) => {
 		  onSearch(searchQuery);
 		};
 		const allProducts = () => {
-			onResetSearch();
-			// setSearchQuery = ""
-			// onSearch(" ");
-			SearchInput.placeholder ="Search for products"
-			setSearchQuery('');
+			if(searchQuery !== ""){
+				onResetSearch();
+				// setSearchQuery = ""
+				// onSearch(" ");
+				SearchInput.placeholder ="Search for products"
+				setSearchQuery('');
+			}
+			
 		};
-	const bellIconStyle = {
-		color: 'white', // Change the color to white
-		fontSize: '24px', // Increase the font size
-	};
+	// const bellIconStyle = {
+	// 	color: 'white', // Change the color to white
+	// 	fontSize: '24px', // Increase the font size
+	// };
 	const profileIconStyle = {
 		color: 'white', // Change the color to white
 		fontSize: '24px', // Increase the font size
@@ -69,9 +73,9 @@ const Navbar = ({ onSearch, onResetSearch }) => {
 				<SearchBtnLink onClick={handleSearch}>Search</SearchBtnLink>
 				
 				<NavBtn>
-					<NavNotificationBtnLink>
+					{/* <NavNotificationBtnLink>
 						<FaBell style={bellIconStyle} />
-					</NavNotificationBtnLink>
+					</NavNotificationBtnLink> */}
 					<NavNotificationBtnLink>
 						<FaEnvelope style={messageIconStyle} />
 					</NavNotificationBtnLink>

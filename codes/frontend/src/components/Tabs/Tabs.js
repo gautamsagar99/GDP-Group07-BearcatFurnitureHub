@@ -1,45 +1,69 @@
-import React, { useState, useEffect } from 'react';
-import './Tabs.css'; // Import the CSS file for styling
-import { getFurnitureForUser } from "../../utils/api";
+import React, { useState, useEffect, useCallback } from 'react';
+import './Tabs.css';
+import { getClosedFurniture, getAvailableAndRequestedFurniture, getMyRequests } from '../../utils/api';
+import MyDonations from '../../components/MyDonations/MyDonations';
+import ActiveDonations from '../../components/ActiveDonations/ActiveDonations';
+// import MyRequests from '../../components/MyRequests/MyRequests';
 
 const Tabs = () => {
   const [activeTab, setActiveTab] = useState('My Donations');
-  const [tabData, setTabData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [MyDonationsData, setMyDonationsData] = useState([]);
+  const [ActiveDonationsData, setActiveDonationsData] = useState([]);
+  const [MyRequestsData, setMyRequestsData] = useState([]);
 
-  const fetchDataForTab = async (tabName) => {
+  const fetchDataForTab = useCallback(async (tabName) => {
     try {
       setIsLoading(true);
-      var data = ""
-      if(tabName === "My Donations"){
-        data = await getFurnitureForUser();
-      }
-       // Fetch data asynchronously
 
-      // Store the data for the tab
-      setTabData((prevData) => ({
-        ...prevData,
-        [tabName]: data,
-      }));
+      if (tabName === "My Donations") {
+        const donationsData = await getClosedFurniture();
+        setMyDonationsData(donationsData);
+      }
+      if (tabName === "Active Donations") {
+        const donationsData = await getAvailableAndRequestedFurniture();
+        setActiveDonationsData(donationsData);
+      }
+      if (tabName === "My Requests") {
+        const requestsData = await getMyRequests();
+        console.log("MyRequestsData",requestsData)
+        setMyRequestsData(requestsData);
+      }
+      setIsLoading(false);
     } catch (error) {
       console.error('Error fetching data:', error);
-    } finally {
       setIsLoading(false);
     }
-  };
+  }, [setMyDonationsData, setActiveDonationsData, setMyRequestsData]);
 
   useEffect(() => {
     fetchDataForTab(activeTab);
-  }, [activeTab]);
+  }, [activeTab, fetchDataForTab]);
 
   const handleTabClick = (tabName) => {
     setActiveTab(tabName);
   };
 
+  const renderNoItemsMessage = (tabName) => {
+    // Define different "No items" messages for each tab
+    const messages = {
+      'My Donations': 'No successful donations found.',
+      'Active Donations': 'No active donations found.',
+      'My Requests': 'No requests found.',
+    };
+
+    return <p>{messages[tabName]}</p>;
+  };
+
+  // const removeCard = (idToRemove) => {
+  //   const updatedData = MyRequestsData.filter((item) => item.id !== idToRemove);
+  //   setMyRequestsData(updatedData);
+  // };
+
   return (
     <div className="tabs-container">
       <div className="tab-header">
-      <div
+        <div
           className={`tab ${activeTab === 'My Donations' ? 'active' : ''}`}
           onClick={() => handleTabClick('My Donations')}
         >
@@ -60,15 +84,66 @@ const Tabs = () => {
       </div>
       <div className="tab-content">
         {isLoading && <p>Loading...</p>}
-        {activeTab === 'My Donations' && (
-          <p>Content for My Donations tab: {tabData['My Donations']}</p>
-        )}
-        {activeTab === 'Active Donations' && (
-          <p>Content for Active Donations tab: {tabData['Active Donations']}</p>
-        )}
-        {activeTab === 'My Requests' && (
-          <p>Content for My Requests tab: {tabData['My Requests']}</p>
-        )}
+        {activeTab === 'My Donations' && MyDonationsData.length > 0 ? (
+          <div className="card-container-mydonations">
+            {MyDonationsData.map((item, index) => (
+              <MyDonations
+                key={index}
+                status={item.status}
+                imageSrc={item.image_url}
+                label={item.name}
+                condition={item.furniture_condition}
+              />
+            ))}
+          </div>
+        ) : activeTab === 'My Donations' ? (
+          renderNoItemsMessage('My Donations')
+        ) : null}
+        {activeTab === 'Active Donations' && ActiveDonationsData.length > 0 ? (
+          <div className="card-container-activedonations">
+            {ActiveDonationsData.map((item, index) => (
+              <ActiveDonations
+                key={index}
+                productId={item.id}
+                status={item.status}
+                imageSrc={item.image_url}
+                label={item.name}
+                condition={item.furniture_condition}
+              />
+            ))}
+          </div>
+        ) : activeTab === 'Active Donations' ? (
+          renderNoItemsMessage('Active Donations')
+        ) : null}
+        {activeTab === 'My Requests' && MyRequestsData.length > 0 ? (
+          <div className="card-container-myrequests">
+            {MyRequestsData.map((item, index) => (
+              // <MyRequests
+              //   key={index}
+              //   id={item.id}
+              //   years_used = {item.years_used}
+              //   furniture_type = {item.furniture_type}
+              //   furniture_description = {item.furniture_description}
+              //   productId={item.id}
+              //   status={item.status}
+              //   imageSrc={item.image_url}
+              //   label={item.name}
+              //   condition={item.furniture_condition}
+              //   removeCard={removeCard}
+              // />
+              <ActiveDonations
+                key={index}
+                productId={item.id}
+                status={item.status}
+                imageSrc={item.image_url}
+                label={item.name}
+                condition={item.furniture_condition}
+              />
+            ))}
+          </div>
+        ) : activeTab === 'My Requests' ? (
+          renderNoItemsMessage('My Requests')
+        ) : null}
       </div>
     </div>
   );

@@ -1,21 +1,18 @@
 import axios from "axios";
+const apiUrl = process.env.REACT_APP_API_URL;
 
 export async function loginPost(userCredentials) {
   try {
     var authenticated = false;
-    const response = await axios.post(
-      "http://localhost:5000/login",
-      userCredentials,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
+    const response = await axios.post(apiUrl + "/login", userCredentials, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     if (response.data && response.data.token) {
       const jwtToken = response.data.token;
       localStorage.setItem("jwtToken", jwtToken);
+      setAuthToken(jwtToken);
       console.log("jwt token: " + jwtToken);
     }
     if (response.status === 200) {
@@ -30,15 +27,12 @@ export async function loginPost(userCredentials) {
 export async function RegisterPost(userCredentials) {
   try {
     var registered = false;
-    const response = await axios.post(
-      "http://localhost:5000/signup",
-      userCredentials,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await axios.post(apiUrl + "/signup", userCredentials, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("jwtToken"),
+      },
+    });
 
     if (response.status === 200) {
       registered = true;
@@ -52,15 +46,12 @@ export async function RegisterPost(userCredentials) {
 export async function EmailAddressPost(emailId) {
   try {
     var emailValid = false;
-    const response = await axios.post(
-      "http://localhost:5000/forgot-password",
-      emailId,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await axios.post(apiUrl + "/forgot-password", emailId, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("jwtToken"),
+      },
+    });
     if (response.status === 200) {
       emailValid = true;
     }
@@ -73,15 +64,12 @@ export async function EmailAddressPost(emailId) {
 export async function emailAddressAndCodePost(emailIdAndCode) {
   try {
     var isValid = false;
-    const response = await axios.post(
-      "http://localhost:5000/check-code",
-      emailIdAndCode,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await axios.post(apiUrl + "/check-code", emailIdAndCode, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("jwtToken"),
+      },
+    });
     if (response.status === 200) {
       isValid = true;
     }
@@ -96,11 +84,12 @@ export async function emailAddressAndPasswordPost(emailIdAndPassword) {
   try {
     var isValid = false;
     const response = await axios.post(
-      "http://localhost:5000/update-password",
+      apiUrl + "/update-password",
       emailIdAndPassword,
       {
         headers: {
           "Content-Type": "application/json",
+          Authorization: localStorage.getItem("jwtToken"),
         },
       }
     );
@@ -117,45 +106,172 @@ export async function UpdateFurniture(requestData) {
   try {
     var isUpdated = false;
     const response = await axios.put(
-      `http://localhost:5000/update-furniture`,
+      apiUrl + "/update-furniture",
       requestData,
       {
         headers: {
           "Content-Type": "application/json",
+          Authorization: localStorage.getItem("jwtToken"),
         },
       }
     );
+    console.log(response.status + " response from status");
     if (response.status === 200) {
       isUpdated = true;
+      return isUpdated;
     }
-    return isUpdated;
+    return false;
   } catch (error) {
     console.error("Error:", error); // Handle any errors
   }
 }
 
-export async function getFurnitureForUser() {
-  const LoggedInUser = {
+export async function getClosedFurniture() {
+  const LoggedInUserEmail = {
     userEmail: localStorage.getItem("LoggedInUser"),
   };
+  console.log("userEmail", LoggedInUserEmail);
   try {
     const response = await axios.post(
-      "http://localhost:5000/get-furniture-for-user",
-      LoggedInUser,
+      apiUrl + "/get-closed-furniture",
+      LoggedInUserEmail,
       {
         headers: {
           "Access-Control-Allow-Headers": "*",
           "Access-Control-Allow-Origin": "*",
           "Content-Type": "application/json",
+          Authorization: localStorage.getItem("jwtToken"),
         },
       }
     );
 
     if (response.status === 200) {
-      return response.data.json(); // Return the actual data
+      return response.data; // Return the actual data
     }
   } catch (error) {
     console.error("Error:", error); // Handle any errors
     throw error; // Rethrow the error to handle it in your component
   }
 }
+
+export async function getAvailableAndRequestedFurniture() {
+  const LoggedInUserEmail = {
+    userEmail: localStorage.getItem("LoggedInUser"),
+  };
+  console.log("userEmail", LoggedInUserEmail);
+  try {
+    const response = await axios.post(
+      apiUrl + "/get-available-and-requested-furniture",
+      LoggedInUserEmail,
+      {
+        headers: {
+          "Access-Control-Allow-Headers": "*",
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      }
+    );
+    if (response.status === 200) {
+      return response.data; // Return the actual data
+    }
+  } catch (error) {
+    console.error("Error:", error); // Handle any errors
+    throw error; // Rethrow the error to handle it in your component
+  }
+}
+
+export async function getMyRequests() {
+  const LoggedInUserEmail = {
+    userEmail: localStorage.getItem("LoggedInUser"),
+  };
+  console.log("userEmail", LoggedInUserEmail);
+  try {
+    const response = await axios.post(
+      apiUrl + "/get-requested-furniture-for-user",
+      LoggedInUserEmail,
+      {
+        headers: {
+          "Access-Control-Allow-Headers": "*",
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      }
+    );
+    // console.log("response.data",response.data)
+    if (response.status === 200) {
+      return response.data; // Return the actual data
+    }
+  } catch (error) {
+    console.error("Error:", error); // Handle any errors
+    throw error; // Rethrow the error to handle it in your component
+  }
+}
+
+const setAuthToken = (token) => {
+  if (token) {
+    console.log("Auth token " + token);
+    // Apply the token to every request header
+    axios.defaults.headers.Authorization = `${token}`;
+  } else {
+    // If no token, remove the Authorization header
+    delete axios.defaults.headers.Authorization;
+  }
+};
+
+
+export async function CreateFurniture(formData) {
+
+  console.log("formData",formData)
+  try {
+    var isDonated = false;
+    const response = await axios.post( apiUrl + '/create-furniture',
+     formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      }
+    );
+    console.log(response.status + " response from status");
+    if (response.status === 201) {
+      isDonated = true;
+      return isDonated;
+    }
+    return false;
+  } catch (error) {
+    console.error("Error:", error); // Handle any errors
+  }
+}
+
+export async function getUserDetails() {
+  const LoggedInUserEmail = {
+    userEmail: localStorage.getItem("LoggedInUser"),
+  };
+  console.log("userEmail in user", LoggedInUserEmail);
+  try {
+    const response = await axios.post(
+      apiUrl + "/get-user-details",
+      LoggedInUserEmail,
+      {
+        headers: {
+          "Access-Control-Allow-Headers": "*",
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      }
+    );
+    // console.log("response.data",response.data)
+    if (response.status === 200) {
+      return response.data; // Return the actual data
+    }
+  } catch (error) {
+    console.error("Error:", error); // Handle any errors
+    throw error; // Rethrow the error to handle it in your component
+  }
+}
+
+export default setAuthToken;

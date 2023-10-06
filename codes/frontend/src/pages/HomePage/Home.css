@@ -59,3 +59,8 @@ a:hover {
 }
 
    */
+/* Home.css */
+
+.custom-body-class{
+  overflow: auto;
+}

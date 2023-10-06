@@ -14,6 +14,18 @@
   gap: 10px; /* Add some space between the buttons */
 }
 
+.furniturecancelledpopup{
+  position: fixed;
+  top: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #006747;
+  color: white;
+  padding: 10px;
+  border-radius: 4px;
+  width: 50%;
+  text-align: center;
+}
 
 .product-image img {
   max-width: 100%;
