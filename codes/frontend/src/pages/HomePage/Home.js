@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./Home.css";
 import FurnitureCard from "../../components/FurnitureCard/FurnitureCard";
-import axios from "axios";
 import Navbar from "../../components/Navbar";
+import { getFurnitures } from "../../utils/api";
 
 function Home() {
   const [furnitureData, setFurnitureData] = useState([]);
@@ -14,22 +14,30 @@ function Home() {
 
   useEffect(() => {
     console.log(localStorage.getItem("jwtToken") + "in home page ");
-    axios
-      .get("http://localhost:5000/get-all-furniture/" + userEmail, {
-        headers: {
-          "Access-Control-Allow-Headers": "*",
-          "Access-Control-Allow-Origin": "*",
-          "Content-Type": "application/json",
-          "Authorization": localStorage.getItem("jwtToken")
-        },
-      })
-      .then((response) => {
-        console.log("Response data:", response.data);
-        setFurnitureData(response.data);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+    const fun = async () => {
+      const res = await getFurnitures(userEmail);
+      setFurnitureData(res.data);
+      console.log(res);
+      console.log("in home");
+    };
+
+    fun();
+    //   axios
+    //     .get("http://localhost:5000/get-all-furniture/" + userEmail, {
+    //       headers: {
+    //         "Access-Control-Allow-Headers": "*",
+    //         "Access-Control-Allow-Origin": "*",
+    //         "Content-Type": "application/json",
+    //         "Authorization": localStorage.getItem("jwtToken")
+    //       },
+    //     })
+    //     .then((response) => {
+    //       console.log("Response data:", response.data);
+    //       setFurnitureData(response.data);
+    //     })
+    //     .catch((error) => {
+    //       console.error("Error:", error);
+    //     });
   }, [userEmail]);
 
   const filteredFurniture = furnitureData.filter((item) => {
@@ -58,9 +66,6 @@ function Home() {
     });
     // console.log("nameMatches",nameMatches);
 
-
-    
-
     const typeMatches = searchQueryWords.some((word) =>
       lowerItemType.includes(word)
     );
@@ -85,15 +90,15 @@ function Home() {
   });
 
   //useEffect to enable to scroll on home page
-useEffect(() => {
-  // Set a class on the body when the component mounts
-  document.body.classList.add('custom-body-class');
+  useEffect(() => {
+    // Set a class on the body when the component mounts
+    document.body.classList.add("custom-body-class");
 
-  // Cleanup function to remove the class when the component unmounts
-  return () => {
-    document.body.classList.remove('custom-body-class');
-  };
-}, []);
+    // Cleanup function to remove the class when the component unmounts
+    return () => {
+      document.body.classList.remove("custom-body-class");
+    };
+  }, []);
 
   return (
     <div>

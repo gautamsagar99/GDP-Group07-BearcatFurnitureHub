@@ -220,21 +220,16 @@ const setAuthToken = (token) => {
   }
 };
 
-
 export async function CreateFurniture(formData) {
-
-  console.log("formData",formData)
+  console.log("formData", formData);
   try {
     var isDonated = false;
-    const response = await axios.post( apiUrl + '/create-furniture',
-     formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: localStorage.getItem("jwtToken"),
-        },
-      }
-    );
+    const response = await axios.post(apiUrl + "/create-furniture", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: localStorage.getItem("jwtToken"),
+      },
+    });
     console.log(response.status + " response from status");
     if (response.status === 201) {
       isDonated = true;
@@ -272,6 +267,19 @@ export async function getUserDetails() {
     console.error("Error:", error); // Handle any errors
     throw error; // Rethrow the error to handle it in your component
   }
+}
+
+export async function getFurnitures(userEmail) {
+  return axios
+    .get("http://localhost:5000/get-all-furniture/" + userEmail, {
+      headers: {
+        "Access-Control-Allow-Headers": "*",
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("jwtToken"),
+      },
+    });
+    
 }
 
 export default setAuthToken;
