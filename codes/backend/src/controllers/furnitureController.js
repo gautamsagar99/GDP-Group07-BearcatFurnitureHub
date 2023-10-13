@@ -772,6 +772,86 @@ async function getUserDetails(req, res) {
   }
 }
 
+async function editFurniture(req, res) {
+  try {
+    const {
+      id,
+      name,
+      condition,
+      yearsUsed,
+      category,
+      furniture_description,
+      userEmail, // Add userEmail to the request body
+    } = req.body;
+    const image = req.file.buffer;
+    console.log(
+      name +
+        " " +
+        condition +
+        " " +
+        yearsUsed +
+        " " +
+        category +
+        " " +
+        furniture_description +
+        " " +
+        userEmail
+    );
+    // Find the user by email to get the user ID
+    const user = await User.findOne({ where: { email: userEmail } });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Generate a unique filename for the image using the furniture name
+    const imageKey = `${name}-${Date.now()}.jpeg`;
+
+    // Configure the S3 parameters for uploading the image
+    const s3Params = {
+      Bucket: "bearcatbucket", // Use the furniture name as the bucket name
+      Key: imageKey, // Use the unique filename for the image
+      // Body: imageURL, // The image file
+      Body: image,
+      ACL: "public-read", // Make the uploaded image public-readable
+      ContentType: "image/jpeg",
+    };
+
+    // Upload the image to S3
+    const s3UploadResponse = await s3.upload(s3Params).promise();
+
+    // Get the URL of the uploaded image
+    const imageUrl = s3UploadResponse.Location;
+
+    console.log("image url " + imageUrl);
+    const furniture = await Furniture.findByPk(id);
+    furniture.name = name;
+    furniture.furniture_condition = condition;
+    furniture.years_used = yearsUsed;
+    furniture.furniture_type = category;
+    furniture.furniture_description = furniture_description;
+
+    // Create a new furniture record in the database with today's date for Donated_date
+    // const furniture = await Furniture.create({
+    //   name,
+    //   furniture_condition: condition,
+    //   years_used: yearsUsed,
+    //   image_url: imageUrl,
+    //   furniture_type: category,
+    //   furniture_description: furniture_description, // New column
+    //   Donated_date: new Date(), // Set Donated_date to today's date
+    //   user_id: user.id, // Use the retrieved user ID
+    // });
+
+    res
+      .status(201)
+      .json({ message: "Furniture edited successfully", furniture });
+  } catch (error) {
+    console.error("Error creating furniture:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
 // Add more controller functions for updating and deleting furniture records as needed
 module.exports = {
   createFurniture,
@@ -779,6 +859,7 @@ module.exports = {
   getFurnitureById,
   updateFurniture,
   deleteFurniture,
+  editFurniture,
   // Add other functions here
   getClosedFurniture,
   getAvailableAndRequestedFurniture,

@@ -21,6 +21,11 @@ router.get(
 );
 router.get("/get-furniture/:id", furnitureController.getFurnitureById);
 router.put("/update-furniture", furnitureController.updateFurniture); // Update furniture by ID
+router.post(
+  "/edit-furniture",
+  upload.single("image"),
+  furnitureController.editFurniture
+);
 router.delete("/delete-furniture/:id", furnitureController.deleteFurniture);
 // Add more routes for updating and deleting furniture records as needed
 
