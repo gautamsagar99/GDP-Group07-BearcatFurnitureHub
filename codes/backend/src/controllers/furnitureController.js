@@ -244,6 +244,52 @@ async function getFurnitureById(req, res) {
   }
 }
 
+// Function to get one furniture record by ID
+async function getDonatedAndRequestedUser(req, res) {
+  try {
+    const { id } = req.params; // Get the furniture ID from the request parameters
+
+    // Find the available furniture record by ID in the database
+    const furniture = await Furniture.findOne({
+      where: {
+        id,
+        status: ["requested"],
+      },
+    });
+
+    if (!furniture) {
+      return res.status(404).json({ message: "Available furniture not found" });
+    }
+
+    const user = await User.findOne({ where: { id: furniture.user_id } });
+    console.log(user.email);
+    furniture.dataValues.donatedUser = user.email;
+    // console.log(furniture);
+
+    // Find the available furniture record by ID in the database
+    const requested = await Requested.findOne({
+      where: {
+        furniture_id: id,
+      },
+    });
+
+    if (!requested) {
+      return res.status(404).json({ message: "Requested furniture not found" });
+    }
+
+    const requestedUser = await User.findOne({
+      where: { id: requested.user_id },
+    });
+    console.log(requestedUser.email);
+    furniture.dataValues.requestedUser = requestedUser.email;
+
+    res.status(200).json(furniture);
+  } catch (error) {
+    console.error("Error retrieving available furniture by ID:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
 // Function to update a specific furniture record by ID
 async function updateFurniture(req, res) {
   try {
@@ -867,4 +913,5 @@ module.exports = {
   getFurnitureForUser,
   searchFurniture,
   getUserDetails,
+  getDonatedAndRequestedUser,
 };
