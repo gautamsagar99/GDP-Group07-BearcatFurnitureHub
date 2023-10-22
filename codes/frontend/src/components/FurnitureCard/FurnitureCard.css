@@ -18,6 +18,26 @@
   box-sizing: border-box; /* Include padding and border in the width calculation */
 }
 
+@media (max-width: 1200px) {
+  .card {
+    width: calc(25% - 32px);
+  }
+}
+
+/* Adjust for screens between 601px and 900px */
+@media (max-width: 1000px) {
+  .card {
+    width: calc(33.33% - 32px);
+  }
+}
+
+/* Adjust for screens up to 600px */
+@media (max-width: 700px) {
+  .card {
+    width: calc(50% - 32px)
+  }
+}
+
 .card-image {
   width: 100%;
   height: 200px;
@@ -43,7 +63,12 @@
   border-radius: 4px;
   cursor: pointer;
   text-decoration: none;
-  transition: none;
+  transition: background-color 0.3s;
+}
+
+.card-button:hover {
+  background-color: #012019; /* Change the button color on hover */
+  color: white;
 }
 
 .card-button-container {
