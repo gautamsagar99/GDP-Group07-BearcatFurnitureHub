@@ -12,6 +12,7 @@ import {
   serverTimestamp,
   getDoc,
 } from "firebase/firestore";
+import { Chat } from './Chat';
 
 
 
@@ -25,6 +26,7 @@ export const Search = () => {
   const [user, setUser] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [err, setErr] = useState(false);
+  
 
   const handleKey = (e) => {
     e.code === "Enter" && handleSearch();
@@ -69,9 +71,18 @@ export const Search = () => {
     const sanitizedCombinedId = combinedId.replace(/[.$#[\]/@]/g, "_");
         try {
           const res = await getDoc(doc(db, "chats", sanitizedCombinedId));
-    
+          
+          if (res.exists()) {
+            const updateData2 = {
+              [sanitizedCombinedId + '.date']: serverTimestamp(), // Partial update for the 'date' field
+            };
+            
+            await updateDoc(doc(db, "userChat", currentUserEmail), updateData2);
+          }
+       
           if (!res.exists()) {
             //create a chat in chats collection
+          
             await setDoc(doc(db, "chats", sanitizedCombinedId), { messages: [] });
     
             //create user chats
