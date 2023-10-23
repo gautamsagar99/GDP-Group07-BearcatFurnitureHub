@@ -21,6 +21,11 @@ router.get(
 );
 router.get("/get-furniture/:id", furnitureController.getFurnitureById);
 router.put("/update-furniture", furnitureController.updateFurniture); // Update furniture by ID
+router.post(
+  "/edit-furniture",
+  upload.single("image"),
+  furnitureController.editFurniture
+);
 router.delete("/delete-furniture/:id", furnitureController.deleteFurniture);
 // Add more routes for updating and deleting furniture records as needed
 
@@ -36,5 +41,9 @@ router.post(
 router.post("/get-furniture-for-user", furnitureController.getFurnitureForUser);
 router.post("/search-furniture", furnitureController.searchFurniture);
 router.post("/get-user-details", furnitureController.getUserDetails);
+router.post(
+  "/get-donated-requested-user",
+  furnitureController.getDonatedAndRequestedUser
+);
 
 module.exports = router;
