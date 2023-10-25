@@ -5,10 +5,10 @@
     text-align: center;
     justify-content: center; 
     align-items: center;
-  }
 
-  body{
-    overflow: hidden;
+    body{
+        overflow: hidden;
+      }
   }
 
 
@@ -130,14 +130,7 @@ input[name='email']{
 }
 
 
-.rightFormContainerR .text-field input {
-    /* width: 283px;
-    padding: 10px 5px 10px 15px;
-    margin:15px 41.50px 0 41.50px;
-    border-radius: 6px; */
-    /* height:16px;
-    margin: 5px 0px 5px 20px; */
-}
+
 
 
 @media only screen and (max-width:900px) {
@@ -156,6 +149,8 @@ input[name='email']{
     
     .logoR{
      padding: 0;
+     height: 100px;
+     width: 350px;
     }
     .formDivR{
         transform: translate(0px, -50px);
