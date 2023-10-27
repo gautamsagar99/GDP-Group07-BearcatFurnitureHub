@@ -876,6 +876,7 @@ async function editFurniture(req, res) {
     furniture.years_used = yearsUsed;
     furniture.furniture_type = category;
     furniture.furniture_description = furniture_description;
+    furniture.image_url = imageUrl;
 
     // Create a new furniture record in the database with today's date for Donated_date
     // const furniture = await Furniture.create({
@@ -889,6 +890,7 @@ async function editFurniture(req, res) {
     //   user_id: user.id, // Use the retrieved user ID
     // });
 
+    await furniture.save();
     res
       .status(201)
       .json({ message: "Furniture edited successfully", furniture });
