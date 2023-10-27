@@ -36,3 +36,27 @@
   flex: 1;
   padding-left: 20px;
 }
+
+
+@media only screen and (max-width:900px){
+
+  .product-details-container{
+    flex-direction: column;
+  }
+
+  .product-image img {
+    max-width: 300px;
+    max-height: 200px;
+
+
+  }
+
+  .product-image{
+    margin-left: 33%;
+    margin-right: 0%;
+  }
+
+
+
+
+}
