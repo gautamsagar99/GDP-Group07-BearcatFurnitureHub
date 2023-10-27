@@ -38,6 +38,7 @@ const ProductDetails = () => {
  let donor = {};
  let currentUser = {};
  const currentUserEmail=localStorage.getItem("LoggedInUser");
+ 
 
   const resetSearchQuery = () => {
     setSearchQuery(""); // Reset the search query to an empty string
@@ -66,6 +67,8 @@ const ProductDetails = () => {
       });
   }, [productId]);
 
+  
+
   const handleRequestClick =  async () =>  {
     
     const requestData = {
@@ -90,6 +93,8 @@ const ProductDetails = () => {
       setMessageText("Furniture Requested Successfully");
     }
   };
+
+
 
   const handleMessageClick = async () => {
     console.log("entered message click")
@@ -262,6 +267,7 @@ const ProductDetails = () => {
   }
 
   let buttonsToRender = null;
+  localStorage.setItem("DonorEmail",product.user_email);
   console.log("status", product.status);
   console.log("email", product.user_email);
 
