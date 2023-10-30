@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react";
 import { CSSTransition } from 'react-transition-group';
 import { useParams } from "react-router-dom";
 import Navbar from "../../components/Navbar";
-import axios from "axios";
 import "../ProductDetailsPage/ProductDetails.css";
 import Button from "../../components/Button/Button";
-import { UpdateFurniture } from "../../utils/api";
+import { UpdateFurniture, getFurnitureById, deleteFurnitureById } from "../../utils/api";
 import { Navigate, Link } from 'react-router-dom';
 
 const ProductDetails = () => {
@@ -32,16 +31,13 @@ const ProductDetails = () => {
   }, [showFurnitureCancelledMessage]);
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:5000/get-furniture/${productId}`)
-      .then((response) => {
-        console.log("Response data:", response.data);
-        setProduct(response.data);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+    fetchFurnitureData(productId, setProduct);
   }, [productId]);
+  
+  const fetchFurnitureData = async (productId, setProduct) => {
+    const res = await getFurnitureById(productId);
+    setProduct(res.data);
+  };
 
   const handleRequestClick =  async () =>  {
     
@@ -102,32 +98,19 @@ const ProductDetails = () => {
       localStorage.setItem("Product_Condition", product.furniture_condition);
       localStorage.setItem("Product_Type", product.furniture_type);
       localStorage.setItem("Product_Description", product.furniture_description);
-      // console.log(localStorage.getItem("Product_id"));
-      // console.log(localStorage.getItem("Product_Name"));
-      // console.log(localStorage.getItem("Product_Years"));
-      // console.log(localStorage.getItem("Product_Condition"));
-      // console.log(localStorage.getItem("Product_Type"));
-      // console.log(localStorage.getItem("Product_Description"));
       
     }
 
-  const handleDeleteClick = () => {
-    axios
-      .delete(`http://localhost:5000/delete-furniture/${productId}`)
-      .then((response) => {
-        console.log("Response data:", response.data);
-        if (response.data.message === "Furniture marked as deleted") {
-          setMessageText("Furniture deleted successfully");
-          console.log("Furniture deleted successfully");
-          setProductStatus("deleted")
-          setIsRequesting(false);
-          setMessageText("Furniture deleted successfully");
-          setRedirectToHome(true);
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+  const handleDeleteClick = async () => {
+    const response = await deleteFurnitureById(productId);
+    if (response.data.message === "Furniture marked as deleted") {
+      setMessageText("Furniture deleted successfully");
+      console.log("Furniture deleted successfully");
+      setProductStatus("deleted")
+      setIsRequesting(false);
+      setMessageText("Furniture deleted successfully");
+      setRedirectToHome(true);
+    }
   };
 
   const handleCancelClick = async () => {

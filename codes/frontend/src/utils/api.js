@@ -300,5 +300,29 @@ export async function getFurnitures(userEmail) {
     });
     
 }
+export async function getFurnitureById(productId) {
+  return axios
+  .get(`http://localhost:5000/get-furniture/${productId}`, {
+      headers: {
+        "Access-Control-Allow-Headers": "*",
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("jwtToken"),
+      },
+    });
+    
+  }
 
+  export async function deleteFurnitureById(productId) {
+    return axios
+    .delete(`http://localhost:5000/delete-furniture/${productId}`, {
+        headers: {
+          "Access-Control-Allow-Headers": "*",
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("jwtToken"),
+        },
+      });
+      
+    }
 export default setAuthToken;
