@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./DonateFurniture.css";
 import Navbar from "../../components/Navbar";
 import Button from "../../components/Button/Button";
-import { CreateFurniture } from "../../utils/api";
+import { CreateFurniture, EditFurniture } from "../../utils/api";
 import { CSSTransition } from "react-transition-group";
 
 const DonateFurniture = () => {
@@ -14,10 +14,36 @@ const DonateFurniture = () => {
   const [image, setImage] = useState(null);
   const userEmail = localStorage.getItem("LoggedInUser");
 
+  const fileInputRef = useRef(null);
+
   const [showFurnitureDonatedMessage, setShowFurnitureDonatedMessage] =
     useState(false);
+  
+    const productId = localStorage.getItem("Product_id");
+    var isUpdating = false;
 
   useEffect(() => {
+    const savedName = localStorage.getItem('Product_Name');
+    const savedYearsUsed = localStorage.getItem('Product_Years');
+    const savedCondition = localStorage.getItem('Product_Condition');
+    const savedCategory = localStorage.getItem('Product_Type');
+    const savedDescription = localStorage.getItem('Product_Description');
+
+    if (savedName) {
+      setName(savedName);
+    }
+    if (savedYearsUsed) {
+      setYearsUsed(savedYearsUsed);
+    }
+    if (savedCondition) {
+      setCondition(savedCondition);
+    }
+    if (savedCategory) {
+      setCategory(savedCategory);
+    }
+    if (savedDescription) {
+      setDescription(savedDescription);
+    }
     if (showFurnitureDonatedMessage) {
       const timer = setTimeout(() => {
         setShowFurnitureDonatedMessage(false);
@@ -55,6 +81,7 @@ const DonateFurniture = () => {
 
     // Create an object with all the form data
     const formData = new FormData();
+    formData.append("id", productId);
     formData.append("name", name);
     formData.append("yearsUsed", yearsUsed);
     formData.append("condition", condition);
@@ -64,16 +91,39 @@ const DonateFurniture = () => {
     formData.append("userEmail", userEmail);
 
     // Send formData to the server using your API function
-    const responseResult = await CreateFurniture(formData);
+    var responseResult = "";
+    if(productId === ""){
+      isUpdating = true;
+      localStorage.setItem("Product_id", "");
+      localStorage.setItem("Product_Name", "");
+      localStorage.setItem("Product_Years", "1");
+      localStorage.setItem("Product_Condition", "Good");
+      localStorage.setItem("Product_Type", "Sofa");
+      localStorage.setItem("Product_Description", "");  
+      responseResult = await CreateFurniture(formData);
+
+    }
+    else{
+      responseResult = await EditFurniture(formData);
+    }
+    
 
     if (responseResult === true) {
       console.log("Furniture Created Successfully");
+      setImage(null);
+      localStorage.setItem("Product_id", "");
+    localStorage.setItem("Product_Name", "");
+    localStorage.setItem("Product_Years", "1");
+    localStorage.setItem("Product_Condition", "Good");
+    localStorage.setItem("Product_Type", "Sofa");
+    localStorage.setItem("Product_Description", "");
       setName("");
       setYearsUsed("1");
       setCondition("Good");
       setCategory("Sofa");
       setDescription("");
       setImage(null);
+      fileInputRef.current.value = null;
       setShowFurnitureDonatedMessage(!showFurnitureDonatedMessage);
     }
   };
@@ -89,11 +139,15 @@ const DonateFurniture = () => {
           classNames="fade"
           unmountOnExit
         >
-          <div className="furnitureaddedpopup">
+          {/* <div className="furnitureaddedpopup">
             Furniture Added Successfully
+          </div> */}
+          <div className="furnitureaddedpopup">
+          {isUpdating ? "Furniture Added Successfully" : "Furniture Updated Successfully"}
           </div>
         </CSSTransition>
-        <h2 className="text-center">Donate Furniture</h2>
+        {/* <h2 className="text-center">Donate Furniture</h2> */}
+        <h2 className="text-center">{productId ? "Update Furniture" : "Donate Furniture"}</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="name">Product Name: </label>
@@ -172,11 +226,15 @@ const DonateFurniture = () => {
               name="image"
               accept="image/*"
               onChange={handleImageChange}
+              ref={fileInputRef} 
             />
           </div>
           <div className="form-group">
-            <Button type="submit" label="Donate" color="primary">
+            {/* <Button type="submit" label="Donate" color="primary">
               Donate
+            </Button> */}
+            <Button type="submit" label={productId ? "Update" : "Donate"} color="primary">
+              {productId ? "Update" : "Donate"}
             </Button>
           </div>
         </form>

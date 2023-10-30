@@ -6,7 +6,7 @@ import axios from "axios";
 import "../ProductDetailsPage/ProductDetails.css";
 import Button from "../../components/Button/Button";
 import { UpdateFurniture } from "../../utils/api";
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 
 const ProductDetails = () => {
   const { productId } = useParams();
@@ -94,6 +94,22 @@ const ProductDetails = () => {
       setProductStatus("closed")
       setMessageText("Furniture Donated Successfully");
     }};
+  
+    const handleEditClick = () => {
+      localStorage.setItem("Product_id", product.id);
+      localStorage.setItem("Product_Name", product.name);
+      localStorage.setItem("Product_Years", product.years_used);
+      localStorage.setItem("Product_Condition", product.furniture_condition);
+      localStorage.setItem("Product_Type", product.furniture_type);
+      localStorage.setItem("Product_Description", product.furniture_description);
+      // console.log(localStorage.getItem("Product_id"));
+      // console.log(localStorage.getItem("Product_Name"));
+      // console.log(localStorage.getItem("Product_Years"));
+      // console.log(localStorage.getItem("Product_Condition"));
+      // console.log(localStorage.getItem("Product_Type"));
+      // console.log(localStorage.getItem("Product_Description"));
+      
+    }
 
   const handleDeleteClick = () => {
     axios
@@ -162,12 +178,14 @@ const ProductDetails = () => {
   ) {
     buttonsToRender = (
       <div className="button-container">
+        <Link to="/DonateFurniture">
         <Button
           type="button"
           label="Edit Furniture"
-          // Add onClick handler for editing here
+          onClick={handleEditClick}
           color="edit"
         />
+      </Link>
         <Button
           type="button"
           label="Delete Furniture"

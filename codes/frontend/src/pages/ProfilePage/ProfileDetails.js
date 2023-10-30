@@ -9,6 +9,12 @@ import { getUserDetails } from "../../utils/api";
 const ProfileDetails = () => {
   //code to enable scroll
   useEffect(() => {
+    localStorage.setItem("Product_id", "");
+    localStorage.setItem("Product_Name", "");
+    localStorage.setItem("Product_Years", "1");
+    localStorage.setItem("Product_Condition", "Good");
+    localStorage.setItem("Product_Type", "Sofa");
+    localStorage.setItem("Product_Description", "");
     // Set a class on the body when the component mounts
     document.body.classList.add("custom-body-class-profilePage");
 

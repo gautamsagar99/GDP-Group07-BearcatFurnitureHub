@@ -13,6 +13,13 @@ function Home() {
   };
 
   useEffect(() => {
+    localStorage.setItem("Product_id", "");
+    localStorage.setItem("Product_Name", "");
+    localStorage.setItem("Product_Years", "1");
+    localStorage.setItem("Product_Condition", "Good");
+    localStorage.setItem("Product_Type", "Sofa");
+    localStorage.setItem("Product_Description", "");
+    
     console.log(localStorage.getItem("jwtToken") + "in home page ");
     const fun = async () => {
       const res = await getFurnitures(userEmail);
