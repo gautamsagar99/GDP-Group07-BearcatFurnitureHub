@@ -5,7 +5,7 @@ import "./style.scss";
 
 export const ChatPage = () => {
   return (
-    <div className='home'>
+    <div className='chathome'>
       <div className="chatcontainer">
         <Sidebar/>
         <Chat/>
