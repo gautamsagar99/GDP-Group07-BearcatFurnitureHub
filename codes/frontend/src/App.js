@@ -9,6 +9,7 @@ import ResetPassword from './pages/ResetPasswordPage/ResetPassword'
 import DonateFurniture from './pages/DonatePage/DonateFurniture'
 import ProductDetails from './pages/ProductDetailsPage/ProductDetails'
 import ProfileDetails from './pages/ProfilePage/ProfileDetails'
+import ChatPage from './pages/ChatPage/ChatPage'
 
 const App = () => {
   return (
@@ -23,7 +24,8 @@ const App = () => {
           <Route path="/ResetPassword" element={<ResetPassword/>} />
           <Route path="/DonateFurniture" element={<DonateFurniture/>} />
           <Route path="/product/:productId" element={<ProductDetails />} />
-          <Route path="/ProfileDetails" element={<ProfileDetails/>} />        
+          <Route path="/ProfileDetails" element={<ProfileDetails/>} />  
+          <Route path="/Chat" element={<ChatPage/>} />      
         </Routes>
       </div>
     </Router>

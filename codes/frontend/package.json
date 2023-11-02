@@ -8,6 +8,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.5.0",
     "crypto-js": "^4.1.1",
+    "firebase": "^10.4.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.4",
     "react-dom": "^18.2.0",
@@ -16,6 +17,7 @@
     "react-scripts": "^5.0.1",
     "react-transition-group": "^4.4.5",
     "styled-components": "^6.0.7",
+    "uuid": "^9.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -45,5 +47,10 @@
   "description": "To clone our project to local laptop.",
   "main": "index.js",
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "sass": "^1.68.0",
+    "sass-loader": "^13.3.2",
+    "webpack": "^5.88.2"
+  }
 }

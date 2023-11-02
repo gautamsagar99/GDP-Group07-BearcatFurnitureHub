@@ -102,8 +102,8 @@ margin-left: 0px;
 }
 
 
-input[name='firstname'],input[name='lastname'],
-input[name='email'],input[name='password'],input[name='confirmpassword']{
+input[name='firstnameR'],input[name='lastnameR'],
+input[name='emailR'],input[name='passwordR'],input[name='confirmpasswordR']{
     height:16px;
    
 }

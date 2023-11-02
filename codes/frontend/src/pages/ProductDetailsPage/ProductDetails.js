@@ -6,6 +6,22 @@ import "../ProductDetailsPage/ProductDetails.css";
 import Button from "../../components/Button/Button";
 import { UpdateFurniture, getFurnitureById, deleteFurnitureById } from "../../utils/api";
 import { Navigate, Link } from 'react-router-dom';
+// import { UpdateFurniture } from "../../utils/api";
+// import { Navigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import {db} from "../../utils/firebase"
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  setDoc,
+  doc,
+  updateDoc,
+  serverTimestamp,
+  getDoc,
+} from "firebase/firestore";
+
 
 const ProductDetails = () => {
   const { productId } = useParams();
@@ -16,10 +32,21 @@ const ProductDetails = () => {
   const [showFurnitureCancelledMessage, setShowFurnitureCancelledMessage] = useState(false);
   const [messageText, setMessageText] = useState('');
   const [redirectToHome, setRedirectToHome] = useState(false);
+  const [username, setUsername] = useState("");
+  //const [newuser, setNewUser] = useState(null);
+  //const [currentUser, setCurrentUser] = useState(null);
+  const [err, setErr] = useState(false);
+ // const [showChatPage, setShowChatPage] = useState(false);
+ let donor = {};
+ let currentUser = {};
+ const currentUserEmail=localStorage.getItem("LoggedInUser");
+ 
 
   const resetSearchQuery = () => {
     setSearchQuery(""); // Reset the search query to an empty string
   };
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (showFurnitureCancelledMessage) {
@@ -38,6 +65,8 @@ const ProductDetails = () => {
     const res = await getFurnitureById(productId);
     setProduct(res.data);
   };
+
+  
 
   const handleRequestClick =  async () =>  {
     
@@ -64,7 +93,102 @@ const ProductDetails = () => {
     }
   };
 
-  const handleMessageClick = () => {};
+
+
+  const handleMessageClick = async () => {
+    console.log("entered message click")
+    const q = query(
+      collection(db, "users"),
+      where("email", "==", product.user_email)
+    );
+
+    const q2 = query(
+      collection(db, "users"),
+      where("email", "==", currentUserEmail)
+    );
+
+    try {
+      console.log("entered try")
+      const querySnapshot = await getDocs(q);
+      console.log("names",querySnapshot.size)
+      querySnapshot.forEach((doc) => {
+        console.log("data: ",doc.data())
+        //setNewUser(doc.data());
+       // console.log("name",user.firstname);
+       donor=doc.data();
+        console.log("entered for each")
+      });
+      console.log("donor",donor);
+    } catch (err) {
+      console.log(err)
+      setErr(true);
+    }
+  
+
+  try {
+    const query2Snapshot = await getDocs(q2);
+    query2Snapshot.forEach((doc) => {
+      currentUser=doc.data();
+    });
+    console.log(currentUser);
+  } catch (err) {
+    setErr(true);
+  }
+
+    const combinedId = currentUserEmail < product.user_email ? currentUserEmail + product.user_email : product.user_email + currentUserEmail;
+    const sanitizedCombinedId = combinedId.replace(/[.$#[\]/@]/g, "_");
+        try {
+          const res = await getDoc(doc(db, "chats", sanitizedCombinedId));
+          if (res.exists()) {
+            const updateData2 = {
+              [sanitizedCombinedId + '.date']: serverTimestamp(), // Partial update for the 'date' field
+            };
+            
+            await updateDoc(doc(db, "userChat", currentUserEmail), updateData2);
+          }
+    
+          if (!res.exists()) {
+            //create a chat in chats collection
+            await setDoc(doc(db, "chats", sanitizedCombinedId), { messages: [] });
+    
+            //create user chats
+            // await updateDoc(doc(db, "userChat", currentUser), {
+            //   [combinedId + ".userInfo"]: {
+            //     name:user.firstname
+            //   },
+            //   [combinedId + ".date"]: serverTimestamp(),
+            // });
+            const updateData = {
+              [sanitizedCombinedId]: {
+                userInfo: {
+                  name: donor.firstname+" "+donor.lastname,
+                  email:product.user_email
+                },
+                date: serverTimestamp()
+              }
+            };
+            
+            await updateDoc(doc(db, "userChat", currentUserEmail), updateData);
+            
+    
+            await updateDoc(doc(db, "userChat", product.user_email), {
+              [sanitizedCombinedId + ".userInfo"]: {
+                name:currentUser.firstname+" "+currentUser.lastname,
+                email:currentUser.email
+              },
+              [sanitizedCombinedId + ".date"]: serverTimestamp(),
+            });
+          }
+        } catch (err) {}
+    
+        //setNewUser(null);
+       // setUsername("")
+       await new Promise((resolve) => setTimeout(resolve, 100));
+        navigate("/Chat")
+      };
+
+    
+  
 
   const handleSuccessfulDonationClick =  async () =>  {
     
@@ -145,6 +269,7 @@ const ProductDetails = () => {
   }
 
   let buttonsToRender = null;
+  localStorage.setItem("DonorEmail",product.user_email);
   console.log("status", product.status);
   console.log("email", product.user_email);
 
@@ -220,7 +345,7 @@ const ProductDetails = () => {
           type="button"
           label="Message"
           onClick={handleMessageClick}
-          color="message"
+          color="messageButton"
         />
         <Button
           type="button"
@@ -260,6 +385,7 @@ const ProductDetails = () => {
                 onClick={handleMessageClick}
                 color="primary"
               />
+              
               <Button
                 type="button"
                 label="Cancel Request"
@@ -275,5 +401,6 @@ const ProductDetails = () => {
     </div>
   );
 };
+
 
 export default ProductDetails;

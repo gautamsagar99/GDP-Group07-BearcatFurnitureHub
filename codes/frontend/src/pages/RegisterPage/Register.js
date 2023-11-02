@@ -7,6 +7,8 @@ import "./Register.css";
 import furniture from "../../assets/images/B3.png";
 import { RegisterPost } from "../../utils/api";
 import CryptoJS from "crypto-js";
+import {db} from "../../utils/firebase"
+import { doc, setDoc, addDoc, collection} from "firebase/firestore";
 
 function Register() {
   const [data, setData] = useState({
@@ -29,7 +31,7 @@ function Register() {
   const navigate = useNavigate();
   const encryptionKey = "1234";
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
 
     const iv = "1234";
     const ivBytes = CryptoJS.enc.Utf8.parse(iv);
@@ -51,7 +53,47 @@ function Register() {
           const isValid=RegisterPost(body);
    if(isValid) 
    {
+    //try {
+      // // Create a reference to the "users" collection
+      // const usersCollection = collection(db, 'users');
+      // const usersChatCollection = collection(db, 'userChat');
+      // // Add a new document with an auto-generated ID
+      // const newDocRef = await addDoc(usersCollection, {
+      //   firstname,
+      //   lastname,
+      //   email
+      // });
+      // const newDocRef2 = await addDoc(usersChatCollection, {
+         
+      //   });
+
+          //create empty user chats on firestore
+
+          const userRef = doc(db, "users", email);
+
+// Create the data you want to add to the document
+const userData = {
+  // Add other user data here...
+  firstname: firstname,
+  lastname: lastname,
+  email:email
+};
+
+const userchatref=doc(db,"userChat",email);
+const data={};
+
+// Add the document to the collection with the custom email ID
+try {
+  await setDoc(userRef, userData);
+  await setDoc(userchatref,data);
+      } catch (err) {
+          console.error('Error creating user document:', err);
+          // Handle and display the error
+        }
+      
+    
     navigate("/")
+    
    }
       // fetch("http://localhost:5000/signup", {
       //   method: "POST",
