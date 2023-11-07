@@ -9,7 +9,7 @@ dotenv.config({ path: envPath });
 
 const express = require("express");
 const cors = require("cors");
-const { Op } = require("sequelize"); // Import Op from Sequelize
+const { Op, Sequelize } = require("sequelize"); // Import Op from Sequelize
 const sequelize = require("./config/database");
 const { Furniture } = require("./models/furniture"); // Import the Furniture model
 const { Requested } = require("./models/requested");
@@ -55,10 +55,27 @@ sequelize
   .sync()
   .then(() => {
     console.log("Database synchronized");
-    app.listen(PORT, () => {
+    app.listen(PORT, async () => {
       // console.log(process.env.ENCRYPTION_KEY);
       // console.log(process.env.ENCRYPTION_IV);
       console.log(`Server started on port ${PORT}`);
+
+      if (process.env.ENVIRONMENT == "production") {
+        // Define your SQL statements
+        const sqlStatements = [
+          "INSERT INTO users (id, email, password, first_name, last_name) VALUES (1, 's555620@nwmissouri.edu', 'root', 'Mamatha', 'Mallela');",
+          "INSERT INTO users (id, email, password, first_name, last_name) VALUES (2, 's555619@nwmissouri.edu', 'root', 'Gautam', 'Mallela');",
+        ];
+
+        // Execute SQL statements using Sequelize's query method
+        for (const sqlStatement of sqlStatements) {
+          await sequelize.query(sqlStatement, {
+            type: Sequelize.QueryTypes.INSERT,
+          });
+        }
+
+        console.log("executed scripts");
+      }
     });
   })
   .catch((err) => {

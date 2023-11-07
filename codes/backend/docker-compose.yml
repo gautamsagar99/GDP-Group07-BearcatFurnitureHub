@@ -7,8 +7,6 @@ services:
       MYSQL_DATABASE: bearcathub
     ports:
       - "3306:3306" # Map host port 3306 to container port 3306
-    volumes:
-      - ./scripts:/sample
 
   nodeapp:
     build:
@@ -17,7 +15,7 @@ services:
       - "5000:5000" # Map host port 3000 to container port 3000
     depends_on:
       - mysql # Make sure the MySQL container is up before starting this one
-    command: ["sh", "-c", "sleep 60 && npm start && /sample/wait-for-nodeapp.sh"]
+    command: ["sh", "-c", "sleep 60 && npm start && sleep 60 "]
 
   frontend:
     build:
