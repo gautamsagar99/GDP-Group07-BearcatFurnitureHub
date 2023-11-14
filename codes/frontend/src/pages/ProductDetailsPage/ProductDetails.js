@@ -5,7 +5,7 @@ import Navbar from "../../components/Navbar";
 import "../ProductDetailsPage/ProductDetails.css";
 import Button from "../../components/Button/Button";
 import { UpdateFurniture, getFurnitureById, deleteFurnitureById, getDonatedAndRequestedUser } from "../../utils/api";
-import { Navigate, Link } from 'react-router-dom';
+import { Navigate, Link, useNavigate } from 'react-router-dom';
 
 const ProductDetails = () => {
   const { productId } = useParams();
@@ -18,7 +18,7 @@ const ProductDetails = () => {
   const [redirectToHome, setRedirectToHome] = useState(false);
   const [donarEmail, setDonarEmail] = useState(null);
   const [requesterEmail, setRequesterEmail] = useState(null);
-
+  const navigate = useNavigate();
   const resetSearchQuery = () => {
     setSearchQuery(""); // Reset the search query to an empty string
   };
@@ -78,6 +78,7 @@ const ProductDetails = () => {
     fetchDonarRequesterEmail(donarEmail, setDonarEmail, requesterEmail, setRequesterEmail);
     console.log("donarEmail inside message click", donarEmail)
     console.log("requesterEmail inside message click", requesterEmail)
+    navigate("../../Chat")
   };
 
   const handleSuccessfulDonationClick =  async () =>  {
