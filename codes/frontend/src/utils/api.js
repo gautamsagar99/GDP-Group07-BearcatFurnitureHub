@@ -310,8 +310,18 @@ export async function getFurnitureById(productId) {
         Authorization: localStorage.getItem("jwtToken"),
       },
     });
-    
+
   }
+  export async function getDonatedAndRequestedUser(productId) {
+    return axios.get(`http://localhost:5000/get-donated-requested-user/${productId}`, {
+    headers: {
+      "Access-Control-Allow-Headers": "*",
+      "Access-Control-Allow-Origin": "*",
+      "Content-Type": "application/json",
+      Authorization: localStorage.getItem("jwtToken"),
+    },
+  });
+}
 
   export async function deleteFurnitureById(productId) {
     return axios

@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import "../ProductDetailsPage/ProductDetails.css";
 import Button from "../../components/Button/Button";
-import { UpdateFurniture, getFurnitureById, deleteFurnitureById } from "../../utils/api";
+import { UpdateFurniture, getFurnitureById, deleteFurnitureById, getDonatedAndRequestedUser } from "../../utils/api";
 import { Navigate, Link } from 'react-router-dom';
 
 const ProductDetails = () => {
@@ -16,6 +16,8 @@ const ProductDetails = () => {
   const [showFurnitureCancelledMessage, setShowFurnitureCancelledMessage] = useState(false);
   const [messageText, setMessageText] = useState('');
   const [redirectToHome, setRedirectToHome] = useState(false);
+  const [donarEmail, setDonarEmail] = useState(null);
+  const [requesterEmail, setRequesterEmail] = useState(null);
 
   const resetSearchQuery = () => {
     setSearchQuery(""); // Reset the search query to an empty string
@@ -64,7 +66,19 @@ const ProductDetails = () => {
     }
   };
 
-  const handleMessageClick = () => {};
+  const fetchDonarRequesterEmail = async () => {
+    const res = await getDonatedAndRequestedUser(productId);
+    const donatedUser = res.data["donatedUser"];
+    const requestedUser = res.data["requestedUser"];
+    setDonarEmail(donatedUser);
+    setRequesterEmail(requestedUser);
+  };
+
+  const handleMessageClick = () => {
+    fetchDonarRequesterEmail(donarEmail, setDonarEmail, requesterEmail, setRequesterEmail);
+    console.log("donarEmail inside message click", donarEmail)
+    console.log("requesterEmail inside message click", requesterEmail)
+  };
 
   const handleSuccessfulDonationClick =  async () =>  {
     
