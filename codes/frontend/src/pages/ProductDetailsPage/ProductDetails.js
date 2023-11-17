@@ -16,8 +16,6 @@ const ProductDetails = () => {
   const [showFurnitureCancelledMessage, setShowFurnitureCancelledMessage] = useState(false);
   const [messageText, setMessageText] = useState('');
   const [redirectToHome, setRedirectToHome] = useState(false);
-  const [donarEmail, setDonarEmail] = useState(null);
-  const [requesterEmail, setRequesterEmail] = useState(null);
   const navigate = useNavigate();
   const resetSearchQuery = () => {
     setSearchQuery(""); // Reset the search query to an empty string
@@ -70,16 +68,32 @@ const ProductDetails = () => {
     const res = await getDonatedAndRequestedUser(productId);
     const donatedUser = res.data["donatedUser"];
     const requestedUser = res.data["requestedUser"];
-    setDonarEmail(donatedUser);
-    setRequesterEmail(requestedUser);
+    console.log("donarEmail", donatedUser);
+    console.log("requesterEmail", requestedUser);
+    return { donatedUser, requestedUser };
   };
-
-  const handleMessageClick = () => {
-    fetchDonarRequesterEmail(donarEmail, setDonarEmail, requesterEmail, setRequesterEmail);
-    console.log("donarEmail inside message click", donarEmail)
-    console.log("requesterEmail inside message click", requesterEmail)
-    navigate("../../Chat")
+  
+  const handleMessageClick = async () => {
+    const { donatedUser, requestedUser } = await fetchDonarRequesterEmail();
+    console.log("donarEmail inside message click", donatedUser);
+    console.log("requesterEmail inside message click", requestedUser);
+  
+    var chatToShow = "";
+    var loggedInUser = localStorage.getItem("LoggedInUser");
+  
+    if (donatedUser === loggedInUser) {
+      chatToShow = requestedUser;
+      console.log("chatToShow", chatToShow);
+    } else {
+      chatToShow = donatedUser;
+      console.log("chatToShow", chatToShow);
+    }
+  
+    // navigate("../../Chat");
+    // navigate(`../../Chat?chatToShow=${chatToShow}`);
+    navigate(`/Chat/${chatToShow}`);
   };
+  
 
   const handleSuccessfulDonationClick =  async () =>  {
     

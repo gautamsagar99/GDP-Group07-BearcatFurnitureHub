@@ -25,7 +25,8 @@ const App = () => {
           <Route path="/DonateFurniture" element={<DonateFurniture/>} />
           <Route path="/product/:productId" element={<ProductDetails />} />
           <Route path="/ProfileDetails" element={<ProfileDetails/>} />
-          <Route path="/Chat" element={<Chat/>} />        
+          <Route path="/Chat" element={<Chat/>} /> 
+          <Route path="/Chat/:chatToShow" element={<Chat />} />       
         </Routes>
       </div>
     </Router>
