@@ -246,6 +246,7 @@ async function getFurnitureById(req, res) {
 
 // Function to get one furniture record by ID
 async function getDonatedAndRequestedUser(req, res) {
+  console.log("inside getDonatedAndRequestedUser");
   try {
     const { id } = req.params; // Get the furniture ID from the request parameters
 

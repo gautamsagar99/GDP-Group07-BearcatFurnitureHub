@@ -95,7 +95,7 @@ const Navbar = ({ onSearch, onResetSearch }) => {
           Search
         </Link>
 
-        <Link className="custom-link nav-notification-btn-link">
+        <Link className="custom-link nav-notification-btn-link" to="/Chat">
           <FaEnvelope style={messageIconStyle} />
         </Link>
         <Link

@@ -290,7 +290,7 @@ export async function getUserDetails() {
 
 export async function getFurnitures(userEmail) {
   return axios
-    .get("http://localhost:5000/get-all-furniture/" + userEmail, {
+    .get(apiUrl +"/get-all-furniture/" + userEmail, {
       headers: {
         "Access-Control-Allow-Headers": "*",
         "Access-Control-Allow-Origin": "*",
@@ -302,7 +302,7 @@ export async function getFurnitures(userEmail) {
 }
 export async function getFurnitureById(productId) {
   return axios
-  .get(`http://localhost:5000/get-furniture/${productId}`, {
+  .get(apiUrl +`/get-furniture/${productId}`, {
       headers: {
         "Access-Control-Allow-Headers": "*",
         "Access-Control-Allow-Origin": "*",
@@ -310,12 +310,22 @@ export async function getFurnitureById(productId) {
         Authorization: localStorage.getItem("jwtToken"),
       },
     });
-    
+
   }
+  export async function getDonatedAndRequestedUser(productId) {
+    return axios.get(apiUrl +`/get-donated-requested-user/${productId}`, {
+    headers: {
+      "Access-Control-Allow-Headers": "*",
+      "Access-Control-Allow-Origin": "*",
+      "Content-Type": "application/json",
+      Authorization: localStorage.getItem("jwtToken"),
+    },
+  });
+}
 
   export async function deleteFurnitureById(productId) {
     return axios
-    .delete(`http://localhost:5000/delete-furniture/${productId}`, {
+    .delete(apiUrl +`/delete-furniture/${productId}`, {
         headers: {
           "Access-Control-Allow-Headers": "*",
           "Access-Control-Allow-Origin": "*",
