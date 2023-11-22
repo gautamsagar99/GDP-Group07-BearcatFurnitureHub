@@ -278,6 +278,32 @@ const Chat = () => {
       console.error('Error handling search:', error);
     }
   };
+  const formatDate = (timestamp) => {
+    try {
+      // Check if the timestamp is a Firebase Timestamp
+      const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+  
+      // Check if date is valid
+      if (isNaN(date.getTime())) {
+        throw new Error('Invalid timestamp');
+      }
+  
+      const options = {
+        month: '2-digit',
+        day: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      };
+  
+      return new Intl.DateTimeFormat('en-US', options).format(date);
+    } catch (error) {
+      console.error('Error formatting timestamp:', error);
+      console.log('Invalid timestamp:', timestamp);
+      return 'Invalid Date';
+    }
+  };
+  
 
   return (
     <div className="chat-container">
@@ -316,9 +342,9 @@ const Chat = () => {
                 <div
                   key={message.id}
                   className={message.sender === loggedInUser ? 'user-message' : 'other-user-message'}
-                  style={{ fontWeight: message.new ? 'bold' : 'normal' }}
                 >
-                  {message.text}
+                  <div style={{ fontWeight: message.new ? 'bold' : 'normal' }}>{message.text}</div>
+                  <div style={{ color: 'grey', fontSize: '12px' }}>{formatDate(message.timestamp)}</div>
                 </div>
               ))}
             </div>
