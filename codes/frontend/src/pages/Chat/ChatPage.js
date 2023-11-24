@@ -1,7 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import './Chat.css';
 import { getUserDetails } from "../../utils/api";
-import { db, collection, query, where, getDocs, orderBy, addDoc, onSnapshot, getDoc, doc } from './firebase';
+import {
+  db,
+  collection,
+  query,
+  where,
+  getDocs,
+  orderBy,
+  addDoc,
+  onSnapshot,
+  getDoc,
+  doc,
+  limit,
+  setDoc
+} from './firebase';
 import { useParams } from 'react-router-dom';
 
 const Chat = () => {
@@ -11,8 +24,7 @@ const Chat = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [selectedUserName, setSelectedUserName] = useState('');
-  const [unreadMessages, setUnreadMessages] = useState({});
-  const loggedInUser = localStorage.getItem('LoggedInUser'); // Assuming you have the UID of the logged-in user
+  const loggedInUser = localStorage.getItem('LoggedInUser');
   const [userDetails, setUserDetails] = useState([]);
 
   const { chatToShow } = useParams();
@@ -34,7 +46,50 @@ const Chat = () => {
     };
   }, []);
 
+
+  
   useEffect(() => {
+    const sortUsersByLatestMessage = async (users) => {
+      const sortedUsers = [];
+    
+      for (const user of users) {
+        const sentMessagesQuery = query(
+          collection(db, 'messages'),
+          orderBy('timestamp', 'desc'),
+          where('participants', '==', [loggedInUser, user.uid]),
+          limit(1)
+        );
+    
+        const receivedMessagesQuery = query(
+          collection(db, 'messages'),
+          orderBy('timestamp', 'desc'),
+          where('participants', '==', [user.uid, loggedInUser]),
+          limit(1)
+        );
+    
+        const sentMessagesSnapshot = await getDocs(sentMessagesQuery);
+        const receivedMessagesSnapshot = await getDocs(receivedMessagesQuery);
+    
+        const latestSentMessage = sentMessagesSnapshot.empty ? null : sentMessagesSnapshot.docs[0].data().timestamp;
+        const latestReceivedMessage = receivedMessagesSnapshot.empty ? null : receivedMessagesSnapshot.docs[0].data().timestamp;
+    
+        const latestTimestamp = latestSentMessage && latestReceivedMessage
+          ? Math.max(latestSentMessage, latestReceivedMessage)
+          : latestSentMessage || latestReceivedMessage;
+    
+        sortedUsers.push({
+          ...user,
+          latestTimestamp,
+        });
+      }
+    
+      // Sort users based on the latest timestamp in descending order
+      sortedUsers.sort((a, b) => (b.latestTimestamp || 0) - (a.latestTimestamp || 0));
+    
+      return sortedUsers;
+    };
+    
+    
     const fetchUsers = async () => {
       try {
         const usersRef = collection(db, 'users');
@@ -62,9 +117,13 @@ const Chat = () => {
           });
         });
 
-        const filteredUsers = otherUsers.filter((user) => usersWithConversations.has(user.uid));
-
-        setFilteredUsers(filteredUsers);
+        const filteredUsers = otherUsers.filter(
+          (user) => user.uid !== loggedInUser && usersWithConversations.has(user.uid)
+        );
+  
+        const sortedUsers = await sortUsersByLatestMessage(filteredUsers);
+  
+        setFilteredUsers(sortedUsers);
       } catch (error) {
         console.error('Error fetching users:', error);
       }
@@ -103,7 +162,19 @@ const Chat = () => {
             uid: chatToShow,
             firstname: chatToShowUserData.firstname,
             lastname: chatToShowUserData.lastname,
-            // Add other user details if needed
+          });
+
+          // Update the status of messages to 'read' for the sender
+          const messagesRef = collection(db, 'messages');
+          const updateStatusQuery = query(
+            messagesRef,
+            where('participants', '==', [chatToShow, loggedInUser]),
+            where('status', '==', 'unread')
+          );
+          const updateStatusSnapshot = await getDocs(updateStatusQuery);
+
+          updateStatusSnapshot.forEach(async (doc) => {
+            await setDoc(doc(db, 'messages', doc.id), { status: 'read' }, { merge: true });
           });
         } else if (selectedUser) {
           targetUserName = `${selectedUser.firstname} ${selectedUser.lastname}`;
@@ -157,29 +228,55 @@ const Chat = () => {
     fetchMessagesAndUserDetails();
   }, [selectedUser, loggedInUser, chatToShow]);
 
-  useEffect(() => {
-    const unreadMessagesState = {};
-    filteredUsers.forEach((user) => {
-      unreadMessagesState[user.uid] = false;
-    });
-    setUnreadMessages(unreadMessagesState);
+  // Inside the useEffect for updateStatus
 
+  useEffect(() => {
+    const updateStatus = async () => {
+      try {
+        if (selectedUser) {
+          const messagesRef = collection(db, 'messages');
+          const q = query(
+            messagesRef,
+            where('participants', '==', [selectedUser.uid, loggedInUser]),
+            orderBy('timestamp', 'desc'),
+            limit(1)
+          );
+          const querySnapshot = await getDocs(q);
+
+          if (!querySnapshot.empty) {
+            const latestMessage = querySnapshot.docs[0];
+            if (latestMessage.data().status === 'unread') {
+              // Update the status to 'read' when the chat is opened
+              await setDoc(doc(db, 'messages', latestMessage.id), { status: 'read' }, { merge: true });
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error updating status:', error);
+      }
+    };
+
+    updateStatus();
+  }, [selectedUser, loggedInUser]);
+
+  // Inside the useEffect for onSnapshot
+
+  useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, 'messages'), (snapshot) => {
-      snapshot.docChanges().forEach((change) => {
+      snapshot.docChanges().forEach(async (change) => {
         const message = change.doc.data();
-        if (message.participants.includes(loggedInUser) && message.new) {
+        if (message.participants && message.participants.includes(loggedInUser) && message.new) {
           if (message.sender !== loggedInUser) {
-            setUnreadMessages((prevUnreadMessages) => ({
-              ...prevUnreadMessages,
-              [message.sender]: true,
-            }));
+            // If the message is new, update its status to 'read' when received
+            await setDoc(doc(db, 'messages', change.doc.id), { status: 'read' }, { merge: true });
+
           }
         }
       });
     });
 
     return () => unsubscribe();
-  }, [filteredUsers, loggedInUser]);
+  }, [loggedInUser, selectedUser]);
 
   const handleSendMessage = async () => {
     if (newMessage.trim() !== '' && selectedUser) {
@@ -191,15 +288,11 @@ const Chat = () => {
           sender: loggedInUser,
           text: newMessage,
           timestamp: new Date(),
-          new: true,
+          new: selectedUser.uid,
+          status: 'unread',
         });
 
         setNewMessage('');
-
-        setUnreadMessages((prevUnreadMessages) => ({
-          ...prevUnreadMessages,
-          [selectedUser.uid]: true,
-        }));
 
         setMessages((prevMessages) => [
           ...prevMessages,
@@ -210,6 +303,7 @@ const Chat = () => {
             text: newMessage,
             timestamp: new Date(),
             new: true,
+            status: 'unread',
           },
         ]);
       } catch (error) {
@@ -220,11 +314,6 @@ const Chat = () => {
 
   const handleUserSelect = (user) => {
     setSelectedUser(user);
-
-    setUnreadMessages((prevUnreadMessages) => ({
-      ...prevUnreadMessages,
-      [user.uid]: false,
-    }));
   };
 
   const handleSearch = async () => {
@@ -278,16 +367,14 @@ const Chat = () => {
       console.error('Error handling search:', error);
     }
   };
+
   const formatDate = (timestamp) => {
     try {
-      // Check if the timestamp is a Firebase Timestamp
       const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-  
-      // Check if date is valid
       if (isNaN(date.getTime())) {
         throw new Error('Invalid timestamp');
       }
-  
+
       const options = {
         month: '2-digit',
         day: '2-digit',
@@ -295,7 +382,7 @@ const Chat = () => {
         hour: '2-digit',
         minute: '2-digit',
       };
-  
+
       return new Intl.DateTimeFormat('en-US', options).format(date);
     } catch (error) {
       console.error('Error formatting timestamp:', error);
@@ -303,12 +390,11 @@ const Chat = () => {
       return 'Invalid Date';
     }
   };
-  
 
   return (
     <div className="chat-container">
       <div className="left-sidebar">
-        <div className="welcome-message" style={{ fontWeight: 'bold', textAlign: 'center' }}>
+        <div className="welcome-message" style={{ textAlign: 'center' }}>
           Welcome {userDetails.first_name} {userDetails.last_name}
         </div>
         <br></br>
@@ -326,7 +412,6 @@ const Chat = () => {
             <div
               key={user.uid}
               onClick={() => handleUserSelect(user)}
-              style={{ fontWeight: unreadMessages[user.uid] ? 'bold' : 'normal' }}
             >
               {user.firstname + ' ' + user.lastname}
             </div>
@@ -343,7 +428,7 @@ const Chat = () => {
                   key={message.id}
                   className={message.sender === loggedInUser ? 'user-message' : 'other-user-message'}
                 >
-                  <div style={{ fontWeight: message.new ? 'bold' : 'normal' }}>{message.text}</div>
+                  <div>{message.text}</div>
                   <div style={{ color: 'grey', fontSize: '12px' }}>{formatDate(message.timestamp)}</div>
                 </div>
               ))}
@@ -367,3 +452,4 @@ const Chat = () => {
 };
 
 export default Chat;
+	
