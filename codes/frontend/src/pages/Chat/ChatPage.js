@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './Chat.css';
 import { getUserDetails } from "../../utils/api";
 import {
@@ -260,7 +260,97 @@ const Chat = () => {
   }, [selectedUser, loggedInUser]);
 
   // Inside the useEffect for onSnapshot
+  const fetchUserDetails = async (email) => {
+    try {
+      const userDoc = await getDoc(doc(db, 'users', email));
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        return `${userData.firstname} ${userData.lastname}`;
+      }
+      return '';
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+      return '';
+    }
+  };
 
+  const fetchMessagesAndUserDetails =  useCallback(async () => {
+    try {
+      let targetUserName = '';
+
+      if (chatToShow) {
+        targetUserName = await fetchUserDetails(chatToShow);
+
+        const chatToShowUserRef = doc(db, 'users', chatToShow);
+        const chatToShowUserDoc = await getDoc(chatToShowUserRef);
+        const chatToShowUserData = chatToShowUserDoc.data();
+
+        setSelectedUser({
+          uid: chatToShow,
+          firstname: chatToShowUserData.firstname,
+          lastname: chatToShowUserData.lastname,
+        });
+
+        // Update the status of messages to 'read' for the sender
+        const messagesRef = collection(db, 'messages');
+        const updateStatusQuery = query(
+          messagesRef,
+          where('participants', '==', [chatToShow, loggedInUser]),
+          where('status', '==', 'unread')
+        );
+        const updateStatusSnapshot = await getDocs(updateStatusQuery);
+
+        updateStatusSnapshot.forEach(async (doc) => {
+          await setDoc(doc(db, 'messages', doc.id), { status: 'read' }, { merge: true });
+        });
+      } else if (selectedUser) {
+        targetUserName = `${selectedUser.firstname} ${selectedUser.lastname}`;
+      }
+
+      setSelectedUserName(targetUserName);
+
+      const messagesRef = collection(db, 'messages');
+      const q1 = query(
+        messagesRef,
+        orderBy('timestamp'),
+        where('participants', '==', [loggedInUser, chatToShow || selectedUser.uid])
+      );
+
+      const q2 = query(
+        messagesRef,
+        orderBy('timestamp'),
+        where('participants', '==', [chatToShow || selectedUser.uid, loggedInUser])
+      );
+
+      const querySnapshot1 = await getDocs(q1);
+      const querySnapshot2 = await getDocs(q2);
+
+      const fetchedMessages1 = querySnapshot1.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      const fetchedMessages2 = querySnapshot2.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      const allMessages = [...fetchedMessages1, ...fetchedMessages2];
+
+      const sortedMessages = allMessages.sort((a, b) => a.timestamp - b.timestamp);
+
+      const latestTimestamp = sortedMessages.length > 0 ? sortedMessages[sortedMessages.length - 1].timestamp : null;
+
+      const messagesWithStatus = sortedMessages.map((message) => ({
+        ...message,
+        new: message.timestamp > latestTimestamp,
+      }));
+
+      setMessages(messagesWithStatus);
+    } catch (error) {
+      console.error('Error fetching messages:', error);
+    }
+  }, [loggedInUser, selectedUser, chatToShow]);
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, 'messages'), (snapshot) => {
       snapshot.docChanges().forEach(async (change) => {
@@ -269,14 +359,16 @@ const Chat = () => {
           if (message.sender !== loggedInUser) {
             // If the message is new, update its status to 'read' when received
             await setDoc(doc(db, 'messages', change.doc.id), { status: 'read' }, { merge: true });
-
           }
+          // Fetch updated messages and user details when a new message is received
+          fetchMessagesAndUserDetails();
         }
       });
     });
 
     return () => unsubscribe();
-  }, [loggedInUser, selectedUser]);
+  }, [loggedInUser, selectedUser, fetchMessagesAndUserDetails]);
+
 
   const handleSendMessage = async () => {
     if (newMessage.trim() !== '' && selectedUser) {
