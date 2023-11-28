@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import Button from "../../components/Button/Button";
 
@@ -11,7 +11,7 @@ import "./Login.css";
 import furniture from "../../assets/images/B3.png";
 
 import { useNavigate } from "react-router-dom";
-
+import { CSSTransition } from 'react-transition-group';
 import CryptoJS from "crypto-js";
 import { loginPost } from "../../utils/api";
 
@@ -20,12 +20,22 @@ import { loginPost } from "../../utils/api";
 const Login = () => {
   const [data, setData] = useState({ emailAddress: "", password: "" });
   // const [showValidationMessage, setShowValidationMessage] = useState(false);
-
+  const [messageText, setMessageText] = useState('');
+  const [showmessageText, setShowmessageText] = useState(false);
   const { emailAddress, password } = data;
 
   const encryptionKey = "1234";
 
   const navigate = useNavigate();
+  useEffect(() => {
+    if (showmessageText) {
+      const timer = setTimeout(() => {
+        setShowmessageText(false);
+      }, 3000); // 5000 milliseconds (5 seconds)
+      return () => clearTimeout(timer);
+    }
+  }, [showmessageText]);
+  
 
   const handleRegister = () => {
     navigate("/signup");
@@ -36,11 +46,15 @@ const Login = () => {
     const ivBytes = CryptoJS.enc.Utf8.parse(iv);
 
     if (emailAddress.length === 0) {
-      alert("Email Address is required");
+      setShowmessageText(!showmessageText);
+      setMessageText("Email Address is required");
     } else if (!emailAddress.includes("nwmissouri.edu")) {
-      alert("Invalid Email");
+      setShowmessageText(!showmessageText);
+      setMessageText("Invalid Email");
     } else if (password.length === 0) {
+      setShowmessageText(!showmessageText);
       // setShowValidationMessage(true);
+      setMessageText("Password is required");
     } else {
       const encryptedEmail = CryptoJS.AES.encrypt(emailAddress, encryptionKey, {
         iv: ivBytes,
@@ -55,8 +69,13 @@ const Login = () => {
       };
       const isValid=await loginPost(body);
       if (isValid) {
+        setShowmessageText(!showmessageText);
         localStorage.setItem("LoggedInUser",emailAddress);
         navigate("/home");
+      }
+      else{
+        setMessageText("Invalid Username/Password");
+        setShowmessageText(!showmessageText);
       }
       //  loginPost(body)
       //  .then((response)=>{
@@ -104,9 +123,15 @@ const Login = () => {
 
   return (
     <div className="form-center">
+      <CSSTransition in={showmessageText} timeout={30}  classNames="fade"  unmountOnExit>
+        <div className="showLoginFailpopup">
+          {messageText}
+        </div>
+      </CSSTransition>
       <div className="logoDiv">
         <img src={furniture} alt="Logo" className="logo"></img>
       </div>
+      
 
       <div className="formDiv">
         <Form className="rightFormContainer">
