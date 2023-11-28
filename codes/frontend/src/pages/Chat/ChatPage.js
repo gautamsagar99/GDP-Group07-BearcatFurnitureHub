@@ -156,7 +156,7 @@ const Chat = () => {
         
         setFilteredUsers(sortedUsers);
         setUsersWithUnreadMessages(usersWithUnreadMessages);
-    console.log("usersWithUnreadMessages", usersWithUnreadMessages)
+        console.log("usersWithUnreadMessages", usersWithUnreadMessages)
       } catch (error) {
         console.error('Error fetching users:', error);
       }
@@ -564,6 +564,7 @@ const Chat = () => {
 
   return (
     <div className="chat-container">
+      {!chatToShow && (
       <div className="left-sidebar">
         <div className="welcome-message" style={{ textAlign: 'center' }}>
           Welcome {userDetails.first_name} {userDetails.last_name}
@@ -597,6 +598,7 @@ const Chat = () => {
 
 
       </div>
+      )}
       <div className="right-sidebar">
         {selectedUser ? (
           <>
