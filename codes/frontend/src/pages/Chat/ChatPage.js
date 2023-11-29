@@ -1,7 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './Chat.css';
 import { getUserDetails } from "../../utils/api";
-import { db, collection, query, where, getDocs, orderBy, addDoc, onSnapshot, getDoc, doc } from './firebase';
+import {
+  db,
+  collection,
+  query,
+  where,
+  getDocs,
+  orderBy,
+  addDoc,
+  onSnapshot,
+  getDoc,
+  doc,
+  limit,
+  setDoc
+} from './firebase';
 import { useParams } from 'react-router-dom';
 
 const Chat = () => {
@@ -11,9 +24,10 @@ const Chat = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [selectedUserName, setSelectedUserName] = useState('');
-  const [unreadMessages, setUnreadMessages] = useState({});
-  const loggedInUser = localStorage.getItem('LoggedInUser'); // Assuming you have the UID of the logged-in user
+  const loggedInUser = localStorage.getItem('LoggedInUser');
   const [userDetails, setUserDetails] = useState([]);
+  const [usersWithUnreadMessages, setUsersWithUnreadMessages] = useState([]);
+
 
   const { chatToShow } = useParams();
 
@@ -28,13 +42,58 @@ const Chat = () => {
     };
 
     fetchUserData();
+    // console.log("selectedUser:", selectedUser);
+    // console.log("chatToShow:", chatToShow);
     return () => {
       // Cleanup function (if needed)
       // You can add any cleanup code here
     };
   }, []);
 
+
+  
   useEffect(() => {
+    const sortUsersByLatestMessage = async (users) => {
+      const sortedUsers = [];
+    
+      for (const user of users) {
+        const sentMessagesQuery = query(
+          collection(db, 'messages'),
+          orderBy('timestamp', 'desc'),
+          where('participants', '==', [loggedInUser, user.uid]),
+          limit(1)
+        );
+    
+        const receivedMessagesQuery = query(
+          collection(db, 'messages'),
+          orderBy('timestamp', 'desc'),
+          where('participants', '==', [user.uid, loggedInUser]),
+          limit(1)
+        );
+    
+        const sentMessagesSnapshot = await getDocs(sentMessagesQuery);
+        const receivedMessagesSnapshot = await getDocs(receivedMessagesQuery);
+    
+        const latestSentMessage = sentMessagesSnapshot.empty ? null : sentMessagesSnapshot.docs[0].data().timestamp;
+        const latestReceivedMessage = receivedMessagesSnapshot.empty ? null : receivedMessagesSnapshot.docs[0].data().timestamp;
+    
+        const latestTimestamp = latestSentMessage && latestReceivedMessage
+          ? Math.max(latestSentMessage, latestReceivedMessage)
+          : latestSentMessage || latestReceivedMessage;
+    
+        sortedUsers.push({
+          ...user,
+          latestTimestamp,
+        });
+      }
+    
+      // Sort users based on the latest timestamp in descending order
+      sortedUsers.sort((a, b) => (b.latestTimestamp || 0) - (a.latestTimestamp || 0));
+    
+      return sortedUsers;
+    };
+    
+    
     const fetchUsers = async () => {
       try {
         const usersRef = collection(db, 'users');
@@ -43,9 +102,10 @@ const Chat = () => {
           uid: doc.id,
           ...doc.data(),
         }));
-
+        console.log("Fetching users...");
+    
         const otherUsers = allUsers.filter((user) => user.uid !== loggedInUser);
-
+    
         const conversationsRef = collection(db, 'messages');
         const conversationsQuery = query(
           conversationsRef,
@@ -61,17 +121,50 @@ const Chat = () => {
             }
           });
         });
-
-        const filteredUsers = otherUsers.filter((user) => usersWithConversations.has(user.uid));
-
-        setFilteredUsers(filteredUsers);
+    
+        const usersWithUnreadMessages = [];
+    
+        const filteredUsers = otherUsers.filter(
+          (user) => user.uid !== loggedInUser && usersWithConversations.has(user.uid)
+        );
+    
+        const sortedUsers = await sortUsersByLatestMessage(filteredUsers);
+        console.log("sortedUsers", sortedUsers);
+    
+        for (const user of sortedUsers) {
+          console.log("user.uid", user.uid);
+          const lastMessageQuery = query(
+            collection(db, 'messages'),
+            orderBy('timestamp', 'desc'),
+            where('participants', '==', [user.uid, loggedInUser])
+          );
+          const lastMessageSnapshot = await getDocs(lastMessageQuery);
+    
+          if (!lastMessageSnapshot.empty) {
+            const lastMessage = lastMessageSnapshot.docs[0].data();
+            console.log(`User: ${user.uid}, Last Message Status: ${lastMessage.status}`);
+    
+            // Check if the last message status is "unread" and add the user to the array
+            if (lastMessage.status === 'unread') {
+              usersWithUnreadMessages.push(user);
+            }
+          }
+        }
+    
+        console.log("Filtered users:", filteredUsers);
+        console.log("Users with unread messages:", usersWithUnreadMessages);
+        
+        setFilteredUsers(sortedUsers);
+        setUsersWithUnreadMessages(usersWithUnreadMessages);
+        console.log("usersWithUnreadMessages", usersWithUnreadMessages)
       } catch (error) {
         console.error('Error fetching users:', error);
       }
     };
-
+    
     fetchUsers();
-  }, [loggedInUser]);
+    }, [loggedInUser, usersWithUnreadMessages]);
+    
 
   useEffect(() => {
     const fetchUserDetails = async (email) => {
@@ -90,8 +183,11 @@ const Chat = () => {
 
     const fetchMessagesAndUserDetails = async () => {
       try {
+        if (!selectedUser && !chatToShow) {
+          return; // Add a check to avoid executing if both are undefined
+        }
         let targetUserName = '';
-
+        console.log("chatToShow", chatToShow)
         if (chatToShow) {
           targetUserName = await fetchUserDetails(chatToShow);
 
@@ -103,9 +199,22 @@ const Chat = () => {
             uid: chatToShow,
             firstname: chatToShowUserData.firstname,
             lastname: chatToShowUserData.lastname,
-            // Add other user details if needed
+          });
+
+          // Update the status of messages to 'read' for the sender
+          const messagesRef = collection(db, 'messages');
+          const updateStatusQuery = query(
+            messagesRef,
+            where('participants', '==', [chatToShow, loggedInUser]),
+            where('status', '==', 'unread')
+          );
+          const updateStatusSnapshot = await getDocs(updateStatusQuery);
+
+          updateStatusSnapshot.forEach(async (doc) => {
+            await setDoc(doc(db, 'messages', doc.id), { status: 'read' }, { merge: true });
           });
         } else if (selectedUser) {
+          console.log("selectedUser",selectedUser)
           targetUserName = `${selectedUser.firstname} ${selectedUser.lastname}`;
         }
 
@@ -147,7 +256,8 @@ const Chat = () => {
           ...message,
           new: message.timestamp > latestTimestamp,
         }));
-
+        console.log("messagesWithStatus",messagesWithStatus)
+        console.log("Messages with status:", messagesWithStatus);
         setMessages(messagesWithStatus);
       } catch (error) {
         console.error('Error fetching messages:', error);
@@ -157,29 +267,167 @@ const Chat = () => {
     fetchMessagesAndUserDetails();
   }, [selectedUser, loggedInUser, chatToShow]);
 
-  useEffect(() => {
-    const unreadMessagesState = {};
-    filteredUsers.forEach((user) => {
-      unreadMessagesState[user.uid] = false;
-    });
-    setUnreadMessages(unreadMessagesState);
+  // Inside the useEffect for updateStatus
 
+  // useEffect(() => {
+  //   let isInitialRender = true;
+  
+  //   const updateStatus = async () => {
+  //     try {
+  //       if (selectedUser && !isInitialRender) {
+  //         const messagesRef = collection(db, 'messages');
+  //         const q = query(
+  //           messagesRef,
+  //           where('participants', '==', [selectedUser.uid, loggedInUser]),
+  //           orderBy('timestamp', 'desc'),
+  //           limit(1)
+  //         );
+  //         const querySnapshot = await getDocs(q);
+  
+  //         if (!querySnapshot.empty) {
+  //           const latestMessage = querySnapshot.docs[0];
+  //           const messageData = latestMessage.data();
+  
+  //           // Check if the logged-in user is the receiver and the status is unread
+  //           if (messageData.status === 'unread' && loggedInUser === messageData.participants[1]) {
+  //             // Check if the sender's name has been clicked
+  //             if (selectedUser.uid === messageData.participants[0]) {
+  //               // Update the status to 'read' when the chat is opened
+  //               await setDoc(doc(db, 'messages', latestMessage.id), { status: 'read' }, { merge: true });
+  //             }
+  //           }
+  //         }
+  //       }
+  //     } catch (error) {
+  //       console.error('Error updating status:', error);
+  //     }
+  //   };
+  
+  //   updateStatus();
+  
+  //   // Set isInitialRender to false after the initial render
+  //   isInitialRender = false;
+  // }, [selectedUser, loggedInUser]);
+  
+
+  // Inside the useEffect for onSnapshot
+  const fetchUserDetails = async (email) => {
+    try {
+      const userDoc = await getDoc(doc(db, 'users', email));
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        return `${userData.firstname} ${userData.lastname}`;
+      }
+      return '';
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+      return '';
+    }
+  };
+
+  const fetchMessagesAndUserDetails =  useCallback(async () => {
+    try {
+      if (!selectedUser && !chatToShow) {
+        return; // Add a check to avoid executing if both are undefined
+      }
+      let targetUserName = '';
+
+      if (chatToShow) {
+        targetUserName = await fetchUserDetails(chatToShow);
+
+        const chatToShowUserRef = doc(db, 'users', chatToShow);
+        const chatToShowUserDoc = await getDoc(chatToShowUserRef);
+        const chatToShowUserData = chatToShowUserDoc.data();
+
+        setSelectedUser({
+          uid: chatToShow,
+          firstname: chatToShowUserData.firstname,
+          lastname: chatToShowUserData.lastname,
+        });
+
+        // Update the status of messages to 'read' for the sender
+        const messagesRef = collection(db, 'messages');
+        const updateStatusQuery = query(
+          messagesRef,
+          where('participants', '==', [chatToShow, loggedInUser]),
+          where('status', '==', 'unread')
+        );
+        const updateStatusSnapshot = await getDocs(updateStatusQuery);
+
+        updateStatusSnapshot.forEach(async (doc) => {
+          await setDoc(doc(db, 'messages', doc.id), { status: 'read' }, { merge: true });
+        });
+      } else if (selectedUser) {
+        targetUserName = `${selectedUser.firstname} ${selectedUser.lastname}`;
+      }
+
+      setSelectedUserName(targetUserName);
+
+      const messagesRef = collection(db, 'messages');
+      const q1 = query(
+        messagesRef,
+        orderBy('timestamp'),
+        where('participants', '==', [loggedInUser, chatToShow || selectedUser.uid])
+      );
+
+      const q2 = query(
+        messagesRef,
+        orderBy('timestamp'),
+        where('participants', '==', [chatToShow || selectedUser.uid, loggedInUser])
+      );
+
+      const querySnapshot1 = await getDocs(q1);
+      const querySnapshot2 = await getDocs(q2);
+
+      const fetchedMessages1 = querySnapshot1.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      const fetchedMessages2 = querySnapshot2.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      const allMessages = [...fetchedMessages1, ...fetchedMessages2];
+
+      const sortedMessages = allMessages.sort((a, b) => a.timestamp - b.timestamp);
+
+      const latestTimestamp = sortedMessages.length > 0 ? sortedMessages[sortedMessages.length - 1].timestamp : null;
+
+      const messagesWithStatus = sortedMessages.map((message) => ({
+        ...message,
+        new: message.timestamp > latestTimestamp,
+      }));
+      console.log("messagesWithStatus",messagesWithStatus);
+      setMessages(messagesWithStatus);
+    } catch (error) {
+      console.error('Error fetching messages:', error);
+    }
+  }, [loggedInUser, selectedUser, chatToShow]);
+  useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, 'messages'), (snapshot) => {
-      snapshot.docChanges().forEach((change) => {
+      console.log("Snapshot changes detected...");
+      snapshot.docChanges().forEach(async (change) => {
         const message = change.doc.data();
-        if (message.participants.includes(loggedInUser) && message.new) {
-          if (message.sender !== loggedInUser) {
-            setUnreadMessages((prevUnreadMessages) => ({
-              ...prevUnreadMessages,
-              [message.sender]: true,
-            }));
-          }
+        if (
+          message.participants &&
+          message.participants.includes(loggedInUser) &&
+          message.new &&
+          message.sender !== loggedInUser &&
+          (selectedUser && message.participants.includes(selectedUser.uid))
+        ) {
+          // If the message is new and the selected user is involved, update its status to 'read' when received
+          await setDoc(doc(db, 'messages', change.doc.id), { status: 'read' }, { merge: true });
         }
+        // Fetch updated messages and user details when a new message is received
+        fetchMessagesAndUserDetails();
       });
     });
-
+  
     return () => unsubscribe();
-  }, [filteredUsers, loggedInUser]);
+  }, [loggedInUser, selectedUser, fetchMessagesAndUserDetails]);
+  
 
   const handleSendMessage = async () => {
     if (newMessage.trim() !== '' && selectedUser) {
@@ -191,15 +439,11 @@ const Chat = () => {
           sender: loggedInUser,
           text: newMessage,
           timestamp: new Date(),
-          new: true,
+          new: selectedUser.uid,
+          status: 'unread',
         });
 
         setNewMessage('');
-
-        setUnreadMessages((prevUnreadMessages) => ({
-          ...prevUnreadMessages,
-          [selectedUser.uid]: true,
-        }));
 
         setMessages((prevMessages) => [
           ...prevMessages,
@@ -210,6 +454,7 @@ const Chat = () => {
             text: newMessage,
             timestamp: new Date(),
             new: true,
+            status: 'unread',
           },
         ]);
       } catch (error) {
@@ -218,14 +463,29 @@ const Chat = () => {
     }
   };
 
-  const handleUserSelect = (user) => {
-    setSelectedUser(user);
-
-    setUnreadMessages((prevUnreadMessages) => ({
-      ...prevUnreadMessages,
-      [user.uid]: false,
-    }));
+  const handleUserSelect = async (user) => {
+    try {
+      setSelectedUser(user);
+  
+      // Update the status of messages to 'read' for the sender
+      const messagesRef = collection(db, 'messages');
+      const updateStatusQuery = query(
+        messagesRef,
+        where('participants', '==', [user.uid, loggedInUser]),
+        where('status', '==', 'unread')
+      );
+      const updateStatusSnapshot = await getDocs(updateStatusQuery);
+  
+      updateStatusSnapshot.forEach(async (doc) => {
+        const messageRef = doc.ref;  // Use doc.ref to get the reference to the document
+        await setDoc(messageRef, { status: 'read' }, { merge: true });
+      });
+    } catch (error) {
+      console.error('Error updating status:', error);
+    }
   };
+  
+  
 
   const handleSearch = async () => {
     try {
@@ -279,10 +539,34 @@ const Chat = () => {
     }
   };
 
+  const formatDate = (timestamp) => {
+    try {
+      const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+      if (isNaN(date.getTime())) {
+        throw new Error('Invalid timestamp');
+      }
+
+      const options = {
+        month: '2-digit',
+        day: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      };
+
+      return new Intl.DateTimeFormat('en-US', options).format(date);
+    } catch (error) {
+      console.error('Error formatting timestamp:', error);
+      console.log('Invalid timestamp:', timestamp);
+      return 'Invalid Date';
+    }
+  };
+
   return (
     <div className="chat-container">
+      {!chatToShow && (
       <div className="left-sidebar">
-        <div className="welcome-message" style={{ fontWeight: 'bold', textAlign: 'center' }}>
+        <div className="welcome-message" style={{ textAlign: 'center' }}>
           Welcome {userDetails.first_name} {userDetails.last_name}
         </div>
         <br></br>
@@ -296,17 +580,25 @@ const Chat = () => {
           <button onClick={handleSearch}>Search</button>
         </div>
         <div className="user-list">
-          {filteredUsers.map((user) => (
-            <div
-              key={user.uid}
-              onClick={() => handleUserSelect(user)}
-              style={{ fontWeight: unreadMessages[user.uid] ? 'bold' : 'normal' }}
-            >
-              {user.firstname + ' ' + user.lastname}
-            </div>
-          ))}
-        </div>
+  {filteredUsers.map((user) => {
+    const isUnread = usersWithUnreadMessages.some((unreadUser) => unreadUser.uid === user.uid);
+
+    return (
+      <div
+        key={user.uid}
+        onClick={() => handleUserSelect(user)}
+        style={{ fontWeight: isUnread ? 'bold' : 'normal' }}
+      >
+        {user.firstname + ' ' + user.lastname}
       </div>
+    );
+  })}
+</div>
+
+
+
+      </div>
+      )}
       <div className="right-sidebar">
         {selectedUser ? (
           <>
@@ -316,9 +608,9 @@ const Chat = () => {
                 <div
                   key={message.id}
                   className={message.sender === loggedInUser ? 'user-message' : 'other-user-message'}
-                  style={{ fontWeight: message.new ? 'bold' : 'normal' }}
                 >
-                  {message.text}
+                  <div>{message.text}</div>
+                  <div style={{ color: 'grey', fontSize: '12px' }}>{formatDate(message.timestamp)}</div>
                 </div>
               ))}
             </div>
@@ -341,3 +633,4 @@ const Chat = () => {
 };
 
 export default Chat;
+	
