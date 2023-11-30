@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
+// import { ReactComponent as LocationIcon } from './path-to-your-location-icon.svg';
 import './Chat.css';
 import { getUserDetails } from "../../utils/api";
+import { useNavigate } from 'react-router-dom';
 import {
   db,
   collection,
@@ -27,6 +29,8 @@ const Chat = () => {
   const loggedInUser = localStorage.getItem('LoggedInUser');
   const [userDetails, setUserDetails] = useState([]);
   const [usersWithUnreadMessages, setUsersWithUnreadMessages] = useState([]);
+  const navigate = useNavigate();
+  // const mapLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
 
 
   const { chatToShow } = useParams();
@@ -428,7 +432,11 @@ const Chat = () => {
     return () => unsubscribe();
   }, [loggedInUser, selectedUser, fetchMessagesAndUserDetails]);
   
-
+const navigateToLocation = () =>{
+  // navigate(`/Location`);
+  console.log("selectedUser", selectedUser.uid);
+  navigate(`/Location/${selectedUser.uid}`);
+}
   const handleSendMessage = async () => {
     if (newMessage.trim() !== '' && selectedUser) {
       const messagesRef = collection(db, 'messages');
@@ -604,7 +612,7 @@ const Chat = () => {
           <>
             <div className="selected-user-header">{selectedUserName}</div>
             <div className="message-container">
-              {messages.map((message) => (
+              {/* {messages.map((message) => (
                 <div
                   key={message.id}
                   className={message.sender === loggedInUser ? 'user-message' : 'other-user-message'}
@@ -612,7 +620,27 @@ const Chat = () => {
                   <div>{message.text}</div>
                   <div style={{ color: 'grey', fontSize: '12px' }}>{formatDate(message.timestamp)}</div>
                 </div>
-              ))}
+              ))} */}
+
+{messages.map((message) => (
+  <div
+    key={message.id}
+    className={message.sender === loggedInUser ? 'user-message' : 'other-user-message'}
+  >
+    {message.type === 'location' ? (
+      <div>
+        {/* Display a link to open Google Maps with the location */}
+        <a href={`https://www.google.com/maps?q=${message.latitude},${message.longitude}`} target="_blank" rel="noopener noreferrer">
+          Open Location in Maps
+        </a>
+      </div>
+    ) : (
+      <div>{message.text}</div>
+    )}
+    <div style={{ color: 'grey', fontSize: '12px' }}>{formatDate(message.timestamp)}</div>
+  </div>
+))}
+
             </div>
             <div className="message-input-container">
               <input
@@ -621,7 +649,13 @@ const Chat = () => {
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
               />
+              <button className="message-button" onClick={navigateToLocation}> 
+              <span className="material-icons">
+                  location_on
+              </span>
+              </button> &nbsp;
               <button onClick={handleSendMessage}>Send</button>
+              
             </div>
           </>
         ) : (

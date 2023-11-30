@@ -10,6 +10,7 @@ import DonateFurniture from './pages/DonatePage/DonateFurniture'
 import ProductDetails from './pages/ProductDetailsPage/ProductDetails'
 import ProfileDetails from './pages/ProfilePage/ProfileDetails'
 import Chat from './pages/Chat/ChatPage';
+import Location from './pages/Location/Location';
 
 const App = () => {
   return (
@@ -26,7 +27,8 @@ const App = () => {
           <Route path="/product/:productId" element={<ProductDetails />} />
           <Route path="/ProfileDetails" element={<ProfileDetails/>} />
           <Route path="/Chat" element={<Chat/>} /> 
-          <Route path="/Chat/:chatToShow" element={<Chat />} />       
+          <Route path="/Chat/:chatToShow" element={<Chat />} />   
+          <Route path="/Location/:ReceiverMail" element={<Location />} />      
         </Routes>
       </div>
     </Router>
