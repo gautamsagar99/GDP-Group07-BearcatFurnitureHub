@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Button from "../../components/Button/Button"
 import TextField from "../../components/TextField/Textfield";
 import Form from "react-bootstrap/Form";
@@ -7,6 +7,8 @@ import "./Register.css";
 import furniture from "../../assets/images/B3.png";
 import { RegisterPost } from "../../utils/api";
 import CryptoJS from "crypto-js";
+import { CSSTransition } from 'react-transition-group';
+
 
 function Register() {
   const [data, setData] = useState({
@@ -16,6 +18,17 @@ function Register() {
     password: "",
     confirmpassword: "",
   });
+
+  const [messageText, setMessageText] = useState('');
+  const [showmessageText, setShowmessageText] = useState(false);
+  useEffect(() => {
+    if (showmessageText) {
+      const timer = setTimeout(() => {
+        setShowmessageText(false);
+      }, 3000); // 5000 milliseconds (5 seconds)
+      return () => clearTimeout(timer);
+    }
+  }, [showmessageText]);
 
   const [errors, setErrors] = useState({
     firstname: "",
@@ -29,7 +42,7 @@ function Register() {
   const navigate = useNavigate();
   const encryptionKey = "1234";
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
 
     const iv = "1234";
     const ivBytes = CryptoJS.enc.Utf8.parse(iv);
@@ -42,17 +55,22 @@ function Register() {
       const encryptedPassword = CryptoJS.AES.encrypt(password, encryptionKey, {
         iv: ivBytes,
       }).toString();
-      const body={
-            email: encryptedEmail,
-            first_name: firstname,
-            last_name: lastname,
-            password: encryptedPassword,
-          }
-          const isValid=RegisterPost(body);
-   if(isValid) 
-   {
-    navigate("/")
-   }
+      const body = {
+        email: encryptedEmail,
+        first_name: firstname,
+        last_name: lastname,
+        password: encryptedPassword,
+      }
+      const isValid = await RegisterPost(body);
+      if (isValid) {
+        // setShowmessageText(!showmessageText);
+        alert("Registered Successfully");
+        navigate("/")
+      }
+      else {
+        setShowmessageText(!showmessageText);
+        setMessageText("Email is already taken");
+      }
       // fetch("http://localhost:5000/signup", {
       //   method: "POST",
       //   headers: {
@@ -138,102 +156,107 @@ function Register() {
 
   return (
     <div className="form-middleR">
-           <div className="logoDivR">
+      <CSSTransition in={showmessageText} timeout={30} classNames="fade" unmountOnExit>
+        <div className="showRegisterFailedpopup">
+          {messageText}
+        </div>
+      </CSSTransition>
+      <div className="logoDivR">
         <img src={furniture} alt="Logo" className="logoR"></img>
       </div>
 
       <div className="formDivR">
-      <Form className="rightFormContainerR">
-      <h1 className="signUpHeading">Sign Up</h1>
-      <div className="formInsiderightFormContainerR">
-      <div className="elementNames">
-       <Form.Group className="mb-3" controlId="formBasicFirstName">
-       <TextField
-            type="firstname"
-            value={firstname}
-            name="firstname"
-            // label="First Name"
-            // required={true}
-            onChange={onchange}
-            placeholder="First Name"
-          />
-          {errors.firstname && <div className="error">{errors.firstname}</div>}
+        <Form className="rightFormContainerR">
+          <h1 className="signUpHeading">Sign Up</h1>
+          <div className="formInsiderightFormContainerR">
+            <div className="elementNames">
+              <Form.Group className="mb-3" controlId="formBasicFirstName">
+                <TextField
+                  type="firstname"
+                  value={firstname}
+                  name="firstname"
+                  // label="First Name"
+                  // required={true}
+                  onChange={onchange}
+                  placeholder="First Name"
+                />
+                {errors.firstname && <div className="error">{errors.firstname}</div>}
 
-        </Form.Group>
-        <br/>
-        <Form.Group className="mb-3" controlId="formBasicLastName">
-  
-          <TextField
-            type="lastname"
-            value={lastname}
-            name="lastname"
-            onChange={onchange}
-            placeholder="Last Name"
-            // label="Last Name"
-            // required={true}
-          />
-          {/* {errors.lastname && <span className="error">{errors.lastname}</span>} */}
-          {errors.lastname && <div className="error">{errors.lastname}</div>}
+              </Form.Group>
+              <br />
+              <Form.Group className="mb-3" controlId="formBasicLastName">
 
-        </Form.Group>
-        <br/>
-       </div>
-   
-        <Form.Group className="mb-3" controlId="formBasicemail">
-        
+                <TextField
+                  type="lastname"
+                  value={lastname}
+                  name="lastname"
+                  onChange={onchange}
+                  placeholder="Last Name"
+                // label="Last Name"
+                // required={true}
+                />
+                {/* {errors.lastname && <span className="error">{errors.lastname}</span>} */}
+                {errors.lastname && <div className="error">{errors.lastname}</div>}
 
-          <TextField
-            type="email"
-            value={email}
-            name="email"
-            onChange={onchange}
-            placeholder="Email Address"
-            // label="Email"
-            // required={true}
-            
-          />
-          {errors.email && <div className="error">{errors.email}</div>}
+              </Form.Group>
+              <br />
+            </div>
 
-        </Form.Group>
-        <br/>
-        <Form.Group className="mb-3" controlId="formBasicpassword">
-        
+            <Form.Group className="mb-3" controlId="formBasicemail">
 
-          <TextField
-            type="password"
-            value={password}
-            name="password"
-            onChange={onchange}
-            placeholder="Password"
-            // label="Password"
-            // required={true}
-            
-          />
-          {errors.password && <div className="error">{errors.password}</div>}
 
-        </Form.Group>
-        <br/>
-        <Form.Group className="mb-3" controlId="formBasicconfirmpassword">
-        
-        <TextField
-            type="password"
-            value={confirmpassword}
-            name="confirmpassword"
-            onChange={onchange}
-            placeholder="Confirm Password"
-            // label="Confirm Password"
-            // required={true}
-          />
-          {errors.confirmpassword && <div className="error">{errors.confirmpassword}</div>}
+              <TextField
+                type="email"
+                value={email}
+                name="email"
+                onChange={onchange}
+                placeholder="Email Address"
+              // label="Email"
+              // required={true}
 
-        </Form.Group>
-        <br/>
-        <br/>
-        <Button type="button" label="Register" onClick={handleRegister} color="primary"/>
+              />
+              {errors.email && <div className="error">{errors.email}</div>}
 
-      </div>
-       
-      </Form>
+            </Form.Group>
+            <br />
+            <Form.Group className="mb-3" controlId="formBasicpassword">
+
+
+              <TextField
+                type="password"
+                value={password}
+                name="password"
+                onChange={onchange}
+                placeholder="Password"
+              // label="Password"
+              // required={true}
+
+              />
+              {errors.password && <div className="error">{errors.password}</div>}
+
+            </Form.Group>
+            <br />
+            <Form.Group className="mb-3" controlId="formBasicconfirmpassword">
+
+              <TextField
+                type="password"
+                value={confirmpassword}
+                name="confirmpassword"
+                onChange={onchange}
+                placeholder="Confirm Password"
+              // label="Confirm Password"
+              // required={true}
+              />
+              {errors.confirmpassword && <div className="error">{errors.confirmpassword}</div>}
+
+            </Form.Group>
+            <br />
+            <br />
+            <Button type="button" label="Register" onClick={handleRegister} color="primary" />
+
+          </div>
+
+        </Form>
       </div>
 
     </div>

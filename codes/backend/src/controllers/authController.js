@@ -62,7 +62,7 @@ async function signup(req, res) {
     if (existingUser) {
       // If a user with the same email already exists, send a response indicating the email is taken
       console.log(`Email ${email} is already taken`);
-      return res.send("Email is already taken");
+      return res.status(409).send("Email is already taken");
     }
 
     // Create a new user

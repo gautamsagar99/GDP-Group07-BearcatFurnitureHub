@@ -176,3 +176,29 @@ input[name='email']{
 
 
   } 
+
+
+  .showRegisterFailpopup{
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #f30a0a;
+    color: white;
+    padding: 10px;
+    border-radius: 4px;
+    width: 50%;
+    text-align: center;
+  }
+  .showRegisterFailedpopup{
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: red;
+    color: white;
+    padding: 10px;
+    border-radius: 4px;
+    width: 50%;
+    text-align: center;
+  }
