@@ -33,7 +33,7 @@ const Navbar = ({ onSearch, onResetSearch }) => {
       // setSearchQuery = ""
       // onSearch(" ");
       document.getElementById("searchInput").placeholder =
-        "Search for products";
+        "Search By Product Name, Description and Condition";
       setSearchQuery("");
     }
   };
