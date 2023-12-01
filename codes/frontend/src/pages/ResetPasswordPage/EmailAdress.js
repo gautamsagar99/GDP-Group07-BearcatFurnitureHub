@@ -32,6 +32,7 @@ const EmailAdress = () => {
       const isValid=await EmailAddressPost(body);
       if(isValid)
       {
+        alert("Code sent to registered email. Please check.");
         nav("/forgot-password");
       }
       localStorage.setItem("forgotEmail", emailAddress);
