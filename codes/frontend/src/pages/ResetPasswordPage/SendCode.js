@@ -9,7 +9,7 @@ import CryptoJS from "crypto-js";
 
 const SendCode = () => {
   const [data, setCode] = useState("");
-  const { code } = data;
+  var { code } = data;
   const encryptionKey = "1234";
   const onchange = (e) => setCode({ ...data, [e.target.name]: e.target.value });
   let nav = useNavigate();
@@ -19,7 +19,8 @@ const SendCode = () => {
   const handleValidation = async () => {
     const iv = "1234";
     const ivBytes = CryptoJS.enc.Utf8.parse(iv);
-    if (code.length === 0) {
+    console.log("code",code);
+    if (code === undefined || code === "") {
       alert("Enter Code");
     } else {
       const emailAddress=localStorage.getItem("forgotEmail");
@@ -41,7 +42,10 @@ const SendCode = () => {
         nav("/ResetPassword");
       }
       else{
-        nav("/");
+        alert("Wrong code. Please try again.")
+        setCode({ code: "" });
+
+        
       }
       // fetch("http://localhost:5000/check-code", {
       //   method: "POST",
@@ -80,7 +84,7 @@ const SendCode = () => {
         <Form.Group className="mb-3" controlId="sendCode">
 
           <TextField
-            type="code"
+            type="text"
             name="code"
             value={code}
             label="Please Enter Code"
